@@ -2,7 +2,6 @@ import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppNav } from '@/components/AppNav';
-import { CustomCursor } from '@/components/CustomCursor';
 import { Landing } from '@/pages/Landing';
 import { Marketplace } from '@/pages/Marketplace';
 import { AssetDetail } from '@/pages/AssetDetail';
@@ -23,7 +22,6 @@ export function App(): React.JSX.Element {
 
   return (
     <>
-      <CustomCursor />
       <AppNav />
       <AnimatePresence mode="wait" initial={false}>
         <motion.div

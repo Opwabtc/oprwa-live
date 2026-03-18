@@ -36,7 +36,7 @@
   --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(247, 147, 26, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Bricolage Grotesque', 'DM Sans', -apple-system, sans-serif;
+  --font-heading: 'Barlow Condensed', 'DM Sans', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
   --transition-fast: 120ms ease;
   --transition-base: 220ms ease;
@@ -98,8 +98,9 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
 #root {
@@ -968,9 +969,10 @@ a {
 
 .hero__headline {
   font-family: var(--font-heading);
-  font-size: clamp(3.5rem, 9vw, 7rem);
+  font-size: clamp(4.5rem, 13vw, 10rem);
   font-weight: 900;
-  line-height: 0.95;
+  line-height: 0.9;
+  letter-spacing: 0.03em;
   letter-spacing: -0.04em;
   margin: 0 0 1.5rem;
   color: var(--text);
@@ -1013,9 +1015,10 @@ a {
 
 .section-title {
   font-family: var(--font-heading);
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   margin: 0 0 1.25rem;
 }
 
@@ -2059,42 +2062,6 @@ a {
   border-radius: var(--radius-card);
 }
 
-/* ============================================================
-   CUSTOM CURSOR
-   ============================================================ */
-.cursor__dot {
-  position: fixed;
-  top: -4px;
-  left: -4px;
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  will-change: transform;
-  mix-blend-mode: difference;
-}
-
-.cursor__ring {
-  position: fixed;
-  top: -18px;
-  left: -18px;
-  width: 36px;
-  height: 36px;
-  border: 1.5px solid rgba(247, 147, 26, 0.6);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-  will-change: transform;
-}
-
-@media (pointer: coarse) {
-  .cursor__dot,
-  .cursor__ring {
-    display: none;
-  }
-}
 
 /* ============================================================
    HERO CLONE (footer -> hero loop)
