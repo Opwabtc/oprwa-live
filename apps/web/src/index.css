@@ -1128,7 +1128,8 @@ a {
    ============================================================ */
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 700px;
+  max-height: 700px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1176,11 +1177,11 @@ a {
 }
 
 .hero__headline {
-  font-family: var(--font-heading);
-  font-size: clamp(4.5rem, 13vw, 10rem);
-  font-weight: 900;
-  line-height: 0.9;
-  letter-spacing: 0.03em;
+  font-family: 'Bebas Neue', var(--font-heading), sans-serif;
+  font-size: clamp(5rem, 10vw, 8rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.04em;
   letter-spacing: -0.04em;
   margin: 0 0 1.5rem;
   color: var(--text);
