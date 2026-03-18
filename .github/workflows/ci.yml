@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    name: Build and typecheck
+  build-and-test:
+    name: Build, typecheck, and test
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,7 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: Install monorepo dependencies
         run: pnpm install
 
       - name: Typecheck web
@@ -34,3 +34,62 @@ jobs:
 
       - name: Build web
         run: pnpm --filter @oprwa/web build
+
+      - name: Install contract dependencies
+        working-directory: contracts
+        run: npm install
+
+      - name: Run fee calculation unit tests
+        working-directory: contracts
+        run: npx tsx tests/fee-calculation.test.ts
+
+  security-scan:
+    name: Security scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for hardcoded secrets
+        run: |
+          echo "Scanning for hardcoded secrets..."
+          if grep -rn 'OPNET_MNEMONIC\s*=\s*"[a-z]' --include="*.ts" --include="*.tsx" --include="*.js" . 2>/dev/null; then
+            echo "ERROR: Hardcoded mnemonic found in source!"
+            exit 1
+          fi
+          echo "No hardcoded secrets found."
+
+      - name: Verify .env is gitignored
+        run: |
+          if git ls-files --error-unmatch apps/web/.env 2>/dev/null; then
+            echo "ERROR: apps/web/.env is tracked by git!"
+            exit 1
+          fi
+          echo ".env correctly excluded from git."
+
+  contract-lint:
+    name: Contract source validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify supply cap present
+        run: |
+          grep -q "MAX_SUPPLY_PER_TOKEN" contracts/src/op1155/RWAVault.ts || { echo "ERROR: Supply cap missing!"; exit 1; }
+          grep -q "supply cap exceeded" contracts/src/op1155/RWAVault.ts || { echo "ERROR: Supply cap check missing!"; exit 1; }
+          echo "Supply cap: present"
+
+      - name: Verify admin guards present
+        run: |
+          grep -q "_onlyAdmin()" contracts/src/op1155/RWAVault.ts || { echo "ERROR: Admin guard missing!"; exit 1; }
+          echo "Admin guards: present"
+
+      - name: Verify no floating point in contract
+        run: |
+          if grep -n "Math.floor\|parseFloat\|toFixed" contracts/src/op1155/RWAVault.ts; then
+            echo "ERROR: Floating point in contract!"; exit 1
+          fi
+          echo "Integer-only arithmetic: verified"

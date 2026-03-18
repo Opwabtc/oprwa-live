@@ -51,6 +51,10 @@ const PTR_WHITELIST:         u16 = 30;
 // Maximum supported tokenIds
 const MAX_TOKEN_IDS:         u32 = 3;
 
+// Maximum supply per tokenId — prevents unbounded minting via purchase()
+// 10_000_000 fractions per asset = 10M units at 1000 sats each = 100BTC max TVL per asset
+const MAX_SUPPLY_PER_TOKEN:  u64 = 10_000_000;
+
 // Demand factor bounds
 const DEMAND_MIN: u64 = 0;
 const DEMAND_MAX: u64 = 1000;
@@ -262,9 +266,14 @@ export class RWAVault extends OP_NET {
         const supplyStore = this._getSupplyStore(id);
         const addrKey    = u256.fromUint8ArrayBE(to);
 
+        // Supply cap — prevent unbounded minting
+        const maxSupply = u256.fromU64(MAX_SUPPLY_PER_TOKEN);
+        const newSupply = SafeMath.add(supplyStore.value, amount);
+        if (u256.gt(newSupply, maxSupply)) throw new Revert('RWAVault: supply cap exceeded');
+
         const prevBal = balMap.get(addrKey);
         balMap.set(addrKey, SafeMath.add(prevBal, amount));
-        supplyStore.value = SafeMath.add(supplyStore.value, amount);
+        supplyStore.value = newSupply;
 
         Blockchain.emit(new MintEvent(tokenId, to, amount));
 
@@ -292,8 +301,14 @@ export class RWAVault extends OP_NET {
         const balMap  = this._getBalanceMap(id);
         const addrKey = u256.fromUint8ArrayBE(to);
 
+        // Supply cap — prevent unbounded minting
+        const supplyStore = this._getSupplyStore(id);
+        const maxSupply   = u256.fromU64(MAX_SUPPLY_PER_TOKEN);
+        const newSupply   = SafeMath.add(supplyStore.value, amount);
+        if (u256.gt(newSupply, maxSupply)) throw new Revert('RWAVault: supply cap exceeded');
+
         balMap.set(addrKey, SafeMath.add(balMap.get(addrKey), amount));
-        this._getSupplyStore(id).value = SafeMath.add(this._getSupplyStore(id).value, amount);
+        supplyStore.value = newSupply;
 
         Blockchain.emit(new MintEvent(tokenId, to, amount));
 
