@@ -35,7 +35,8 @@
   --blur-glass: blur(16px);
   --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(247, 147, 26, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Syne', 'Plus Jakarta Sans', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
   --transition-fast: 120ms ease;
   --transition-base: 220ms ease;
@@ -90,9 +91,15 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 #root {
@@ -327,10 +334,12 @@ a {
 }
 
 .app-nav__logo-text {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 800;
   color: var(--accent);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .app-nav__links {
@@ -924,9 +933,10 @@ a {
 }
 
 .hero__headline {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-family: var(--font-heading);
+  font-size: clamp(2.75rem, 6.5vw, 5rem);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.05;
   letter-spacing: -0.03em;
   margin: 0 0 1.5rem;
   color: var(--text);
@@ -967,9 +977,10 @@ a {
 }
 
 .section-title {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   margin: 0 0 1.25rem;
 }
 
@@ -1071,11 +1082,12 @@ a {
 }
 
 .landing__cta-title {
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
   font-weight: 700;
   max-width: 560px;
   margin: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 .site-footer {
@@ -1092,9 +1104,12 @@ a {
 }
 
 .site-footer__brand {
-  font-weight: 700;
+  font-family: var(--font-heading);
+  font-weight: 800;
   color: var(--accent);
   font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .site-footer__note {

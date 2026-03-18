@@ -17,74 +17,61 @@ export function Landing(): React.JSX.Element {
   const { assets } = useAssets();
 
   useEffect(() => {
+    // Hero elements: use autoAlpha so opacity+visibility are set atomically.
+    // autoAlpha: 0 sets visibility:hidden + opacity:0 — prevents invisible-but-interactive elements.
+    // On complete, GSAP restores visibility:visible automatically.
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.fromTo('.hero__eyebrow',
+      { autoAlpha: 0, y: 16 },
+      { autoAlpha: 1, y: 0, duration: 0.7 },
+      0.15,
+    )
+    .fromTo('.hero__headline',
+      { autoAlpha: 0, y: 40 },
+      { autoAlpha: 1, y: 0, duration: 0.9 },
+      0.3,
+    )
+    .fromTo('.hero__sub',
+      { autoAlpha: 0, y: 24 },
+      { autoAlpha: 1, y: 0, duration: 0.8 },
+      0.55,
+    )
+    .fromTo('.hero__cta',
+      { autoAlpha: 0, y: 16 },
+      { autoAlpha: 1, y: 0, duration: 0.7 },
+      0.8,
+    );
+
+    // Sections: scroll-triggered, also using autoAlpha to avoid opacity stuck at 0
     const ctx = gsap.context(() => {
-      if (heroRef.current) {
-        gsap.from('.hero__headline', {
-          y: 40,
-          opacity: 0,
-          duration: 1.0,
-          ease: 'power3.out',
-          delay: 0.2,
-        });
-        gsap.from('.hero__sub', {
-          y: 30,
-          opacity: 0,
-          duration: 0.9,
-          ease: 'power3.out',
-          delay: 0.5,
-        });
-        gsap.from('.hero__cta', {
-          y: 20,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          delay: 0.8,
-        });
-      }
-
       if (section1Ref.current) {
-        gsap.from(section1Ref.current, {
-          y: 50,
-          opacity: 0,
-          duration: 0.9,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: section1Ref.current,
-            start: 'top 80%',
+        gsap.fromTo(section1Ref.current,
+          { autoAlpha: 0, y: 48 },
+          {
+            autoAlpha: 1, y: 0, duration: 0.9, ease: 'power2.out',
+            scrollTrigger: { trigger: section1Ref.current, start: 'top 82%' },
           },
-        });
+        );
       }
 
-      if (section2Ref.current) {
-        gsap.from('.asset-card', {
-          y: 40,
-          opacity: 0,
-          duration: 0.7,
-          stagger: 0.15,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: section2Ref.current,
-            start: 'top 75%',
-          },
-        });
-      }
+      // NOTE: .asset-card animations are handled by Framer Motion inside AssetCard.
+      // Do NOT animate .asset-card here — double-animating causes opacity stuck at 0.
 
       if (section3Ref.current) {
-        gsap.from('.how-step', {
-          y: 30,
-          opacity: 0,
-          duration: 0.7,
-          stagger: 0.2,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: section3Ref.current,
-            start: 'top 80%',
+        gsap.fromTo('.how-step',
+          { autoAlpha: 0, y: 30 },
+          {
+            autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.18, ease: 'power2.out',
+            scrollTrigger: { trigger: section3Ref.current, start: 'top 80%' },
           },
-        });
+        );
       }
     });
 
-    return () => ctx.revert();
+    return () => {
+      tl.kill();
+      ctx.revert();
+    };
   }, []);
 
   return (
