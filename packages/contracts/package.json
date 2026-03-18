@@ -12,7 +12,15 @@
     "typecheck": "tsc --noEmit",
     "build": "echo 'contracts is source-only'"
   },
+  "dependencies": {
+    "@btc-vision/transaction": "rc",
+    "@btc-vision/bitcoin": "rc",
+    "opnet": "rc"
+  },
   "devDependencies": {
     "typescript": "^5.4.0"
+  },
+  "overrides": {
+    "@noble/hashes": "2.0.1"
   }
 }

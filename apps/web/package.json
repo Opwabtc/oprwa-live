@@ -22,7 +22,10 @@
     "clsx": "^2.1.0",
     "@oprwa/ui": "workspace:*",
     "@oprwa/core": "workspace:*",
-    "@oprwa/contracts": "workspace:*"
+    "@oprwa/contracts": "workspace:*",
+    "@btc-vision/transaction": "rc",
+    "@btc-vision/bitcoin": "rc",
+    "opnet": "rc"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
@@ -30,8 +33,15 @@
     "typescript": "^5.4.0",
     "vite": "^5.0.0",
     "@vitejs/plugin-react": "^4.0.0",
+    "vite-plugin-node-polyfills": "latest",
+    "vite-plugin-eslint2": "latest",
     "tailwindcss": "^3.4.0",
     "postcss": "^8.4.0",
-    "autoprefixer": "^10.4.0"
+    "autoprefixer": "^10.4.0",
+    "crypto-browserify": "latest",
+    "stream-browserify": "latest"
+  },
+  "overrides": {
+    "@noble/hashes": "2.0.1"
   }
 }
