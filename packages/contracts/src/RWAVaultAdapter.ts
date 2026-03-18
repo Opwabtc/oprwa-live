@@ -92,7 +92,6 @@ async function buildOPNetContract(
 ): Promise<RWAVaultContract> {
   const opnet = await import('opnet');
   const btcBitcoin = await import('@btc-vision/bitcoin');
-  const { Address } = await import('@btc-vision/transaction');
 
   const NETWORK =
     network === 'testnet'
@@ -101,9 +100,16 @@ async function buildOPNetContract(
 
   const provider = new opnet.JSONRpcProvider({ url: RPC_URL, network: NETWORK });
 
-  // H-01 fix: pass sender as Address object — required for ML-DSA address validation.
-  // Without it the SDK defaults to undefined, causing simulation/on-chain divergence.
-  const sender = senderAddress ? Address.fromString(senderAddress) : undefined;
+  // H-01 fix: resolve sender Address via getPublicKeyInfo so the SDK receives
+  // a proper compressed public key object, not a raw bech32 address string.
+  let sender: Awaited<ReturnType<typeof provider.getPublicKeyInfo>> = undefined;
+  if (senderAddress) {
+    try {
+      sender = await provider.getPublicKeyInfo(senderAddress, false);
+    } catch {
+      sender = undefined;
+    }
+  }
 
   return opnet.getContract(
     contractAddress,

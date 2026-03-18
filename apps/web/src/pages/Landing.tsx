@@ -148,29 +148,10 @@ export function Landing(): React.JSX.Element {
       .to('.hero--clone', { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }, 0)
       .to('.site-footer', { opacity: 0.4, y: -40 }, 0);
 
-    // 9. Scroll tension — physical resistance feel
-    ScrollTrigger.create({
-      trigger: '.landing',
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: true,
-      onUpdate: (self) => {
-        const v = self.getVelocity() * 0.008;
-        const clamped = Math.max(-12, Math.min(12, v));
-        gsap.to('.landing', {
-          y: clamped,
-          duration: 0.4,
-          ease: 'power2.out',
-          overwrite: true,
-        });
-      },
-    });
-
     return () => {
       heroTl.kill();
       loopTl.kill();
       ScrollTrigger.getAll().forEach((t) => t.kill());
-      gsap.killTweensOf('.landing');
     };
   }, []);
 

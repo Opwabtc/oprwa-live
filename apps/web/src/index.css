@@ -1229,6 +1229,7 @@ a {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin: 0 0 1.25rem;
+  text-align: center;
 }
 
 .section-body {
@@ -1236,7 +1237,8 @@ a {
   font-size: 1.05rem;
   max-width: 680px;
   line-height: 1.75;
-  margin: 0 0 3rem;
+  margin: 0 auto 3rem;
+  text-align: center;
 }
 
 .landing__pillars {
@@ -1247,6 +1249,7 @@ a {
 
 .landing__pillar {
   padding: 2rem;
+  text-align: center;
 }
 
 .landing__pillar-icon {
@@ -1290,6 +1293,7 @@ a {
 
 .how-step {
   padding: 2rem;
+  text-align: center;
   position: relative;
   overflow: hidden;
 }
@@ -1435,6 +1439,7 @@ a {
 
 .why-item {
   padding: 2rem;
+  text-align: center;
   position: relative;
   overflow: hidden;
 }
