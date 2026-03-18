@@ -1,0 +1,18 @@
+{
+  "name": "@oprwa/contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "echo 'no lint in contracts package'",
+    "typecheck": "tsc --noEmit",
+    "build": "echo 'contracts is source-only'"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

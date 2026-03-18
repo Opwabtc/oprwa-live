@@ -1,0 +1,21 @@
+{
+    "name": "@oprwa/contracts-as",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "build": "asc src/op1155/index.ts --target rwaVault --measure --uncheckedBehavior never",
+        "compile": "asc src/op1155/index.ts --target rwaVault --measure --uncheckedBehavior never",
+        "clean": "rm -rf build/*"
+    },
+    "dependencies": {
+        "@btc-vision/as-bignum": "0.1.2",
+        "@btc-vision/btc-runtime": "rc"
+    },
+    "devDependencies": {
+        "@btc-vision/assemblyscript": "^0.29.2",
+        "@btc-vision/opnet-transform": "^1.2.0"
+    },
+    "overrides": {
+        "@noble/hashes": "2.0.1"
+    }
+}

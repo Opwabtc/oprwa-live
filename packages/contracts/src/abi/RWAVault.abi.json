@@ -1,0 +1,122 @@
+{
+  "name": "RWAVault",
+  "version": "1.0.0",
+  "description": "OP_1155-style multi-token RWA distribution contract for OPRWA",
+  "methods": [
+    {
+      "name": "mint",
+      "selector": "mint",
+      "inputs": [
+        { "name": "to", "type": "address" },
+        { "name": "tokenId", "type": "uint256" },
+        { "name": "amount", "type": "uint256" }
+      ],
+      "outputs": [{ "name": "success", "type": "bool" }],
+      "access": "admin"
+    },
+    {
+      "name": "burn",
+      "selector": "burn",
+      "inputs": [
+        { "name": "from", "type": "address" },
+        { "name": "tokenId", "type": "uint256" },
+        { "name": "amount", "type": "uint256" }
+      ],
+      "outputs": [{ "name": "success", "type": "bool" }],
+      "access": "admin_or_holder"
+    },
+    {
+      "name": "transfer",
+      "selector": "transfer",
+      "inputs": [
+        { "name": "to", "type": "address" },
+        { "name": "tokenId", "type": "uint256" },
+        { "name": "amount", "type": "uint256" }
+      ],
+      "outputs": [{ "name": "success", "type": "bool" }],
+      "access": "holder"
+    },
+    {
+      "name": "balanceOf",
+      "selector": "balanceOf",
+      "inputs": [
+        { "name": "account", "type": "address" },
+        { "name": "tokenId", "type": "uint256" }
+      ],
+      "outputs": [{ "name": "balance", "type": "uint256" }],
+      "view": true
+    },
+    {
+      "name": "totalSupplyOf",
+      "selector": "totalSupplyOf",
+      "inputs": [{ "name": "tokenId", "type": "uint256" }],
+      "outputs": [{ "name": "supply", "type": "uint256" }],
+      "view": true
+    },
+    {
+      "name": "collectFee",
+      "selector": "collectFee",
+      "inputs": [{ "name": "txValue", "type": "uint256" }],
+      "outputs": [{ "name": "fee", "type": "uint256" }],
+      "view": true,
+      "description": "Deterministic on-chain fee: max(1000sats, (250 + demand_offset/2) * txValue / 100000)"
+    },
+    {
+      "name": "setDemandFactor",
+      "selector": "setDemandFactor",
+      "inputs": [{ "name": "scaledValue", "type": "uint256" }],
+      "outputs": [{ "name": "success", "type": "bool" }],
+      "access": "admin",
+      "description": "scaledValue in [0,1000]: 500=neutral, 0=min demand (-0.05), 1000=max demand (+0.05)"
+    },
+    {
+      "name": "setWhitelistEnabled",
+      "selector": "setWhitelistEnabled",
+      "inputs": [{ "name": "enabled", "type": "bool" }],
+      "outputs": [{ "name": "success", "type": "bool" }],
+      "access": "admin"
+    },
+    {
+      "name": "setWhitelist",
+      "selector": "setWhitelist",
+      "inputs": [
+        { "name": "account", "type": "address" },
+        { "name": "approved", "type": "bool" }
+      ],
+      "outputs": [{ "name": "success", "type": "bool" }],
+      "access": "admin"
+    },
+    {
+      "name": "isWhitelisted",
+      "selector": "isWhitelisted",
+      "inputs": [{ "name": "account", "type": "address" }],
+      "outputs": [{ "name": "whitelisted", "type": "bool" }],
+      "view": true,
+      "description": "Returns true always on testnet (whitelistEnabled=false)"
+    },
+    {
+      "name": "getAssetInfo",
+      "selector": "getAssetInfo",
+      "inputs": [{ "name": "tokenId", "type": "uint256" }],
+      "outputs": [
+        { "name": "totalSupply", "type": "uint256" },
+        { "name": "whitelistEnabled", "type": "uint256" },
+        { "name": "demandFactor_scaled", "type": "uint256" }
+      ],
+      "view": true
+    }
+  ],
+  "events": [
+    { "name": "Mint", "fields": [{"name":"tokenId","type":"uint256"},{"name":"to","type":"address"},{"name":"amount","type":"uint256"}] },
+    { "name": "Burn", "fields": [{"name":"tokenId","type":"uint256"},{"name":"from","type":"address"},{"name":"amount","type":"uint256"}] },
+    { "name": "Transfer", "fields": [{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"amount","type":"uint256"}] },
+    { "name": "DemandFactorSet", "fields": [{"name":"scaledValue","type":"uint256"}] },
+    { "name": "WhitelistSet", "fields": [{"name":"account","type":"address"},{"name":"approved","type":"bool"}] },
+    { "name": "WhitelistEnabled", "fields": [{"name":"enabled","type":"bool"}] }
+  ],
+  "tokenIds": {
+    "0": { "assetId": "sp-commercial-tower", "name": "São Paulo Commercial Tower" },
+    "1": { "assetId": "us-tbill-fund", "name": "US T-Bill Fund" },
+    "2": { "assetId": "gold-vault-reserve", "name": "Gold Vault Reserve" }
+  }
+}
