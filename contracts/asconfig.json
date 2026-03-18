@@ -2,7 +2,7 @@
     "targets": {
         "rwaVault": {
             "outFile": "build/RWAVault.wasm",
-            "use": ["abort=op1155/index/abort"]
+            "use": ["abort=src/op1155/index/abort"]
         }
     },
     "options": {

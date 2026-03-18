@@ -16,6 +16,6 @@
         "@btc-vision/opnet-transform": "^1.2.0"
     },
     "overrides": {
-        "@noble/hashes": "2.0.1"
+        "@noble/hashes": "1.6.1"
     }
 }

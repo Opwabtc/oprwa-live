@@ -273,6 +273,35 @@ export class RWAVault extends OP_NET {
         return result;
     }
 
+    // ── purchase(tokenId, amount) → bool ─────────────────────────────────────
+    // PUBLIC: any caller can mint to themselves (testnet, no payment required)
+
+    @method(
+        { name: 'tokenId', type: ABIDataTypes.UINT256 },
+        { name: 'amount',  type: ABIDataTypes.UINT256 },
+    )
+    @returns({ name: 'success', type: ABIDataTypes.BOOL })
+    public purchase(calldata: Calldata): BytesWriter {
+        const tokenId = calldata.readU256();
+        const amount  = calldata.readU256();
+
+        if (amount.isZero()) throw new Revert('RWAVault: amount must be > 0');
+
+        const id      = this._validateTokenId(tokenId);
+        const to      = Blockchain.tx.sender;
+        const balMap  = this._getBalanceMap(id);
+        const addrKey = u256.fromUint8ArrayBE(to);
+
+        balMap.set(addrKey, SafeMath.add(balMap.get(addrKey), amount));
+        this._getSupplyStore(id).value = SafeMath.add(this._getSupplyStore(id).value, amount);
+
+        Blockchain.emit(new MintEvent(tokenId, to, amount));
+
+        const result = new BytesWriter(1);
+        result.writeBoolean(true);
+        return result;
+    }
+
     // ── burn(from, tokenId, amount) → bool ───────────────────────────────────
 
     @method(
