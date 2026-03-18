@@ -468,17 +468,26 @@ a {
   inset: 0;
   z-index: 200;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  padding: 1.5rem;
+  padding: 5rem 1.5rem 1.5rem; /* top padding clears the nav */
+  overflow-y: auto;
+}
+
+@media (min-height: 640px) {
+  .modal-overlay {
+    align-items: center;
+    padding: 1.5rem;
+  }
 }
 
 .modal {
   width: 100%;
   max-width: 480px;
+  max-height: calc(100dvh - 7rem);
   background: rgba(17, 17, 17, 0.96);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -487,7 +496,8 @@ a {
   box-shadow:
     0 32px 80px rgba(0, 0, 0, 0.7),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  overflow: hidden;
+  overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .modal__header {
