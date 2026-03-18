@@ -194,10 +194,10 @@ OPNET_MNEMONIC="your mnemonic" npx tsx scripts/deploy-rwaVault.ts
 
 ## Whitepaper
 
-See [`docs/WHITEPAPER.md`](WHITEPAPER.md) for full technical and economic design.
+See [`docs/WHITEPAPER.md`](docs/WHITEPAPER.md) for full technical and economic design.
 
 ---
 
 ## License
 
-MIT — see [LICENSE](../LICENSE)
+MIT — see [LICENSE](LICENSE)
