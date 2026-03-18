@@ -145,7 +145,7 @@ export function Landing(): React.JSX.Element {
       },
     });
     loopTl
-      .to('.hero--clone', { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }, 0)
+      .to('.hero--clone', { autoAlpha: 1, y: 0, scale: 1, filter: 'blur(0px)' }, 0)
       .to('.site-footer', { opacity: 0.4, y: -40 }, 0);
 
     return () => {
@@ -371,11 +371,52 @@ export function Landing(): React.JSX.Element {
       </section>
 
       <footer className="site-footer" role="contentinfo">
-        <div className="container site-footer__inner">
-          <span className="site-footer__brand">OPRWA</span>
-          <span className="site-footer__note">
-            Testnet Only · Built on Bitcoin
-          </span>
+        <div className="container">
+          <div className="site-footer__grid">
+            <div className="site-footer__brand-col">
+              <span className="site-footer__brand">OPRWA</span>
+              <p className="site-footer__tagline">
+                Real World Assets on Bitcoin. Own fractions of global properties
+                directly from your wallet. No bank. No broker.
+              </p>
+              <span className="site-footer__badge">Testnet Live</span>
+            </div>
+
+            <div>
+              <p className="site-footer__col-title">Platform</p>
+              <ul className="site-footer__links">
+                <li><Link to="/marketplace" className="site-footer__link">Markets</Link></li>
+                <li><Link to="/portfolio" className="site-footer__link">Portfolio</Link></li>
+                <li><Link to="/app" className="site-footer__link">Dashboard</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <p className="site-footer__col-title">Resources</p>
+              <ul className="site-footer__links">
+                <li><Link to="/docs" className="site-footer__link">How It Works</Link></li>
+                <li><Link to="/docs" className="site-footer__link">Documentation</Link></li>
+                <li><a href="https://opnet.org" target="_blank" rel="noopener noreferrer" className="site-footer__link">OPNet</a></li>
+                <li><a href="https://opscan.org?network=testnet" target="_blank" rel="noopener noreferrer" className="site-footer__link">Explorer</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <p className="site-footer__col-title">Legal</p>
+              <ul className="site-footer__links">
+                <li><a href="#" className="site-footer__link">Terms of Use</a></li>
+                <li><a href="#" className="site-footer__link">Privacy Policy</a></li>
+                <li><a href="#" className="site-footer__link">Risk Disclosure</a></li>
+              </ul>
+              <p className="site-footer__col-title" style={{ marginTop: '1.5rem' }}>Contract</p>
+              <p className="site-footer__contract">opt1sqrectyl6jplc9jesnuupzluxpak6d42qwu6dxec0</p>
+            </div>
+          </div>
+
+          <div className="site-footer__bottom">
+            <span className="site-footer__copy">© 2026 OPRWA. All rights reserved.</span>
+            <span className="site-footer__note">Built on Bitcoin · OPNet Testnet</span>
+          </div>
         </div>
       </footer>
 
