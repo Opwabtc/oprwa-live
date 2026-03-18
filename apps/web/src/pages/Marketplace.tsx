@@ -45,7 +45,7 @@ export function Marketplace(): React.JSX.Element {
         {error ? (
           <div className="error-state" role="alert">
             <p>Failed to load assets: {error}</p>
-            <p>Make sure the API is running on port 3001.</p>
+            <p>Check your network connection and try refreshing the page.</p>
           </div>
         ) : loading ? (
           <div className="asset-grid" aria-label="Loading assets" aria-busy="true">

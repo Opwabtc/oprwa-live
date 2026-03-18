@@ -21,6 +21,13 @@ const RPC_URL = 'https://testnet.opnet.org';
 // Simulated balances for mock mode: address → assetId → amount
 const balances = new Map<string, Map<string, bigint>>();
 
+// Simulated total supplies for mock mode
+const MOCK_TOTAL_SUPPLIES: Record<number, bigint> = {
+  0: 1_000_000n,
+  1: 1_000_000n,
+  2: 1_000_000n,
+};
+
 // Simulated demand factor (scaled 0–1000, 500 = neutral)
 let demandFactorScaled = 500;
 
@@ -74,7 +81,30 @@ interface OPNetSimResult {
 interface RWAVaultContract {
   purchase(tokenId: bigint, amount: bigint): Promise<OPNetSimResult>;
   balanceOf(account: string, tokenId: bigint): Promise<{ properties: { balance: bigint } }>;
+  totalSupplyOf(tokenId: bigint): Promise<{ properties: { supply: bigint }; revert?: string }>;
   collectFee(txValue: bigint): Promise<{ properties: { fee: bigint } }>;
+}
+
+async function buildOPNetContract(
+  contractAddress: string,
+  network: 'testnet' | 'mainnet',
+): Promise<RWAVaultContract> {
+  const opnet = await import('opnet');
+  const btcBitcoin = await import('@btc-vision/bitcoin');
+
+  const NETWORK =
+    network === 'testnet'
+      ? btcBitcoin.networks.opnetTestnet
+      : btcBitcoin.networks.bitcoin;
+
+  const provider = new opnet.JSONRpcProvider({ url: RPC_URL, network: NETWORK });
+
+  return opnet.getContract(
+    contractAddress,
+    RWA_VAULT_ABI,
+    provider,
+    NETWORK,
+  ) as unknown as RWAVaultContract;
 }
 
 /**
@@ -114,23 +144,7 @@ export class OPNetRWAVaultAdapter implements IContractAdapter {
     }
 
     try {
-      const opnet = await import('opnet');
-      const btcBitcoin = await import('@btc-vision/bitcoin');
-
-      const NETWORK =
-        this.network === 'testnet'
-          ? btcBitcoin.networks.opnetTestnet
-          : btcBitcoin.networks.bitcoin;
-
-      const provider = new opnet.JSONRpcProvider({ url: RPC_URL, network: NETWORK });
-
-      // getContract: 4 params (no senderAddress) — wallet injects sender at sign time
-      const contract = opnet.getContract(
-        this.contractAddress,
-        RWA_VAULT_ABI,
-        provider,
-        NETWORK,
-      ) as unknown as RWAVaultContract;
+      const contract = await buildOPNetContract(this.contractAddress, this.network);
 
       // 1. Simulate FIRST — BTC transfers are irreversible
       const sim = await contract.purchase(BigInt(tokenId), amount);
@@ -138,6 +152,12 @@ export class OPNetRWAVaultAdapter implements IContractAdapter {
       if (typeof sim.revert === 'string' && sim.revert !== '') {
         return { txId: '', status: 'FAILED', error: sim.revert };
       }
+
+      const btcBitcoin = await import('@btc-vision/bitcoin');
+      const NETWORK =
+        this.network === 'testnet'
+          ? btcBitcoin.networks.opnetTestnet
+          : btcBitcoin.networks.bitcoin;
 
       // 2. Send — wallet signs (signer: null = NEVER pass keypair from frontend)
       const receipt = await sim.sendTransaction({
@@ -180,24 +200,24 @@ export class OPNetRWAVaultAdapter implements IContractAdapter {
     if (tokenId === undefined) return 0n;
 
     try {
-      const opnet = await import('opnet');
-      const btcBitcoin = await import('@btc-vision/bitcoin');
-
-      const NETWORK =
-        this.network === 'testnet'
-          ? btcBitcoin.networks.opnetTestnet
-          : btcBitcoin.networks.bitcoin;
-
-      const provider = new opnet.JSONRpcProvider({ url: RPC_URL, network: NETWORK });
-      const contract = opnet.getContract(
-        this.contractAddress,
-        RWA_VAULT_ABI,
-        provider,
-        NETWORK,
-      ) as unknown as RWAVaultContract;
-
+      const contract = await buildOPNetContract(this.contractAddress, this.network);
       const result = await contract.balanceOf(address, BigInt(tokenId));
       return result.properties.balance ?? 0n;
+    } catch {
+      return 0n;
+    }
+  }
+
+  async totalSupplyOf(tokenId: number): Promise<bigint> {
+    if (isPendingAddress(this.contractAddress)) {
+      return MOCK_TOTAL_SUPPLIES[tokenId] ?? 0n;
+    }
+
+    try {
+      const contract = await buildOPNetContract(this.contractAddress, this.network);
+      const result = await contract.totalSupplyOf(BigInt(tokenId));
+      if (result.revert) return 0n;
+      return result.properties.supply ?? 0n;
     } catch {
       return 0n;
     }
@@ -209,22 +229,7 @@ export class OPNetRWAVaultAdapter implements IContractAdapter {
     }
 
     try {
-      const opnet = await import('opnet');
-      const btcBitcoin = await import('@btc-vision/bitcoin');
-
-      const NETWORK =
-        this.network === 'testnet'
-          ? btcBitcoin.networks.opnetTestnet
-          : btcBitcoin.networks.bitcoin;
-
-      const provider = new opnet.JSONRpcProvider({ url: RPC_URL, network: NETWORK });
-      const contract = opnet.getContract(
-        this.contractAddress,
-        RWA_VAULT_ABI,
-        provider,
-        NETWORK,
-      ) as unknown as RWAVaultContract;
-
+      const contract = await buildOPNetContract(this.contractAddress, this.network);
       const result = await contract.collectFee(txValue);
       return result.properties.fee ?? computeMockFee(txValue);
     } catch {
@@ -298,6 +303,10 @@ export class RWAVaultAdapter implements IContractAdapter {
     return addrMap.get(assetId) ?? 0n;
   }
 
+  async totalSupplyOf(tokenId: number): Promise<bigint> {
+    return MOCK_TOTAL_SUPPLIES[tokenId] ?? 0n;
+  }
+
   async collectFee(txValue: bigint): Promise<bigint> {
     return computeMockFee(txValue);
   }
@@ -327,6 +336,10 @@ export class TestAdapter implements IContractAdapter {
 
   async balanceOf(_address: string, _assetId: string): Promise<bigint> {
     return 100n;
+  }
+
+  async totalSupplyOf(_tokenId: number): Promise<bigint> {
+    return 1_000_000n;
   }
 
   async collectFee(txValue: bigint): Promise<bigint> {

@@ -44,4 +44,10 @@ export interface IContractAdapter {
    * Always returns true on testnet.
    */
   isWhitelisted(address: string): Promise<boolean>;
+
+  /**
+   * Get total circulating supply of a token (by numeric tokenId).
+   * Returns 0n if the contract call fails.
+   */
+  totalSupplyOf(tokenId: number): Promise<bigint>;
 }

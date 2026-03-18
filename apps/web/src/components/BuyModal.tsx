@@ -20,7 +20,8 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
   const [amount, setAmount] = useState(1);
   const [state, setState] = useState<ModalState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
-  const { address } = useWalletStore();
+  const [lastTxId, setLastTxId] = useState<string | null>(null);
+  const { address, refreshPortfolio } = useWalletStore();
   const { addPendingTx, settleTx } = usePortfolioStore();
   const { quote, loading: quoteLoading } = usePricing(asset.id, amount);
 
@@ -30,6 +31,7 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
       setState('idle');
       setAmount(1);
       setErrorMsg('');
+      setLastTxId(null);
     } else {
       onModalClose();
     }
@@ -55,6 +57,7 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
 
     try {
       const res = await postBuy({ assetId: asset.id, amount, wallet: address });
+      setLastTxId(res.tx_id);
       setState('pending');
 
       const tx: Transaction = {
@@ -72,19 +75,22 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
       };
       addPendingTx(tx);
 
-      // Simulate settlement after 3s
+      // Settle after 3s and refresh on-chain portfolio
       setTimeout(() => {
         settleTx(res.tx_id);
         setState('settled');
+        void refreshPortfolio();
       }, 3000);
     } catch (err) {
       setState('error');
-      setErrorMsg(err instanceof Error ? err.message : 'Transaction failed');
+      setErrorMsg(err instanceof Error ? err.message : 'Transaction failed. Please check your wallet.');
     }
   };
 
   const formatSats = (sats: number): string =>
     `${sats.toLocaleString('en-US', { useGrouping: true })} sats`;
+
+  const isRealTx = lastTxId !== null && lastTxId !== '' && !lastTxId.startsWith('mock_');
 
   return (
     <div
@@ -117,6 +123,26 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
               <p>
                 {amount} fraction{amount !== 1 ? 's' : ''} of {asset.name} added to your portfolio.
               </p>
+              {isRealTx && lastTxId !== null && (
+                <div className="buy-modal__explorer-links">
+                  <a
+                    href={`https://mempool.opnet.org/testnet4/tx/${lastTxId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="buy-modal__explorer-link"
+                  >
+                    View on Mempool
+                  </a>
+                  <a
+                    href={`https://opscan.org/transactions/${lastTxId}?network=testnet`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="buy-modal__explorer-link buy-modal__explorer-link--primary"
+                  >
+                    View on OPScan
+                  </a>
+                </div>
+              )}
               <button className="btn btn--primary btn--md" onClick={onClose}>
                 View Portfolio
               </button>

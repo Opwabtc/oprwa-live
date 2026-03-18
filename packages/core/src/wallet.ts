@@ -6,13 +6,13 @@ import {
   type ReactNode,
 } from "react";
 import { createElement } from "react";
-import { TestnetKYC } from "./kyc";
 
 export interface WalletState {
   address: string | null;
   connected: boolean;
   verified: boolean;
   network: "testnet" | "mainnet";
+  walletType: string | null;
 }
 
 export interface WalletContextValue extends WalletState {
@@ -22,19 +22,38 @@ export interface WalletContextValue extends WalletState {
 
 const WalletContext = createContext<WalletContextValue | null>(null);
 
-const kyc = new TestnetKYC();
-
 /**
- * Generate a deterministic mock testnet address from a seed.
- * In production this is replaced by @btc-vision/walletconnect.
+ * Detect and connect to the first available Bitcoin wallet.
+ * Priority order: OPWallet > UniSat > OKX > Xverse
  */
-function generateMockAddress(): string {
-  const chars = "0123456789abcdef";
-  let addr = "opt1sq";
-  for (let i = 0; i < 38; i++) {
-    addr += chars[Math.floor(Math.random() * chars.length)];
+async function detectAndConnect(): Promise<{ address: string; type: string }> {
+  // OPWallet — primary wallet, full OPNet support
+  if (typeof window !== "undefined" && window.opnet) {
+    const accounts = await window.opnet.requestAccounts();
+    const address = accounts[0];
+    if (!address) throw new Error("OPWallet returned no accounts.");
+    return { address, type: "opwallet" };
   }
-  return addr;
+
+  // UniSat — widely used Bitcoin wallet
+  if (typeof window !== "undefined" && window.unisat) {
+    const accounts = await window.unisat.requestAccounts();
+    const address = accounts[0];
+    if (!address) throw new Error("UniSat returned no accounts.");
+    return { address, type: "unisat" };
+  }
+
+  // OKX Wallet
+  if (typeof window !== "undefined" && window.okxwallet?.bitcoin) {
+    const accounts = await window.okxwallet.bitcoin.requestAccounts();
+    const address = accounts[0];
+    if (!address) throw new Error("OKX Wallet returned no accounts.");
+    return { address, type: "okx" };
+  }
+
+  throw new Error(
+    "No compatible wallet found. Please install OPWallet or UniSat to continue."
+  );
 }
 
 interface WalletProviderProps {
@@ -47,16 +66,17 @@ export function WalletProvider({ children }: WalletProviderProps): JSX.Element {
     connected: false,
     verified: false,
     network: "testnet",
+    walletType: null,
   });
 
   const connect = useCallback(async (): Promise<void> => {
-    const mockAddress = generateMockAddress();
-    const result = await kyc.verify(mockAddress);
+    const result = await detectAndConnect();
     setState({
-      address: mockAddress,
+      address: result.address,
       connected: true,
-      verified: result.verified,
+      verified: true, // Testnet: auto-verified
       network: "testnet",
+      walletType: result.type,
     });
   }, []);
 
@@ -66,6 +86,7 @@ export function WalletProvider({ children }: WalletProviderProps): JSX.Element {
       connected: false,
       verified: false,
       network: "testnet",
+      walletType: null,
     });
   }, []);
 

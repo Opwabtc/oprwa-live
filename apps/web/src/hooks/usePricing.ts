@@ -8,6 +8,10 @@ interface UsePricingResult {
   error: string | null;
 }
 
+/**
+ * usePricing — computes price quote using on-chain collectFee().
+ * Falls back to local deterministic formula if network is unavailable.
+ */
 export function usePricing(assetId: string, amount: number): UsePricingResult {
   const [quote, setQuote] = useState<PriceQuote | null>(null);
   const [loading, setLoading] = useState(false);
