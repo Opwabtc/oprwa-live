@@ -36,7 +36,7 @@
   --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(247, 147, 26, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Cabinet Grotesk', 'DM Sans', -apple-system, sans-serif;
+  --font-heading: 'Bricolage Grotesque', 'DM Sans', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
   --transition-fast: 120ms ease;
   --transition-base: 220ms ease;
@@ -2057,6 +2057,54 @@ a {
   background: var(--danger-dim);
   border: 1px solid rgba(239, 68, 68, 0.2);
   border-radius: var(--radius-card);
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+.cursor__dot {
+  position: fixed;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+  mix-blend-mode: difference;
+}
+
+.cursor__ring {
+  position: fixed;
+  top: -18px;
+  left: -18px;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(247, 147, 26, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  will-change: transform;
+}
+
+@media (pointer: coarse) {
+  .cursor__dot,
+  .cursor__ring {
+    display: none;
+  }
+}
+
+/* ============================================================
+   HERO CLONE (footer -> hero loop)
+   ============================================================ */
+.hero--clone {
+  opacity: 0;
+  transform: translateY(120px) scale(0.98);
+  filter: blur(20px);
+  pointer-events: none;
+  will-change: transform, opacity, filter;
 }
 
 /* ============================================================

@@ -123,9 +123,54 @@ export function Landing(): React.JSX.Element {
       },
     );
 
+    // 7. Parallax hero layers
+    gsap.to('.layer-back', {
+      yPercent: -15,
+      ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+    });
+    gsap.to('.layer-front', {
+      yPercent: -8,
+      ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+    });
+
+    // 8. Footer -> Hero clone loop
+    const loopTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.site-footer',
+        start: 'top 75%',
+        end: 'bottom 110%',
+        scrub: true,
+      },
+    });
+    loopTl
+      .to('.hero--clone', { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }, 0)
+      .to('.site-footer', { opacity: 0.4, y: -40 }, 0);
+
+    // 9. Scroll tension — physical resistance feel
+    ScrollTrigger.create({
+      trigger: '.landing',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: true,
+      onUpdate: (self) => {
+        const v = self.getVelocity() * 0.008;
+        const clamped = Math.max(-12, Math.min(12, v));
+        gsap.to('.landing', {
+          y: clamped,
+          duration: 0.4,
+          ease: 'power2.out',
+          overwrite: true,
+        });
+      },
+    });
+
     return () => {
       heroTl.kill();
+      loopTl.kill();
       ScrollTrigger.getAll().forEach((t) => t.kill());
+      gsap.killTweensOf('.landing');
     };
   }, []);
 
@@ -133,8 +178,10 @@ export function Landing(): React.JSX.Element {
     <div className="landing">
       {/* ── Hero ─────────────────────────────────────── */}
       <section className="hero" aria-label="Hero section">
-        <ParticleCanvas />
-        <div className="hero__content" style={{ position: 'relative', zIndex: 1 }}>
+        <div className="layer-back" style={{ position: 'absolute', inset: 0 }}>
+          <ParticleCanvas />
+        </div>
+        <div className="hero__content layer-front" style={{ position: 'relative', zIndex: 1 }}>
           <div className="hero__eyebrow">Bitcoin-Native · Testnet Live</div>
           <h1 className="hero__headline">
             <span style={{ display: 'block' }}>Own a piece</span>
@@ -350,6 +397,25 @@ export function Landing(): React.JSX.Element {
           </span>
         </div>
       </footer>
+
+      {/* Hero clone — GSAP scrub faz aparecer quando footer entra em vista */}
+      <section className="hero hero--clone" aria-hidden="true">
+        <ParticleCanvas />
+        <div className="hero__content" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="hero__eyebrow">Bitcoin-Native · Testnet Live</div>
+          <h1 className="hero__headline">
+            <span style={{ display: 'block' }}>Own a piece</span>
+            <span className="hero__headline--accent" style={{ display: 'block' }}>of the world.</span>
+          </h1>
+          <p className="hero__sub">
+            Real estate, T-bills and gold — straight from your Bitcoin wallet. No bank. No broker. Just you.
+          </p>
+          <div className="hero__cta">
+            <Link to="/marketplace" className="btn btn--primary btn--lg">Start Investing →</Link>
+            <Link to="/docs" className="btn btn--secondary btn--lg">How it works</Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
