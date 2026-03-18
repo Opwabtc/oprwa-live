@@ -171,8 +171,12 @@ export class RWAVault extends OP_NET {
     // ── Internal helpers ──────────────────────────────────────────────────────
 
     private _onlyAdmin(): void {
+        // Check tx.origin (the externally-owned account that initiated the tx chain).
+        // Admin is stored as tx.origin at deployment (see onDeployment).
+        // Using tx.origin consistently ensures multisig/timelock intermediaries
+        // do not break admin access — the originating EOA is always checked.
         const admin = this._admin.value;
-        if (!Blockchain.tx.sender.equals(admin)) {
+        if (!Blockchain.tx.origin.equals(admin)) {
             throw new Revert('RWAVault: not admin');
         }
     }
@@ -295,6 +299,13 @@ export class RWAVault extends OP_NET {
         const amount  = calldata.readU256();
 
         if (amount.isZero()) throw new Revert('RWAVault: amount must be > 0');
+
+        // EOA-only gate: prevent contract accounts from minting fractions.
+        // tx.sender == the immediate caller; tx.origin == the EOA.
+        // If they differ, a contract intermediary is calling — reject.
+        if (!Blockchain.tx.sender.equals(Blockchain.tx.origin)) {
+            throw new Revert('RWAVault: contract callers not allowed');
+        }
 
         const id      = this._validateTokenId(tokenId);
         const to      = Blockchain.tx.sender;

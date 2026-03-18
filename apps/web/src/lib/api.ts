@@ -158,7 +158,11 @@ export async function fetchPrice(assetId: string, amount: number): Promise<Price
  * Fetch portfolio positions for a wallet from on-chain balances.
  */
 export async function fetchPortfolio(wallet: string): Promise<Position[]> {
+  // M-02 fix: validate wallet address format before passing to contract calls.
+  // OPNet testnet addresses are bech32 starting with "opt1" or "tb1". Bitcoin mainnet: "bc1".
   if (!wallet) return [];
+  const isValidAddress = /^(opt1|tb1|bc1)[a-z0-9]{25,87}$/.test(wallet);
+  if (!isValidAddress) return [];
 
   const adapter = getAdapter();
   const now = Date.now();
@@ -274,5 +278,8 @@ function friendlyError(raw?: string): string {
     return 'This asset is sold out. No fractions available.';
   if (raw.includes('rejected') || raw.includes('denied'))
     return 'Transaction rejected in wallet. Please approve the transaction.';
-  return raw;
+  // M-03 fix: do not leak raw contract error strings to UI — they may contain
+  // internal state, storage pointers, or SDK internals useful to an attacker.
+  console.error('[oprwa] contract error (hidden from UI):', raw);
+  return 'Transaction failed. Please try again or contact support.';
 }

@@ -88,9 +88,11 @@ interface RWAVaultContract {
 async function buildOPNetContract(
   contractAddress: string,
   network: 'testnet' | 'mainnet',
+  senderAddress: string,
 ): Promise<RWAVaultContract> {
   const opnet = await import('opnet');
   const btcBitcoin = await import('@btc-vision/bitcoin');
+  const { Address } = await import('@btc-vision/transaction');
 
   const NETWORK =
     network === 'testnet'
@@ -99,11 +101,16 @@ async function buildOPNetContract(
 
   const provider = new opnet.JSONRpcProvider({ url: RPC_URL, network: NETWORK });
 
+  // H-01 fix: pass sender as Address object — required for ML-DSA address validation.
+  // Without it the SDK defaults to undefined, causing simulation/on-chain divergence.
+  const sender = senderAddress ? Address.fromString(senderAddress) : undefined;
+
   return opnet.getContract(
     contractAddress,
     RWA_VAULT_ABI,
     provider,
     NETWORK,
+    sender,
   ) as unknown as RWAVaultContract;
 }
 
@@ -144,7 +151,7 @@ export class OPNetRWAVaultAdapter implements IContractAdapter {
     }
 
     try {
-      const contract = await buildOPNetContract(this.contractAddress, this.network);
+      const contract = await buildOPNetContract(this.contractAddress, this.network, callerAddress ?? '');
 
       // 1. Simulate FIRST — BTC transfers are irreversible
       const sim = await contract.purchase(BigInt(tokenId), amount);
@@ -200,7 +207,7 @@ export class OPNetRWAVaultAdapter implements IContractAdapter {
     if (tokenId === undefined) return 0n;
 
     try {
-      const contract = await buildOPNetContract(this.contractAddress, this.network);
+      const contract = await buildOPNetContract(this.contractAddress, this.network, address);
       const result = await contract.balanceOf(address, BigInt(tokenId));
       return result.properties.balance ?? 0n;
     } catch {
@@ -214,7 +221,7 @@ export class OPNetRWAVaultAdapter implements IContractAdapter {
     }
 
     try {
-      const contract = await buildOPNetContract(this.contractAddress, this.network);
+      const contract = await buildOPNetContract(this.contractAddress, this.network, '');
       const result = await contract.totalSupplyOf(BigInt(tokenId));
       if (result.revert) return 0n;
       return result.properties.supply ?? 0n;
@@ -229,7 +236,7 @@ export class OPNetRWAVaultAdapter implements IContractAdapter {
     }
 
     try {
-      const contract = await buildOPNetContract(this.contractAddress, this.network);
+      const contract = await buildOPNetContract(this.contractAddress, this.network, '');
       const result = await contract.collectFee(txValue);
       return result.properties.fee ?? computeMockFee(txValue);
     } catch {
