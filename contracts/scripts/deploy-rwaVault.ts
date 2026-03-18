@@ -32,24 +32,33 @@ if (!mnemonic) {
 
 const mnemonicObj = new Mnemonic(mnemonic, '', NETWORK, MLDSASecurityLevel.LEVEL1);
 const wallet      = mnemonicObj.deriveOPWallet(AddressTypes.P2WPKH, 0);
-console.log('Deployer:', wallet.p2tr);
+// Use P2WPKH address (opt1q...) — that's where the funds are
+const deployerAddress = wallet.p2wpkh ?? wallet.p2tr;
+console.log('Deployer P2WPKH:', deployerAddress);
+console.log('Deployer P2TR:  ', wallet.p2tr);
 
 const provider = new JSONRpcProvider({ url: TESTNET_RPC, network: NETWORK });
 const factory  = new TransactionFactory();
 
 async function deploy(): Promise<void> {
     const bytecode = readFileSync(WASM_PATH);
-    const utxos    = await provider.utxoManager.getUTXOs({ address: wallet.p2tr });
+    // Try P2WPKH first, fallback to P2TR
+    let utxos = await provider.utxoManager.getUTXOs({ address: deployerAddress });
+    if (!utxos.length && deployerAddress !== wallet.p2tr) {
+        utxos = await provider.utxoManager.getUTXOs({ address: wallet.p2tr });
+    }
 
     if (!utxos.length) {
         console.error('No UTXOs found — fund the deployer wallet first.');
-        console.error('Deployer address:', wallet.p2tr);
+        console.error('P2WPKH:', deployerAddress);
+        console.error('P2TR:  ', wallet.p2tr);
         process.exit(1);
     }
+    console.log(`Found ${utxos.length} UTXO(s)`);
 
     const challenge = await provider.getChallenge();
     const params: IDeploymentParameters = {
-        from: wallet.p2tr,
+        from: deployerAddress,
         utxos,
         signer: wallet.keypair,
         mldsaSigner: wallet.mldsaKeypair,
