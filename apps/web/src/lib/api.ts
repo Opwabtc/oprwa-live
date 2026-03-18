@@ -50,6 +50,25 @@ const ASSET_META: AssetMeta[] = [
 const MAX_SUPPLY = 1_000_000n; // matches contract deployment
 const PRICE_PER_FRACTION = 1000; // sats per fraction — fixed in contract
 
+/**
+ * Static asset data — always available, no network required.
+ * Used as immediate initial state so the page never shows an empty skeleton.
+ * Real on-chain supply data overlays this once the RPC responds.
+ */
+export const STATIC_ASSETS: Asset[] = ASSET_META.map((meta) => ({
+  id: meta.id,
+  name: meta.name,
+  category: meta.category,
+  nav: meta.nav,
+  yield_pct: meta.yield_pct,
+  total_fractions: Number(MAX_SUPPLY),
+  available_fractions: Number(MAX_SUPPLY),
+  spread: meta.spread,
+  demand_factor: 0,
+  price_per_fraction: PRICE_PER_FRACTION,
+  token_id: meta.tokenId,
+}));
+
 function getAdapter(): OPNetRWAVaultAdapter {
   const envAddress: string | undefined =
     typeof import.meta.env !== 'undefined'

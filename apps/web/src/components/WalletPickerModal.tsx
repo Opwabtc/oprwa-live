@@ -10,6 +10,7 @@ interface WalletOption {
   name: string;
   description: string;
   initial: string;
+  installUrl: string;
   check: () => boolean;
 }
 
@@ -19,6 +20,7 @@ const WALLETS: WalletOption[] = [
     name: 'OPWallet',
     description: 'Native OPNet Bitcoin wallet',
     initial: 'O',
+    installUrl: 'https://opwallet.io',
     check: () => typeof window !== 'undefined' && Boolean(window.opnet),
   },
   {
@@ -26,6 +28,7 @@ const WALLETS: WalletOption[] = [
     name: 'UniSat',
     description: 'Bitcoin and BRC-20 wallet',
     initial: 'U',
+    installUrl: 'https://unisat.io',
     check: () => typeof window !== 'undefined' && Boolean(window.unisat),
   },
   {
@@ -33,6 +36,7 @@ const WALLETS: WalletOption[] = [
     name: 'OKX Wallet',
     description: 'Multi-chain crypto wallet',
     initial: 'K',
+    installUrl: 'https://www.okx.com/web3',
     check: () =>
       typeof window !== 'undefined' && Boolean(window.okxwallet?.bitcoin),
   },
@@ -247,7 +251,20 @@ export function WalletPickerModal({
                             ? `Connecting to ${wallet.name}...`
                             : detected
                               ? wallet.description
-                              : 'Not installed'}
+                              : (
+                                <>
+                                  Not installed —{' '}
+                                  <a
+                                    href={wallet.installUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="wallet-picker-modal__install-link"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    Install
+                                  </a>
+                                </>
+                              )}
                         </span>
                       </div>
                       <span

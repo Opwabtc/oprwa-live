@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchAssets } from '@/lib/api';
+import { fetchAssets, STATIC_ASSETS } from '@/lib/api';
 import type { Asset } from '@/types';
 
 interface UseAssetsResult {
@@ -10,17 +10,20 @@ interface UseAssetsResult {
 }
 
 export function useAssets(): UseAssetsResult {
-  const [assets, setAssets] = useState<Asset[]>([]);
+  // Initialize with static data immediately — page never shows empty skeleton
+  const [assets, setAssets] = useState<Asset[]>(STATIC_ASSETS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
       const data = await fetchAssets();
-      setAssets(data);
+      // Only update if we got real data back
+      if (data.length > 0) setAssets(data);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load assets');
+      // Keep existing assets (static fallback) on error — never blank the page
     } finally {
       setLoading(false);
     }
@@ -30,7 +33,7 @@ export function useAssets(): UseAssetsResult {
     void load();
     const interval = setInterval(() => {
       void load();
-    }, 10_000);
+    }, 15_000);
     return () => clearInterval(interval);
   }, [load]);
 
