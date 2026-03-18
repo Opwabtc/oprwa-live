@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useWalletStore } from '@/store/walletStore';
 import { onModalOpen, onModalClose } from '@/lib/lenis';
 
@@ -8,6 +9,7 @@ interface WalletOption {
   id: string;
   name: string;
   description: string;
+  initial: string;
   check: () => boolean;
 }
 
@@ -16,18 +18,21 @@ const WALLETS: WalletOption[] = [
     id: 'opwallet',
     name: 'OPWallet',
     description: 'Native OPNet Bitcoin wallet',
+    initial: 'O',
     check: () => typeof window !== 'undefined' && Boolean(window.opnet),
   },
   {
     id: 'unisat',
     name: 'UniSat',
     description: 'Bitcoin and BRC-20 wallet',
+    initial: 'U',
     check: () => typeof window !== 'undefined' && Boolean(window.unisat),
   },
   {
     id: 'okx',
     name: 'OKX Wallet',
     description: 'Multi-chain crypto wallet',
+    initial: 'K',
     check: () =>
       typeof window !== 'undefined' && Boolean(window.okxwallet?.bitcoin),
   },
@@ -40,10 +45,6 @@ interface WalletPickerModalProps {
   onClose: () => void;
 }
 
-/**
- * Attempt to connect to a specific wallet type.
- * Returns { address, type } on success, throws on failure.
- */
 async function connectWallet(
   walletId: string
 ): Promise<{ address: string; type: string }> {
@@ -85,6 +86,19 @@ function friendlyError(err: unknown): string {
   }
   return 'Failed to connect wallet. Please try again.';
 }
+
+const OVERLAY_VARIANTS = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
+
+const MODAL_VARIANTS = {
+  hidden: { opacity: 0, scale: 0.96, y: 16 },
+  visible: { opacity: 1, scale: 1, y: 0 },
+  exit: { opacity: 0, scale: 0.96, y: 16 },
+};
+
+const MODAL_TRANSITION = { duration: 0.25, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] };
 
 export function WalletPickerModal({
   open,
@@ -140,97 +154,125 @@ export function WalletPickerModal({
   };
 
   return (
-    <div
-      className="modal-overlay"
-      onClick={(e) => {
-        if (e.target === e.currentTarget && connectState === 'idle') onClose();
-      }}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Choose wallet"
-    >
-      <div className="modal wallet-picker-modal">
-        <div className="modal__header">
-          <h2 className="modal__title">Connect Wallet</h2>
-          <button
-            className="modal__close"
-            onClick={onClose}
-            disabled={connectState === 'connecting'}
-            aria-label="Close"
-          >
-            <X size={18} />
-          </button>
-        </div>
-        <div className="modal__body">
-          <p className="wallet-picker-modal__subtitle">
-            Choose your Bitcoin wallet to access OPRWA
-          </p>
-
-          {connectState === 'error' && (
-            <div
-              className="wallet-picker-modal__error"
-              role="alert"
-              aria-live="polite"
+    <AnimatePresence>
+      <motion.div
+        className="modal-overlay"
+        variants={OVERLAY_VARIANTS}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        transition={{ duration: 0.2 }}
+        onClick={(e) => {
+          if (e.target === e.currentTarget && connectState === 'idle') onClose();
+        }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Choose wallet"
+      >
+        <motion.div
+          className="modal wallet-picker-modal"
+          variants={MODAL_VARIANTS}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          transition={MODAL_TRANSITION}
+        >
+          <div className="modal__header">
+            <h2 className="modal__title">Connect Wallet</h2>
+            <button
+              className="modal__close"
+              onClick={onClose}
+              disabled={connectState === 'connecting'}
+              aria-label="Close"
             >
-              {errorMsg}
-            </div>
-          )}
+              <X size={18} />
+            </button>
+          </div>
+          <div className="modal__body">
+            <p className="wallet-picker-modal__subtitle">
+              Choose your Bitcoin wallet to access OPRWA
+            </p>
 
-          <ul className="wallet-picker-modal__list" role="list">
-            {WALLETS.map((wallet) => {
-              const detected = wallet.check();
-              const isConnecting =
-                connectState === 'connecting' && activeWallet === wallet.id;
-              return (
-                <li key={wallet.id}>
-                  <button
-                    className={`wallet-picker-modal__option${!detected ? ' wallet-picker-modal__option--unavailable' : ''}`}
-                    onClick={() => {
-                      if (detected && connectState === 'idle')
-                        handleConnect(wallet.id);
-                    }}
-                    disabled={!detected || connectState === 'connecting'}
-                    aria-label={
-                      detected
-                        ? `Connect with ${wallet.name}`
-                        : `${wallet.name} not installed`
-                    }
-                    aria-busy={isConnecting}
+            {connectState === 'error' && (
+              <motion.div
+                className="wallet-picker-modal__error"
+                role="alert"
+                aria-live="polite"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {errorMsg}
+              </motion.div>
+            )}
+
+            <ul className="wallet-picker-modal__list" role="list">
+              {WALLETS.map((wallet, i) => {
+                const detected = wallet.check();
+                const isConnecting =
+                  connectState === 'connecting' && activeWallet === wallet.id;
+                return (
+                  <motion.li
+                    key={wallet.id}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.22, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    <div
-                      className="wallet-picker-modal__icon"
-                      aria-hidden="true"
+                    <button
+                      className={`wallet-picker-modal__option${!detected ? ' wallet-picker-modal__option--unavailable' : ''}`}
+                      onClick={() => {
+                        if (detected && connectState === 'idle')
+                          handleConnect(wallet.id);
+                      }}
+                      disabled={!detected || connectState === 'connecting'}
+                      aria-label={
+                        detected
+                          ? `Connect with ${wallet.name}`
+                          : `${wallet.name} not installed`
+                      }
+                      aria-busy={isConnecting}
                     >
-                      {wallet.name[0]}
-                    </div>
-                    <div className="wallet-picker-modal__info">
-                      <span className="wallet-picker-modal__name">
-                        {wallet.name}
+                      <div
+                        className="wallet-picker-modal__icon"
+                        aria-hidden="true"
+                      >
+                        {wallet.initial}
+                      </div>
+                      <div className="wallet-picker-modal__info">
+                        <span className="wallet-picker-modal__name">
+                          {wallet.name}
+                        </span>
+                        <span className="wallet-picker-modal__desc">
+                          {isConnecting
+                            ? `Connecting to ${wallet.name}...`
+                            : detected
+                              ? wallet.description
+                              : 'Not installed'}
+                        </span>
+                      </div>
+                      <span
+                        className="wallet-picker-modal__arrow"
+                        aria-hidden="true"
+                      >
+                        {isConnecting ? (
+                          <span className="wallet-picker-modal__connecting-ring" />
+                        ) : detected ? (
+                          '›'
+                        ) : (
+                          ''
+                        )}
                       </span>
-                      <span className="wallet-picker-modal__desc">
-                        {isConnecting
-                          ? 'Connecting...'
-                          : detected
-                            ? wallet.description
-                            : 'Not installed'}
-                      </span>
-                    </div>
-                    <span
-                      className="wallet-picker-modal__arrow"
-                      aria-hidden="true"
-                    >
-                      {isConnecting ? '...' : detected ? '>' : ''}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-          <p className="wallet-picker-modal__note">
-            Testnet only. No real funds required.
-          </p>
-        </div>
-      </div>
-    </div>
+                    </button>
+                  </motion.li>
+                );
+              })}
+            </ul>
+            <p className="wallet-picker-modal__note">
+              Testnet only. No real funds required.
+            </p>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

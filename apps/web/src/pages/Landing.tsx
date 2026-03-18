@@ -149,8 +149,8 @@ export function Landing(): React.JSX.Element {
           <h2 id="assets-heading" className="section-title">Featured Assets</h2>
           <div className="asset-grid">
             {assets.length > 0
-              ? assets.slice(0, 3).map((asset) => (
-                  <AssetCard key={asset.id} asset={asset} />
+              ? assets.slice(0, 3).map((asset, i) => (
+                  <AssetCard key={asset.id} asset={asset} index={i} />
                 ))
               : [0, 1, 2].map((i) => (
                   <div key={i} className="asset-card-skeleton glass-card" aria-hidden="true">

@@ -63,8 +63,8 @@ export function Marketplace(): React.JSX.Element {
           </div>
         ) : (
           <div className="asset-grid">
-            {filtered.map((asset) => (
-              <AssetCard key={asset.id} asset={asset} />
+            {filtered.map((asset, i) => (
+              <AssetCard key={asset.id} asset={asset} index={i} />
             ))}
           </div>
         )}

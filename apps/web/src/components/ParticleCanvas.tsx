@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useRef } from 'react';
-import { getLenis } from '@/lib/lenis';
+import { useLenis } from 'lenis/react';
 
 interface Particle {
   x: number;
@@ -13,13 +13,13 @@ interface Particle {
   baseOpacity: number;
 }
 
-const COLORS = ['#ff9900', '#d4a017', '#ffaa22', '#cc7a00', '#ffd060'];
+const COLORS = ['#f7931a', '#d4a017', '#ffaa33', '#cc7a00', '#ffd060'];
 const MAX_PARTICLES =
   typeof navigator !== 'undefined' && navigator.hardwareConcurrency > 4 ? 3000 : 1500;
 
 function createParticle(width: number, height: number): Particle {
   const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-  const opacity = 0.1 + Math.random() * 0.4;
+  const opacity = 0.08 + Math.random() * 0.35;
   return {
     x: Math.random() * width,
     y: Math.random() * height,
@@ -38,6 +38,11 @@ export function ParticleCanvas(): React.JSX.Element {
   const rafRef = useRef<number>(0);
   const mouseRef = useRef({ x: -1000, y: -1000 });
   const scrollVelRef = useRef(0);
+
+  // Sync scroll velocity from ReactLenis context
+  useLenis(({ velocity }: { velocity: number }) => {
+    scrollVelRef.current = velocity;
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -148,14 +153,6 @@ export function ParticleCanvas(): React.JSX.Element {
     };
 
     window.addEventListener('mousemove', handleMouse, { passive: true });
-
-    // Sync scroll velocity from Lenis
-    const lenis = getLenis();
-    if (lenis) {
-      lenis.on('scroll', ({ velocity }: { velocity: number }) => {
-        scrollVelRef.current = velocity;
-      });
-    }
 
     return () => {
       animating = false;

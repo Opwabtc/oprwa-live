@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { BuyModal } from './BuyModal';
 import type { Asset } from '@/types';
 
@@ -12,16 +13,26 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 interface AssetCardProps {
   asset: Asset;
+  index?: number;
 }
 
-export function AssetCard({ asset }: AssetCardProps): React.JSX.Element {
+export function AssetCard({ asset, index = 0 }: AssetCardProps): React.JSX.Element {
   const [buyOpen, setBuyOpen] = useState(false);
 
   const availablePct = ((asset.available_fractions / asset.total_fractions) * 100).toFixed(1);
 
   return (
     <>
-      <div className="asset-card glass-card">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.5,
+          delay: index * 0.08,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        className="asset-card glass-card glass-card--hoverable"
+      >
         <div className="asset-card__header">
           <span className="badge badge--category">
             {CATEGORY_LABELS[asset.category] ?? asset.category}
@@ -36,7 +47,7 @@ export function AssetCard({ asset }: AssetCardProps): React.JSX.Element {
         <div className="asset-card__stats">
           <div className="asset-card__stat">
             <span className="asset-card__stat-label">Price / Fraction</span>
-            <span className="asset-card__stat-value tabular-nums">
+            <span className="asset-card__stat-value tabular-nums" style={{ fontFamily: 'var(--font-mono)' }}>
               {asset.price_per_fraction.toLocaleString('en-US')} sats
             </span>
           </div>
@@ -80,7 +91,7 @@ export function AssetCard({ asset }: AssetCardProps): React.JSX.Element {
             Buy
           </button>
         </div>
-      </div>
+      </motion.div>
 
       <BuyModal open={buyOpen} onClose={() => setBuyOpen(false)} asset={asset} />
     </>

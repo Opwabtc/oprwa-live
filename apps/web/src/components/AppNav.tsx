@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { WalletConnectButton } from './WalletConnectButton';
 
 const NAV_LINKS = [
@@ -13,6 +13,7 @@ const NAV_LINKS = [
 export function AppNav(): React.JSX.Element {
   const location = useLocation();
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [scrolled, setScrolled] = useState(false);
 
   const toggleTheme = (): void => {
     const next = theme === 'dark' ? 'light' : 'dark';
@@ -21,8 +22,19 @@ export function AppNav(): React.JSX.Element {
     localStorage.setItem('oprwa-theme', next);
   };
 
+  useEffect(() => {
+    const onScroll = (): void => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <nav className="app-nav" aria-label="Main navigation">
+    <nav
+      className={`app-nav${scrolled ? ' app-nav--scrolled' : ''}`}
+      aria-label="Main navigation"
+    >
       <div className="app-nav__inner">
         <Link to="/" className="app-nav__logo" aria-label="OPRWA home">
           <span className="app-nav__logo-text">OPRWA</span>
