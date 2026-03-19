@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import type { Position, Transaction, TxStatus } from '@/types';
 
 interface PortfolioState {
@@ -11,7 +12,8 @@ interface PortfolioState {
   reset: () => void;
 }
 
-export const usePortfolioStore = create<PortfolioState>((set) => ({
+export const usePortfolioStore = create<PortfolioState>()(
+  persist((set) => ({
   positions: [],
   transactions: [],
 
@@ -69,4 +71,6 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
   reset: () => {
     set({ positions: [], transactions: [] });
   },
-}));
+  }),
+  { name: 'oprwa-portfolio' }
+));

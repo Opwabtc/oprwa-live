@@ -4881,3 +4881,78 @@ a {
   color: var(--danger);
   border: 1px solid var(--danger-border);
 }
+
+/* ============================================================
+   PIXEL-PERFECT AUDIT — typography micro-adjustments
+   ============================================================ */
+.hero__headline { line-height: 1.05; }
+.section-title  { line-height: 1.15; margin-bottom: 0.75rem; }
+.asset-card__name  { font-size: 1.0625rem; }
+.why-item__title   { font-size: 1.1875rem; }
+.section-eyebrow   { letter-spacing: 0.14em; }
+
+/* Button sizes — tighten lg so it does not overwhelm */
+.btn--lg { font-size: 0.9375rem; }
+
+/* Dashboard stat cards — consistent padding */
+.dashboard__stat { padding: 1.75rem; }
+
+/* Hero content — clear above fixed 64px nav */
+.hero__content { padding-top: calc(64px + 3rem); }
+
+/* ============================================================
+   LIGHT THEME — nav link readability
+   ============================================================ */
+[data-theme='light'] .app-nav__link {
+  color: #1a0533;
+}
+[data-theme='light'] .app-nav__link:hover {
+  color: #1a0533;
+  background: rgba(124, 58, 237, 0.07);
+}
+[data-theme='light'] .app-nav__link--active {
+  color: var(--purple);
+  background: var(--purple-dim);
+}
+
+/* ============================================================
+   LIGHT THEME — buy modal panel
+   ============================================================ */
+[data-theme='light'] .buy-modal__quote {
+  background: rgba(237, 233, 254, 0.6);
+  border-color: rgba(124, 58, 237, 0.18);
+}
+[data-theme='light'] .buy-modal__row {
+  color: #1a0533;
+}
+[data-theme='light'] .buy-modal__row span:first-child {
+  color: #1a0533;
+}
+[data-theme='light'] .buy-modal__label {
+  color: #1a0533;
+}
+[data-theme='light'] .buy-modal__input {
+  background: rgba(255, 253, 248, 0.9);
+  border-color: rgba(124, 58, 237, 0.2);
+  color: #1a0533;
+}
+
+/* ============================================================
+   MOBILE NAV — glass overlay for open menu
+   ============================================================ */
+@media (max-width: 768px) {
+  .app-nav__links {
+    background: rgba(10, 10, 10, 0.92);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  }
+  [data-theme='light'] .app-nav__links {
+    background: rgba(255, 253, 248, 0.97);
+    border-bottom-color: rgba(124, 58, 237, 0.12);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  }
+  [data-theme='light'] .app-nav__link {
+    color: #1a0533;
+  }
+}

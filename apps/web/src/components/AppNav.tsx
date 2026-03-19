@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { WalletConnectButton } from './WalletConnectButton';
 import { ScrambleText } from './ScrambleText';
 import { useBTCPrice } from '@/hooks/useBTCPrice';
@@ -16,6 +16,7 @@ export function AppNav(): React.JSX.Element {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
   const { price: btcPrice } = useBTCPrice();
 
   const toggleTheme = (): void => {
@@ -33,8 +34,20 @@ export function AppNav(): React.JSX.Element {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onOutside = (e: MouseEvent): void => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onOutside);
+    return () => document.removeEventListener('mousedown', onOutside);
+  }, [menuOpen]);
+
   return (
     <nav
+      ref={navRef}
       className={`app-nav${scrolled ? ' app-nav--scrolled' : ''}`}
       aria-label="Main navigation"
     >
@@ -47,7 +60,7 @@ export function AppNav(): React.JSX.Element {
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               {link.anchor ? (
-                <a href={link.href} className="app-nav__link">
+                <a href={link.href} className="app-nav__link" onClick={() => setMenuOpen(false)}>
                   <ScrambleText steps={8} speed={30}>{link.label}</ScrambleText>
                 </a>
               ) : (
@@ -55,6 +68,7 @@ export function AppNav(): React.JSX.Element {
                   to={link.href}
                   className={`app-nav__link${location.pathname === link.href ? ' app-nav__link--active' : ''}`}
                   aria-current={location.pathname === link.href ? 'page' : undefined}
+                  onClick={() => setMenuOpen(false)}
                 >
                   <ScrambleText steps={8} speed={30}>{link.label}</ScrambleText>
                 </Link>

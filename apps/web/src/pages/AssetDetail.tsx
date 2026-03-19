@@ -66,7 +66,7 @@ export function AssetDetail(): React.JSX.Element {
     <div className="page asset-detail-page">
       <div className="container">
         <div className="breadcrumb">
-          <Link to="/marketplace" className="breadcrumb__link">Markets</Link>
+          <Link to="/#markets" className="breadcrumb__link">Markets</Link>
           <span className="breadcrumb__sep" aria-hidden="true">/</span>
           <span className="breadcrumb__current">{asset.name}</span>
         </div>

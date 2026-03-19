@@ -21,22 +21,24 @@ function satsToUSD(sats: number, btcPriceUSD: number): string {
 }
 
 const ASSET_NAMES: Record<string, string> = {
-  'sp-commercial-tower':       'São Paulo — Faria Lima Tower',
-  'us-tbill-fund':             'US Treasury Bill Fund (3M)',
-  'gold-vault-reserve':        'Gold Vault Reserve — Zurich',
-  'miami-sunset-bay':          'Miami Beach — Sunset Bay Residences',
-  'manhattan-midtown-commerce':'Manhattan — Midtown Commerce Tower',
-  'dubai-marina-view':         'Dubai Marina — Marina View Tower',
-  'eu-corporate-bond-fund':    'EU Investment-Grade Corporate Bond Fund',
-  'silver-vault-zurich':       'Silver Vault Reserve — Zurich',
-  'london-grade-a-office':     'London — Grade-A Office Portfolio',
+  'sp-commercial-tower':        'São Paulo, Faria Lima Tower',
+  'us-tbill-fund':              'US Treasury Bill Fund (3M)',
+  'gold-vault-reserve':         'Gold Vault Reserve, Zurich',
+  'miami-sunset-bay':           'Miami Beach, Sunset Bay Residences',
+  'manhattan-midtown-commerce': 'Manhattan, Midtown Commerce Tower',
+  'dubai-marina-view':          'Dubai Marina, Marina View Tower',
+  'eu-corporate-bond-fund':     'EU Investment-Grade Corporate Bond Fund',
+  'silver-vault-zurich':        'Silver Vault Reserve, Zurich',
+  'london-grade-a-office':      'London, Grade-A Office Portfolio',
 };
 
 export function Dashboard(): React.JSX.Element {
   const { address, connected, verified, network, portfolioLoading, refreshPortfolio } = useWalletStore();
   const { positions } = usePortfolio(address);
   const { price: btcPrice } = useBTCPrice();
-  const { transactions } = usePortfolioStore();
+  const { transactions: allTransactions } = usePortfolioStore();
+  // Each wallet sees only its own transactions
+  const transactions = allTransactions.filter((tx) => !address || tx.wallet === address);
 
   const totalSats = positions.reduce(
     (sum, pos) => sum + pos.current_price * pos.amount,
