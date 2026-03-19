@@ -11,9 +11,17 @@ import { RWA_VAULT_ABI } from './abi/RWAVaultAbi.js';
 
 // Asset ID to on-chain tokenId mapping (mirrors contract storage)
 const ASSET_TOKEN_IDS: Record<string, number> = {
+  // Original 3
   'sp-commercial-tower': 0,
   'us-tbill-fund': 1,
   'gold-vault-reserve': 2,
+  // New 6
+  'miami-sunset-bay': 3,
+  'manhattan-midtown-commerce': 4,
+  'dubai-marina-view': 5,
+  'eu-corporate-bond-fund': 6,
+  'silver-vault-zurich': 7,
+  'london-grade-a-office': 8,
 };
 
 const RPC_URL = 'https://testnet.opnet.org';
@@ -26,6 +34,12 @@ const MOCK_TOTAL_SUPPLIES: Record<number, bigint> = {
   0: 1_000_000n,
   1: 1_000_000n,
   2: 1_000_000n,
+  3: 0n,
+  4: 0n,
+  5: 0n,
+  6: 0n,
+  7: 0n,
+  8: 0n,
 };
 
 // Simulated demand factor (scaled 0–1000, 500 = neutral)

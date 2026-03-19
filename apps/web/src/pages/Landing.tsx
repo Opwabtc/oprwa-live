@@ -191,10 +191,10 @@ export function Landing(): React.JSX.Element {
           <p className="section-body">Pick one. Sign once. Done.</p>
           <div className="asset-grid">
             {assets.length > 0
-              ? assets.slice(0, 3).map((asset, i) => (
+              ? assets.map((asset, i) => (
                   <AssetCard key={asset.id} asset={asset} index={i} />
                 ))
-              : [0, 1, 2].map((i) => (
+              : [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                   <div key={i} className="asset-card-skeleton glass-card" aria-hidden="true">
                     <div className="skeleton-block skeleton-block--header" />
                     <div className="skeleton-block skeleton-block--title" />

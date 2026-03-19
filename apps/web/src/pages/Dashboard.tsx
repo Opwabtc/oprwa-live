@@ -9,9 +9,15 @@ function truncateAddress(addr: string): string {
 }
 
 const ASSET_NAMES: Record<string, string> = {
-  'sp-commercial-tower': 'Sao Paulo Commercial Tower',
-  'us-tbill-fund': 'US T-Bill Fund',
-  'gold-vault-reserve': 'Gold Vault Reserve',
+  'sp-commercial-tower':       'São Paulo — Faria Lima Tower',
+  'us-tbill-fund':             'US Treasury Bill Fund (3M)',
+  'gold-vault-reserve':        'Gold Vault Reserve — Zurich',
+  'miami-sunset-bay':          'Miami Beach — Sunset Bay Residences',
+  'manhattan-midtown-commerce':'Manhattan — Midtown Commerce Tower',
+  'dubai-marina-view':         'Dubai Marina — Marina View Tower',
+  'eu-corporate-bond-fund':    'EU Investment-Grade Corporate Bond Fund',
+  'silver-vault-zurich':       'Silver Vault Reserve — Zurich',
+  'london-grade-a-office':     'London — Grade-A Office Portfolio',
 };
 
 export function Dashboard(): React.JSX.Element {

@@ -1,7 +1,7 @@
 /**
  * RWAVault — OP_1155-style multi-token RWA distribution contract
  *
- * Supports 3 RWA asset tokenIds (0, 1, 2).
+ * Supports 9 RWA asset tokenIds (0–8).
  * Admin mints/burns. Holders transfer (whitelist-gated on mainnet).
  * On-chain deterministic fee via collectFee(txValue).
  *
@@ -12,9 +12,21 @@
  *   ptr  10: balances[tokenId=0] (StoredMapU256, key=address as u256)
  *   ptr  11: balances[tokenId=1]
  *   ptr  12: balances[tokenId=2]
+ *   ptr  13: balances[tokenId=3]
+ *   ptr  14: balances[tokenId=4]
+ *   ptr  15: balances[tokenId=5]
+ *   ptr  16: balances[tokenId=6]
+ *   ptr  17: balances[tokenId=7]
+ *   ptr  18: balances[tokenId=8]
  *   ptr  20: totalSupply[tokenId=0] (StoredU256)
  *   ptr  21: totalSupply[tokenId=1]
  *   ptr  22: totalSupply[tokenId=2]
+ *   ptr  23: totalSupply[tokenId=3]
+ *   ptr  24: totalSupply[tokenId=4]
+ *   ptr  25: totalSupply[tokenId=5]
+ *   ptr  26: totalSupply[tokenId=6]
+ *   ptr  27: totalSupply[tokenId=7]
+ *   ptr  28: totalSupply[tokenId=8]
  *   ptr  30: globalWhitelist (StoredMapU256, key=address as u256, value=1/0)
  */
 
@@ -49,7 +61,7 @@ const PTR_SUPPLY_BASE:       u16 = 20;
 const PTR_WHITELIST:         u16 = 30;
 
 // Maximum supported tokenIds
-const MAX_TOKEN_IDS:         u32 = 3;
+const MAX_TOKEN_IDS:         u32 = 9;
 
 // Maximum supply per tokenId — prevents unbounded minting via purchase()
 // 10_000_000 fractions per asset = 10M units at 1000 sats each = 100BTC max TVL per asset
@@ -139,15 +151,27 @@ export class RWAVault extends OP_NET {
     private _demandFactor:      StoredU256     = new StoredU256(PTR_DEMAND_FACTOR, EMPTY_POINTER);
     private _whitelistEnabled:  StoredU256     = new StoredU256(PTR_WHITELIST_ENABLED, EMPTY_POINTER);
 
-    // Balance maps per tokenId
+    // Balance maps per tokenId (ptrs 10–18)
     private _balances0: StoredMapU256 = new StoredMapU256(PTR_BALANCES_BASE);
     private _balances1: StoredMapU256 = new StoredMapU256((PTR_BALANCES_BASE + 1) as u16);
     private _balances2: StoredMapU256 = new StoredMapU256((PTR_BALANCES_BASE + 2) as u16);
+    private _balances3: StoredMapU256 = new StoredMapU256((PTR_BALANCES_BASE + 3) as u16);
+    private _balances4: StoredMapU256 = new StoredMapU256((PTR_BALANCES_BASE + 4) as u16);
+    private _balances5: StoredMapU256 = new StoredMapU256((PTR_BALANCES_BASE + 5) as u16);
+    private _balances6: StoredMapU256 = new StoredMapU256((PTR_BALANCES_BASE + 6) as u16);
+    private _balances7: StoredMapU256 = new StoredMapU256((PTR_BALANCES_BASE + 7) as u16);
+    private _balances8: StoredMapU256 = new StoredMapU256((PTR_BALANCES_BASE + 8) as u16);
 
-    // Total supply per tokenId
+    // Total supply per tokenId (ptrs 20–28)
     private _supply0: StoredU256 = new StoredU256(PTR_SUPPLY_BASE, EMPTY_POINTER);
     private _supply1: StoredU256 = new StoredU256((PTR_SUPPLY_BASE + 1) as u16, EMPTY_POINTER);
     private _supply2: StoredU256 = new StoredU256((PTR_SUPPLY_BASE + 2) as u16, EMPTY_POINTER);
+    private _supply3: StoredU256 = new StoredU256((PTR_SUPPLY_BASE + 3) as u16, EMPTY_POINTER);
+    private _supply4: StoredU256 = new StoredU256((PTR_SUPPLY_BASE + 4) as u16, EMPTY_POINTER);
+    private _supply5: StoredU256 = new StoredU256((PTR_SUPPLY_BASE + 5) as u16, EMPTY_POINTER);
+    private _supply6: StoredU256 = new StoredU256((PTR_SUPPLY_BASE + 6) as u16, EMPTY_POINTER);
+    private _supply7: StoredU256 = new StoredU256((PTR_SUPPLY_BASE + 7) as u16, EMPTY_POINTER);
+    private _supply8: StoredU256 = new StoredU256((PTR_SUPPLY_BASE + 8) as u16, EMPTY_POINTER);
 
     // Global whitelist
     private _whitelist: StoredMapU256 = new StoredMapU256(PTR_WHITELIST);
@@ -192,13 +216,25 @@ export class RWAVault extends OP_NET {
     private _getBalanceMap(id: u32): StoredMapU256 {
         if (id == 0) return this._balances0;
         if (id == 1) return this._balances1;
-        return this._balances2;
+        if (id == 2) return this._balances2;
+        if (id == 3) return this._balances3;
+        if (id == 4) return this._balances4;
+        if (id == 5) return this._balances5;
+        if (id == 6) return this._balances6;
+        if (id == 7) return this._balances7;
+        return this._balances8;
     }
 
     private _getSupplyStore(id: u32): StoredU256 {
         if (id == 0) return this._supply0;
         if (id == 1) return this._supply1;
-        return this._supply2;
+        if (id == 2) return this._supply2;
+        if (id == 3) return this._supply3;
+        if (id == 4) return this._supply4;
+        if (id == 5) return this._supply5;
+        if (id == 6) return this._supply6;
+        if (id == 7) return this._supply7;
+        return this._supply8;
     }
 
     private _requireWhitelisted(account: Address): void {

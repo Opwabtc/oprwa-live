@@ -1,0 +1,17 @@
+{
+  "status": "success",
+  "buildDir": "apps/web/dist/",
+  "devPort": 3000,
+  "changes": [
+    "apps/web/src/index.css",
+    "apps/web/src/components/AppNav.tsx",
+    "apps/web/src/components/AssetCard.tsx",
+    "apps/web/src/components/BuyModal.tsx",
+    "apps/web/src/components/WalletPickerModal.tsx",
+    "apps/web/src/components/ParticleCanvas.tsx",
+    "apps/web/src/pages/Landing.tsx",
+    "apps/web/src/pages/Marketplace.tsx",
+    "apps/web/index.html"
+  ],
+  "notes": "Build passes tsc + vite build with 0 errors. Glass cards, Framer Motion stagger, scroll-blur nav, Bitcoin orange design tokens, connecting spinner, stepper buttons."
+}
