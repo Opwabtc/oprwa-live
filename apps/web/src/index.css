@@ -114,13 +114,13 @@
 }
 
 [data-theme='light'] {
-  /* ── Backgrounds (DS v5 light — warm white) ── */
-  --bg:            #fffdf8;
-  --bg-base:       #fffdf8;
-  --color-bg:      #fffdf8;
-  --bg-surface:    #faf8f2;
-  --bg-2:          #faf8f2;
-  --bg-3:          #f5f2ea;
+  /* ── Backgrounds (DS v5 light — warm cream, easy on eyes) ── */
+  --bg:            #fdf7ed;
+  --bg-base:       #fdf7ed;
+  --color-bg:      #fdf7ed;
+  --bg-surface:    #f8f0e0;
+  --bg-2:          #f8f0e0;
+  --bg-3:          #f2e8d4;
   --bg-card:       #f5f2ea;
   --bg-elevated:   #ede9df;
   --bg-elevated2:  #e5e0d5;
@@ -244,30 +244,29 @@ body {
   transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Animated color orbs layer */
+/* Animated color orbs — petrol-black + orange only (no blue/green) */
 .bg-canvas::before {
   content: '';
   position: absolute;
   inset: -40%;
   background:
-    radial-gradient(ellipse 65% 48% at 80% 15%, rgba(255, 153, 0, 0.20) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 55% at 15% 75%, rgba(124, 58, 237, 0.16) 0%, transparent 58%),
-    radial-gradient(ellipse 45% 40% at 58% 48%, rgba(59, 130, 246, 0.10) 0%, transparent 55%),
-    radial-gradient(ellipse 38% 35% at 88% 82%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 30% 25% at 5% 20%,  rgba(251, 191, 36, 0.12) 0%, transparent 50%);
+    radial-gradient(ellipse 65% 48% at 80% 15%, rgba(249, 115, 22, 0.22) 0%, transparent 60%),  /* orange top-right */
+    radial-gradient(ellipse 50% 55% at 12% 72%, rgba(255, 153, 0, 0.14) 0%, transparent 58%),   /* amber bottom-left */
+    radial-gradient(ellipse 42% 40% at 55% 48%, rgba(0, 18, 32, 0.60) 0%, transparent 55%),     /* petrol black center */
+    radial-gradient(ellipse 35% 30% at 5% 20%,  rgba(251, 191, 36, 0.10) 0%, transparent 50%);  /* gold top-left */
   animation: bg-orb-drift 42s ease-in-out infinite alternate;
   will-change: transform;
 }
 
-/* Second orb layer — counter-rotating for depth */
+/* Second orb layer — reinforces petrol-black depth + orange warmth */
 .bg-canvas::after {
   content: '';
   position: absolute;
   inset: -40%;
   background:
-    radial-gradient(ellipse 40% 50% at 25% 35%, rgba(255, 153, 0, 0.10) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 35% at 72% 62%, rgba(124, 58, 237, 0.13) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 42% at 45% 88%, rgba(59, 130, 246, 0.08) 0%, transparent 55%);
+    radial-gradient(ellipse 40% 50% at 28% 35%, rgba(249, 115, 22, 0.10) 0%, transparent 55%),  /* orange mid-left */
+    radial-gradient(ellipse 55% 38% at 72% 60%, rgba(0, 22, 40, 0.50) 0%, transparent 60%),     /* petrol mid-right */
+    radial-gradient(ellipse 35% 42% at 50% 88%, rgba(255, 153, 0, 0.08) 0%, transparent 55%);   /* amber bottom */
   animation: bg-orb-drift 58s ease-in-out infinite alternate-reverse;
   will-change: transform;
 }
@@ -280,23 +279,23 @@ body {
   100% { transform: rotate(-3deg)  scale(1.05); }
 }
 
-/* Light theme orbs — lavender + warm gold */
+/* Light theme orbs — warm cream base, gold + orange + purple + lavender */
 [data-theme='light'] .bg-canvas {
-  background: #fffdf8;
+  background: #fdf7ed; /* warm cream — easy on the eyes, no cold white glare */
 }
 [data-theme='light'] .bg-canvas::before {
   background:
-    radial-gradient(ellipse 65% 48% at 80% 15%, rgba(124, 58, 237, 0.09) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 55% at 15% 75%, rgba(255, 153, 0, 0.07) 0%, transparent 58%),
-    radial-gradient(ellipse 45% 40% at 58% 48%, rgba(167, 139, 250, 0.11) 0%, transparent 55%),
-    radial-gradient(ellipse 38% 35% at 88% 82%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse 30% 25% at 5% 20%,  rgba(251, 191, 36, 0.06) 0%, transparent 50%);
+    radial-gradient(ellipse 68% 52% at 82% 12%, rgba(124, 58, 237, 0.14) 0%, transparent 60%),  /* deep purple top-right */
+    radial-gradient(ellipse 55% 60% at 12% 72%, rgba(249, 115, 22, 0.13) 0%, transparent 58%),   /* orange bottom-left */
+    radial-gradient(ellipse 50% 45% at 55% 45%, rgba(196, 181, 253, 0.18) 0%, transparent 55%),  /* lavender center */
+    radial-gradient(ellipse 42% 38% at 90% 80%, rgba(251, 191, 36, 0.14) 0%, transparent 52%),   /* gold bottom-right */
+    radial-gradient(ellipse 36% 30% at 4% 18%,  rgba(251, 191, 36, 0.12) 0%, transparent 50%);  /* gold top-left */
 }
 [data-theme='light'] .bg-canvas::after {
   background:
-    radial-gradient(ellipse 40% 50% at 25% 35%, rgba(167, 139, 250, 0.08) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 35% at 72% 62%, rgba(124, 58, 237, 0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 42% at 45% 88%, rgba(255, 153, 0, 0.05) 0%, transparent 55%);
+    radial-gradient(ellipse 45% 52% at 28% 32%, rgba(196, 181, 253, 0.15) 0%, transparent 55%),  /* lavender mid-left */
+    radial-gradient(ellipse 60% 38% at 74% 60%, rgba(124, 58, 237, 0.10) 0%, transparent 60%),   /* purple mid-right */
+    radial-gradient(ellipse 38% 45% at 48% 90%, rgba(249, 115, 22, 0.10) 0%, transparent 55%);   /* orange bottom */
 }
 
 /* Reduced motion — freeze the orbs */
@@ -357,20 +356,20 @@ body {
   100% { transform: rotate(-4deg)  scale(1.07); }
 }
 
-/* Light theme — deep purple, bordeaux, dark orange */
+/* Light theme accent — richer gold, orange bloom, deep purple, lavender glow */
 [data-theme='light'] .bg-canvas-accent::before {
   background:
-    radial-gradient(ellipse 70% 55% at 78% 20%, rgba(109, 40, 217, 0.20) 0%, transparent 58%),
-    radial-gradient(ellipse 55% 60% at 12% 70%, rgba(128, 0, 32, 0.14) 0%, transparent 56%),
-    radial-gradient(ellipse 50% 45% at 50% 50%, rgba(160, 50, 0, 0.12) 0%, transparent 52%),
-    radial-gradient(ellipse 35% 30% at 90% 82%, rgba(124, 58, 237, 0.16) 0%, transparent 48%),
-    radial-gradient(ellipse 30% 28% at 8% 18%,  rgba(100, 0, 40, 0.10) 0%, transparent 50%);
+    radial-gradient(ellipse 72% 58% at 80% 18%, rgba(124, 58, 237, 0.24) 0%, transparent 58%),  /* purple bloom top */
+    radial-gradient(ellipse 58% 62% at 10% 68%, rgba(249, 115, 22, 0.20) 0%, transparent 56%),  /* orange bloom left */
+    radial-gradient(ellipse 52% 48% at 52% 50%, rgba(251, 191, 36, 0.16) 0%, transparent 52%),  /* gold center glow */
+    radial-gradient(ellipse 38% 32% at 88% 84%, rgba(196, 181, 253, 0.22) 0%, transparent 50%), /* lavender corner */
+    radial-gradient(ellipse 32% 30% at 6% 16%,  rgba(249, 115, 22, 0.14) 0%, transparent 52%); /* orange accent top */
 }
 [data-theme='light'] .bg-canvas-accent::after {
   background:
-    radial-gradient(ellipse 45% 55% at 30% 28%, rgba(124, 58, 237, 0.14) 0%, transparent 54%),
-    radial-gradient(ellipse 60% 40% at 68% 65%, rgba(90, 10, 60, 0.12) 0%, transparent 58%),
-    radial-gradient(ellipse 38% 45% at 48% 88%, rgba(150, 30, 0, 0.10) 0%, transparent 52%);
+    radial-gradient(ellipse 48% 56% at 28% 30%, rgba(196, 181, 253, 0.20) 0%, transparent 54%),  /* lavender mid */
+    radial-gradient(ellipse 62% 42% at 70% 62%, rgba(124, 58, 237, 0.16) 0%, transparent 58%),   /* purple mid */
+    radial-gradient(ellipse 40% 48% at 50% 88%, rgba(251, 191, 36, 0.14) 0%, transparent 52%);   /* gold bottom */
 }
 
 @media (prefers-reduced-motion: reduce) {
