@@ -158,6 +158,9 @@ export function BuyModal({ open, onClose, asset, initialAmount = 1 }: BuyModalPr
   const { addPendingTx, settleTx } = usePortfolioStore();
   const { quote, loading: quoteLoading } = usePricing(asset.id, amount);
 
+  // Only block close during active signing (wallet popup open). Pending = user can leave.
+  const blockClose = state === 'signing';
+
   useEffect(() => {
     if (open) {
       onModalOpen();
@@ -177,11 +180,11 @@ export function BuyModal({ open, onClose, asset, initialAmount = 1 }: BuyModalPr
   useEffect(() => {
     if (!open) return;
     const handleKey = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape' && state === 'idle') onClose();
+      if (e.key === 'Escape' && !blockClose) onClose();
     };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
-  }, [open, onClose, state]);
+  }, [open, onClose, blockClose]);
 
   if (!open) return null;
 
@@ -278,8 +281,6 @@ export function BuyModal({ open, onClose, asset, initialAmount = 1 }: BuyModalPr
         setWError(err instanceof Error ? err.message : 'Connection failed. Please try again.');
       });
   };
-
-  const blockClose = state === 'signing' || state === 'pending';
 
   return (
     <AnimatePresence>
@@ -403,6 +404,9 @@ export function BuyModal({ open, onClose, asset, initialAmount = 1 }: BuyModalPr
                   <p className="buy-modal__pending-hint">
                     This window will update automatically when confirmed.
                   </p>
+                  <button className="btn btn--ghost btn--sm buy-modal__pending-close" onClick={onClose}>
+                    Close and browse other assets →
+                  </button>
                 </motion.div>
               )}
 

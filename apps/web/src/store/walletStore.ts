@@ -12,9 +12,36 @@ interface WalletState {
   // Portfolio loaded from on-chain
   onChainPositions: Position[];
   portfolioLoading: boolean;
+  /** Actual BTC balance in satoshis from wallet provider, or null if unavailable */
+  btcBalance: number | null;
   connect: (address: string, walletType: string) => Promise<void>;
   disconnect: () => void;
   refreshPortfolio: () => Promise<void>;
+}
+
+type BalanceWin = typeof window & {
+  unisat?: { getBalance: () => Promise<{ total: number }> };
+  opnet?: { getBalance?: () => Promise<{ total: number }> };
+  okxwallet?: { bitcoin?: { getBalance?: () => Promise<{ total: number }> } };
+};
+
+async function fetchWalletBTCBalance(walletType: string): Promise<number | null> {
+  try {
+    const w = window as BalanceWin;
+    if (walletType === 'unisat' && w.unisat) {
+      const b = await w.unisat.getBalance();
+      return b.total;
+    }
+    if (walletType === 'opwallet' && w.opnet?.getBalance) {
+      const b = await w.opnet.getBalance();
+      return b.total;
+    }
+    if (walletType === 'okx' && w.okxwallet?.bitcoin?.getBalance) {
+      const b = await w.okxwallet.bitcoin.getBalance();
+      return b.total;
+    }
+  } catch { /* wallet may not expose getBalance */ }
+  return null;
 }
 
 const ASSET_IDS = [
@@ -88,6 +115,7 @@ export const useWalletStore = create<WalletState>()(
   walletType: null,
   onChainPositions: [],
   portfolioLoading: false,
+  btcBalance: null,
 
   connect: async (address: string, walletType: string) => {
     set({
@@ -97,14 +125,14 @@ export const useWalletStore = create<WalletState>()(
       network: 'testnet',
       walletType,
       portfolioLoading: true,
+      btcBalance: null,
     });
 
-    try {
-      const positions = await loadOnChainPortfolio(address);
-      set({ onChainPositions: positions, portfolioLoading: false });
-    } catch {
-      set({ onChainPositions: [], portfolioLoading: false });
-    }
+    const [positions, btcBalance] = await Promise.all([
+      loadOnChainPortfolio(address).catch(() => [] as Position[]),
+      fetchWalletBTCBalance(walletType),
+    ]);
+    set({ onChainPositions: positions, portfolioLoading: false, btcBalance });
   },
 
   disconnect: () => {
@@ -116,19 +144,19 @@ export const useWalletStore = create<WalletState>()(
       walletType: null,
       onChainPositions: [],
       portfolioLoading: false,
+      btcBalance: null,
     });
   },
 
   refreshPortfolio: async () => {
-    const { address } = get();
+    const { address, walletType } = get();
     if (!address) return;
     set({ portfolioLoading: true });
-    try {
-      const positions = await loadOnChainPortfolio(address);
-      set({ onChainPositions: positions, portfolioLoading: false });
-    } catch {
-      set({ portfolioLoading: false });
-    }
+    const [positions, btcBalance] = await Promise.all([
+      loadOnChainPortfolio(address).catch(() => [] as Position[]),
+      walletType ? fetchWalletBTCBalance(walletType) : Promise.resolve(null),
+    ]);
+    set({ onChainPositions: positions, portfolioLoading: false, btcBalance });
   },
 }),
 {

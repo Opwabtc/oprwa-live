@@ -21,6 +21,9 @@ export function CursorTrail(): null {
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
+    // No cursor trail on touch/mobile devices — they have no mouse cursor
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
     // Create canvas
     const canvas = document.createElement('canvas');
     canvas.style.cssText =

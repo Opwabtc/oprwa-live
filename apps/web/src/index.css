@@ -3134,10 +3134,10 @@ a {
 .sc-card {
   position: absolute;
   inset: 0;
-  background: rgba(255, 153, 0, 0.05);
+  background: linear-gradient(145deg, rgba(22, 11, 0, 0.72) 0%, rgba(14, 7, 0, 0.64) 100%);
   backdrop-filter: blur(20px) saturate(1.5);
   -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  border: 1px solid rgba(255, 153, 0, 0.10);
+  border: 1px solid rgba(255, 153, 0, 0.22);
   border-radius: var(--radius-card);
   padding: 2.5rem;
   display: flex;
@@ -4925,20 +4925,74 @@ a {
 [data-theme='light'] .buy-panel__total-value { color: var(--purple); }
 
 /* ============================================================
-   DASHBOARD — BTC pill in wallet status bar
+   DASHBOARD — BTC balance display (right side of wallet card)
    ============================================================ */
-.dashboard__wallet-btc-pill {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
+.dashboard__wallet-btc-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  flex-shrink: 0;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--border);
+}
+.dashboard__wallet-btc-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  line-height: 1;
+}
+.dashboard__wallet-btc-sym {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--accent);
-  background: var(--accent-dim);
-  border: 1px solid var(--accent-border);
-  border-radius: 100px;
-  padding: 0.2rem 0.75rem;
+  line-height: 1;
 }
-[data-theme='light'] .dashboard__wallet-btc-pill { color: var(--purple); background: var(--purple-dim); border-color: var(--purple-border); }
+.dashboard__wallet-btc-val {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.dashboard__wallet-btc-usd {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+.dashboard__wallet-btc-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: right;
+}
+[data-theme='light'] .dashboard__wallet-btc-sym { color: var(--purple); }
+[data-theme='light'] .dashboard__wallet-btc-val { color: #1a0533; }
+
+/* buy-modal pending — allow close */
+.buy-modal__pending-close {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  opacity: 0.75;
+  text-decoration: none;
+}
+.buy-modal__pending-close:hover { opacity: 1; }
+
+/* btn--ghost variant */
+.btn--ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-2);
+}
+.btn--ghost:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
 
 /* ============================================================
    DASHBOARD — transaction history table
@@ -5455,5 +5509,117 @@ a {
 }
 .bg-canvas-accent::before {
   filter: hue-rotate(calc(var(--scroll-hue, 0) * 0.8deg)) saturate(1.25);
+}
+
+/* ============================================================
+   MOBILE — touch device optimizations
+   Pointer: coarse = touch screen (phone/tablet). Disable
+   mouse-only effects so mobile feels light and native.
+   ============================================================ */
+
+/* Compact wallet button in navbar on mobile */
+@media (max-width: 768px) {
+  .wallet-btn--connect {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    min-height: 36px;
+    letter-spacing: 0;
+  }
+  .wallet-btn--connected {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.72rem;
+    gap: 0.35rem;
+    min-height: 36px;
+  }
+  .wallet-btn__network {
+    display: none;
+  }
+  .app-nav__theme-toggle {
+    padding: 0.4rem;
+    min-width: 36px;
+    min-height: 36px;
+    font-size: 0.9rem;
+  }
+  .app-nav__actions {
+    gap: 0.4rem;
+  }
+
+  /* Dashboard wallet card — BTC section wraps cleanly */
+  .dashboard__wallet {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .dashboard__wallet-btc-display {
+    align-items: flex-start;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    padding-left: 0;
+    padding-top: 0.75rem;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+  .dashboard__wallet-btc-amount {
+    gap: 0.25rem;
+  }
+  .dashboard__wallet-btc-val {
+    font-size: 1.25rem;
+  }
+  .dashboard__wallet-btc-usd,
+  .dashboard__wallet-btc-label {
+    text-align: left;
+  }
+}
+
+/* Grain lighter on mobile — less GPU texture load */
+@media (pointer: coarse) {
+  .grain-overlay {
+    opacity: 0.035;
+  }
+  /* No scroll hue shift on touch — saves CPU/battery */
+  .bg-canvas::before,
+  .bg-canvas::after,
+  .bg-canvas-accent::before {
+    filter: none;
+  }
+  /* Simpler backdrop-filter on touch for smooth scroll */
+  .glass-card,
+  .modal,
+  .app-nav,
+  .sc-card {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  /* No floating animation on popcat for touch */
+  .popcat-bubble {
+    animation: none;
+    display: none;
+  }
+}
+
+/* ============================================================
+   DASHBOARD — wallet card layout fix for small screens
+   ============================================================ */
+@media (max-width: 480px) {
+  .dashboard__wallet {
+    padding: 1.25rem;
+  }
+  .dashboard__wallet-address {
+    font-size: 0.72rem;
+    word-break: break-all;
+  }
+  .dashboard__wallet-btc-val {
+    font-size: 1.1rem;
+  }
+  /* Transaction table — hide fractions col at 375px */
+  .tx-table__head,
+  .tx-table__row {
+    grid-template-columns: 2fr 2.5fr 2fr 1.5fr 1.5fr;
+  }
+  .tx-table__head span:nth-child(3),
+  .tx-table__row span:nth-child(3) {
+    display: none;
+  }
 }
 

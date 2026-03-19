@@ -9,16 +9,21 @@ import { sounds } from '@/hooks/useSounds';
 const CURSOR_NORMAL = "url('/popcat-normal-64.png') 32 32, auto";
 const CURSOR_CLICK  = "url('/popcat-click-64.png') 32 32, auto";
 
-export function PopCatCursor(): React.JSX.Element {
+export function PopCatCursor(): React.JSX.Element | null {
   const [active, setActive] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
   const activeRef = useRef(false); // stable ref for event listeners
+  // Evaluate touch once at mount — stable across renders
+  const isTouch = useRef(
+    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+  );
 
   // Sync ref to state so event listeners always see current value
   useEffect(() => { activeRef.current = active; }, [active]);
 
   // Inject cursor CSS vars + JS mousedown/mouseup when active
   useEffect(() => {
+    if (isTouch.current) return;
     const root = document.documentElement;
 
     if (active) {
@@ -69,6 +74,8 @@ export function PopCatCursor(): React.JSX.Element {
     el.style.transform = '';
     el.style.boxShadow = '';
   }, []);
+
+  if (isTouch.current) return null;
 
   return (
     <button
