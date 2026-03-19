@@ -2142,15 +2142,15 @@ a {
   inset: 0;
   background-image: url('/footer-bg.jpg');
   background-size: cover;
-  background-position: center bottom;
-  filter: blur(3px) brightness(0.52) saturate(1.3);
+  background-position: center center;
+  filter: brightness(0.36) saturate(1.7) contrast(1.12);
   z-index: 0;
   pointer-events: none;
 }
 
 [data-theme='light'] .site-footer__bg-overlay {
-  filter: blur(4px) brightness(0.88) saturate(0.7);
-  opacity: 0.35;
+  filter: brightness(0.70) saturate(1.0) contrast(0.95);
+  opacity: 0.52;
 }
 
 .site-footer > .container {
@@ -3425,23 +3425,11 @@ a {
 }
 
 /* ============================================================
-   FOOTER — no background image, unified with bg-canvas
+   FOOTER — footer-bg.jpg texture background
    ============================================================ */
 .site-footer {
   position: relative;
   overflow: hidden;
-}
-
-.site-footer__bg-overlay {
-  display: none; /* bg-canvas provides the unified background */
-  position: absolute;
-  inset: 0;
-  background-image: url('/footer-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  filter: blur(3px) brightness(0.52) saturate(1.3);
-  transform: scale(1.04);
-  z-index: 0;
 }
 
 .site-footer > .container {
@@ -5420,9 +5408,9 @@ a {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.042;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23g)'/%3E%3C/svg%3E");
+  opacity: 0.07;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23g)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 320px 320px;
   animation: grain-drift 0.9s steps(1) infinite;
@@ -5445,7 +5433,7 @@ a {
 }
 
 [data-theme='light'] .grain-overlay {
-  opacity: 0.028;
+  opacity: 0.045;
   mix-blend-mode: multiply;
 }
 
@@ -5469,24 +5457,3 @@ a {
   filter: hue-rotate(calc(var(--scroll-hue, 0) * 0.8deg)) saturate(1.25);
 }
 
-/* ============================================================
-   FOOTER BACKGROUND — use footer-bg.jpg (new grainy texture)
-   ============================================================ */
-.site-footer {
-  background: transparent;
-  position: relative;
-  overflow: hidden;
-}
-
-.site-footer__bg-overlay {
-  background-image: url('/footer-bg.jpg');
-  background-size: cover;
-  background-position: center center;
-  filter: brightness(0.38) saturate(1.6) contrast(1.1);
-  opacity: 1;
-}
-
-[data-theme='light'] .site-footer__bg-overlay {
-  filter: brightness(0.72) saturate(1.0) contrast(0.95);
-  opacity: 0.55;
-}

@@ -88,7 +88,6 @@ export function PopCatCursor(): React.JSX.Element {
           draggable={false}
         />
       </span>
-      {active && <span className="popcat-bubble__on" aria-hidden="true">ON</span>}
     </button>
   );
 }
