@@ -5244,25 +5244,39 @@ a {
   animation: popcat-float 3.2s ease-in-out infinite, popcat-pulse 1.4s ease-in-out infinite;
 }
 
-.popcat-bubble__emoji {
-  font-size: 1.6rem;
-  line-height: 1;
+/* 3D bubble inner image */
+.popcat-bubble__face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.popcat-bubble__img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  border-radius: 50%;
   display: block;
-  transition: transform 0.15s ease;
+  transition: transform 0.12s ease;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.45));
 }
 
-.popcat-bubble:hover .popcat-bubble__emoji {
-  transform: scale(1.15) rotate(-8deg);
-}
-
-.popcat-bubble__label {
-  font-size: 0.55rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+.popcat-bubble__on {
+  position: absolute;
+  bottom: 0.22rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.48rem;
+  font-weight: 800;
+  letter-spacing: 0.10em;
   color: var(--accent);
   line-height: 1;
-  height: 0.65rem;
-  display: block;
+  text-shadow: 0 0 6px rgba(249,115,22,0.8);
 }
 
 /* Light theme */
@@ -5304,4 +5318,84 @@ a {
   .popcat-bubble--active {
     animation: none;
   }
+}
+
+/* ============================================================
+   FILM GRAIN OVERLAY — SVG feTurbulence noise, fixed layer
+   z-index 0 so it sits above bg-canvas(-1) but below content
+   ============================================================ */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.042;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 320px 320px;
+  animation: grain-drift 0.9s steps(1) infinite;
+  will-change: background-position;
+}
+
+/* Animate grain position each frame (steps(1) = instant jump = film grain) */
+@keyframes grain-drift {
+  0%   { background-position: 0 0; }
+  10%  { background-position: -48px -22px; }
+  20%  { background-position: 18px -56px; }
+  30%  { background-position: -72px 14px; }
+  40%  { background-position: 34px 48px; }
+  50%  { background-position: -18px -80px; }
+  60%  { background-position: 62px -12px; }
+  70%  { background-position: -36px 66px; }
+  80%  { background-position: 80px 28px; }
+  90%  { background-position: -54px -40px; }
+  100% { background-position: 22px 62px; }
+}
+
+[data-theme='light'] .grain-overlay {
+  opacity: 0.028;
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain-overlay {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   SCROLL-REACTIVE HUE — bg-canvas layers use --scroll-hue
+   set by the App scroll listener (0 at top → 110 at bottom)
+   ============================================================ */
+.bg-canvas::before {
+  filter: hue-rotate(calc(var(--scroll-hue, 0) * 1deg)) saturate(1.2);
+}
+.bg-canvas::after {
+  filter: hue-rotate(calc(var(--scroll-hue, 0) * -0.6deg)) saturate(1.1);
+}
+.bg-canvas-accent::before {
+  filter: hue-rotate(calc(var(--scroll-hue, 0) * 0.8deg)) saturate(1.25);
+}
+
+/* ============================================================
+   FOOTER BACKGROUND — use footer-bg.jpg (new grainy texture)
+   ============================================================ */
+.site-footer {
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.site-footer__bg-overlay {
+  background-image: url('/footer-bg.jpg');
+  background-size: cover;
+  background-position: center center;
+  filter: brightness(0.38) saturate(1.6) contrast(1.1);
+  opacity: 1;
+}
+
+[data-theme='light'] .site-footer__bg-overlay {
+  filter: brightness(0.72) saturate(1.0) contrast(0.95);
+  opacity: 0.55;
 }

@@ -34,6 +34,25 @@ export function App(): React.JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Scroll-reactive hue shift — drives --scroll-hue on :root (0 → 100)
+  useEffect(() => {
+    let raf = 0;
+    const onScroll = (): void => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = max > 0 ? window.scrollY / max : 0;
+        document.documentElement.style.setProperty('--scroll-hue', String(Math.round(pct * 110)));
+        document.documentElement.style.setProperty('--scroll-pct', pct.toFixed(3));
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
   if (loading) {
     return <LoadingScreen onComplete={() => setLoading(false)} />;
   }
@@ -42,6 +61,7 @@ export function App(): React.JSX.Element {
     <>
       <div className="bg-canvas" aria-hidden="true" />
       <div className="bg-canvas-accent" aria-hidden="true" />
+      <div className="grain-overlay" aria-hidden="true" />
       <CursorTrail />
       <PopCatCursor />
       <AppNav />
