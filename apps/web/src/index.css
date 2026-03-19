@@ -6,89 +6,153 @@
    CSS CUSTOM PROPERTIES — OPWA Design System v5
    ============================================================ */
 :root {
-  /* Backgrounds */
-  --bg:          #0a0a0a;
-  --color-bg:    #0a0a0a;
-  --bg-2:        #111111;
-  --bg-3:        #161616;
-  --bg-card:     #161616;
-  --bg-elevated: #1e1e1e;
+  /* ── Backgrounds (OPWA DS v4 dark) ── */
+  --bg:            #0a0a0a;
+  --color-bg:      #0a0a0a;
+  --bg-2:          #111111;
+  --bg-3:          #161616;
+  --bg-card:       #161616;
+  --bg-elevated:   #1e1e1e;
   --bg-card-hover: #242424;
 
-  /* Accent — Bitcoin Orange */
-  --accent:        #FF9900;
-  --accent-dark:   #cc7a00;
-  --accent-hover:  #ffaa22;
-  --accent-dim:    rgba(255, 153, 0, 0.12);
-  --accent-border: rgba(255, 153, 0, 0.30);
-  --accent-glow:   rgba(255, 153, 0, 0.25);
+  /* ── Accent — Bitcoin Orange (DS v4) ── */
+  --accent:        #f97316;
+  --accent-dark:   #ea580c;
+  --accent-hover:  #fb923c;
+  --accent-dim:    rgba(249, 115, 22, 0.12);
+  --accent-border: rgba(249, 115, 22, 0.30);
+  --accent-glow:   rgba(249, 115, 22, 0.25);
 
-  /* Gold — financial values */
+  /* ── Gold — financial values ── */
   --gold:          #fbbf24;
   --gold-dim:      rgba(251, 191, 36, 0.12);
   --gold-border:   rgba(251, 191, 36, 0.28);
 
-  /* Text */
-  --text:        #f0ede8;
-  --text-2:      #a3a3a3;
-  --text-muted:  #6b6b6b;
-  --text-3:      #525252;
-  --text-faint:  #333333;
+  /* ── Text (DS v4 dark) ── */
+  --text:          #f5f5f5;
+  --text-2:        #a3a3a3;
+  --text-muted:    #6b6b6b;
+  --text-3:        #525252;
+  --text-faint:    #333333;
 
-  /* Borders */
+  /* ── Borders ── */
   --border:        rgba(255, 255, 255, 0.06);
   --border-hover:  rgba(255, 255, 255, 0.12);
-  --border-focus:  rgba(255, 153, 0, 0.45);
+  --border-focus:  rgba(249, 115, 22, 0.45);
 
-  /* Status */
+  /* ── Status ── */
   --success:        #10b981;
   --success-dim:    rgba(16, 185, 129, 0.12);
-  --success-border: rgba(16, 185, 129, 0.28);
+  --success-border: rgba(16, 185, 129, 0.25);
   --warning:        #f59e0b;
   --danger:         #ef4444;
   --danger-dim:     rgba(239, 68, 68, 0.12);
   --danger-border:  rgba(239, 68, 68, 0.28);
+  --info:           #3b82f6;
 
-  /* Radii */
+  /* ── Badge tokens (DS v4 dark) ── */
+  --badge-res-bg:      rgba(59, 130, 246, 0.20);
+  --badge-res-color:   #60a5fa;
+  --badge-res-border:  rgba(59, 130, 246, 0.30);
+  --badge-com-bg:      rgba(139, 92, 246, 0.20);
+  --badge-com-color:   #a78bfa;
+  --badge-com-border:  rgba(139, 92, 246, 0.30);
+  --badge-active-bg:   rgba(16, 185, 129, 0.15);
+  --badge-active-color:#34d399;
+  --badge-active-border:rgba(16, 185, 129, 0.25);
+  --badge-soon-bg:     rgba(251, 191, 36, 0.12);
+  --badge-soon-color:  #fbbf24;
+  --badge-soon-border: rgba(251, 191, 36, 0.25);
+
+  /* ── Radii ── */
   --radius-card: 14px;
   --radius-btn:  10px;
   --radius-badge: 6px;
 
-  /* Shadows */
+  /* ── Shadows ── */
   --shadow-card:     0 10px 30px rgba(0, 0, 0, 0.35), 0 4px 10px rgba(0, 0, 0, 0.2);
-  --shadow-elevated: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 153, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  --shadow-glow:     0 0 30px rgba(255, 153, 0, 0.18);
+  --shadow-elevated: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 40px rgba(249, 115, 22, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-glow:     0 0 30px rgba(249, 115, 22, 0.18);
 
-  /* Blur */
+  /* ── Blur ── */
   --blur-glass: blur(16px);
 
-  /* Fonts */
+  /* ── Fonts ── */
   --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: 'Syne', 'DM Sans', -apple-system, sans-serif;
   --font-mono:    'DM Mono', 'JetBrains Mono', monospace;
 
-  /* Transitions */
+  /* ── Transitions ── */
   --transition-fast: 100ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 180ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 380ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Layout ── */
+  --navbar-h: 64px;
 }
 
 [data-theme='light'] {
-  --bg:          #ffffff;
-  --bg-2:        #fafafa;
-  --bg-3:        #f5f3ef;
-  --bg-card:     #f5f3ef;
-  --bg-elevated: #eeece8;
-  --bg-card-hover: #e8e4de;
-  --border:        rgba(0, 0, 0, 0.07);
-  --border-hover:  rgba(0, 0, 0, 0.13);
-  --text:        #0f0a1a;
-  --text-2:      #4a4540;
-  --text-muted:  #7a7570;
-  --text-3:      #a3a09c;
-  --text-faint:  #ccc8c2;
-  --shadow-card:     0 4px 24px rgba(0, 0, 0, 0.08);
-  --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.12);
+  /* ── Backgrounds (DS v4 warm parchment) ── */
+  --bg:            #ffffff;
+  --color-bg:      #ffffff;
+  --bg-2:          #fafaf8;
+  --bg-3:          #f5f3ef;
+  --bg-card:       #f5f3ef;
+  --bg-elevated:   #ede9e1;
+  --bg-card-hover: #e4dfd6;
+
+  /* ── Accent — keeps Bitcoin orange ── */
+  --accent:        #f97316;
+  --accent-dark:   #ea580c;
+  --accent-hover:  #fb923c;
+  --accent-dim:    rgba(249, 115, 22, 0.10);
+  --accent-border: rgba(249, 115, 22, 0.30);
+  --accent-glow:   rgba(249, 115, 22, 0.20);
+
+  /* ── Gold ── */
+  --gold:          #d97706;
+  --gold-dim:      rgba(217, 119, 6, 0.10);
+  --gold-border:   rgba(217, 119, 6, 0.28);
+
+  /* ── Text (warm dark brown) ── */
+  --text:          #1a1409;
+  --text-2:        #5c4f3a;
+  --text-muted:    #7a6f5e;
+  --text-3:        #9c8e7a;
+  --text-faint:    #c4b9a8;
+
+  /* ── Borders (accent-tinted per DS v4) ── */
+  --border:        rgba(249, 115, 22, 0.12);
+  --border-hover:  rgba(249, 115, 22, 0.22);
+  --border-focus:  rgba(249, 115, 22, 0.50);
+
+  /* ── Status ── */
+  --success:        #059669;
+  --success-dim:    rgba(5, 150, 105, 0.10);
+  --success-border: rgba(5, 150, 105, 0.22);
+  --danger:         #dc2626;
+  --danger-dim:     rgba(220, 38, 38, 0.08);
+  --danger-border:  rgba(220, 38, 38, 0.22);
+  --info:           #f97316;
+
+  /* ── Badge tokens (DS v4 light) ── */
+  --badge-res-bg:      rgba(249, 115, 22, 0.10);
+  --badge-res-color:   #ea580c;
+  --badge-res-border:  rgba(249, 115, 22, 0.25);
+  --badge-com-bg:      rgba(124, 58, 237, 0.10);
+  --badge-com-color:   #7c3aed;
+  --badge-com-border:  rgba(124, 58, 237, 0.22);
+  --badge-active-bg:   rgba(5, 150, 105, 0.10);
+  --badge-active-color:#047857;
+  --badge-active-border:rgba(5, 150, 105, 0.22);
+  --badge-soon-bg:     rgba(217, 119, 6, 0.10);
+  --badge-soon-color:  #b45309;
+  --badge-soon-border: rgba(217, 119, 6, 0.22);
+
+  /* ── Shadows (lighter for bright bg) ── */
+  --shadow-card:     0 4px 24px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.05);
+  --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.10), 0 0 24px rgba(249, 115, 22, 0.06);
+  --shadow-glow:     0 0 24px rgba(249, 115, 22, 0.15);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -214,7 +278,7 @@ a {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 153, 0, 0.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.55), transparent);
   border-radius: inherit;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -228,10 +292,10 @@ a {
 
 .glass-card--hoverable:hover,
 .glass-card:focus-visible {
-  border-color: rgba(255, 153, 0, 0.20);
+  border-color: rgba(249, 115, 22, 0.20);
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.55),
-    0 0 40px rgba(255, 153, 0, 0.08),
+    0 0 40px rgba(249, 115, 22, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 
@@ -298,10 +362,10 @@ a {
 
 /* Variants — DS v5 */
 .btn--primary {
-  background: linear-gradient(135deg, #FF9900, #cc7a00);
+  background: linear-gradient(135deg, #f97316, #ea580c);
   color: #fff;
   border: none;
-  box-shadow: 0 4px 18px rgba(255, 153, 0, 0.32);
+  box-shadow: 0 4px 18px rgba(249, 115, 22, 0.32);
   position: relative;
   overflow: hidden;
 }
@@ -316,12 +380,12 @@ a {
 
 .btn--primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(255, 153, 0, 0.42);
+  box-shadow: 0 8px 28px rgba(249, 115, 22, 0.42);
 }
 
 .btn--primary:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 12px rgba(255, 153, 0, 0.28);
+  box-shadow: 0 2px 12px rgba(249, 115, 22, 0.28);
 }
 
 .btn--secondary {
@@ -369,7 +433,7 @@ a {
 .badge--category {
   background: var(--accent-dim);
   color: var(--accent);
-  border: 1px solid rgba(255, 153, 0, 0.2);
+  border: 1px solid rgba(249, 115, 22, 0.2);
 }
 
 .badge--pending {
@@ -480,7 +544,7 @@ a {
   height: 2px;
   background: var(--accent);
   border-radius: 0 0 3px 3px;
-  box-shadow: 0 0 8px rgba(247, 147, 26, 0.6);
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
 }
 
 .app-nav__actions {
@@ -534,13 +598,13 @@ a {
   letter-spacing: 0.01em;
   cursor: pointer;
   transition: background var(--transition-fast), transform 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: 0 0 0 0 rgba(247, 147, 26, 0);
+  box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
 }
 
 .wallet-btn--connect:hover {
   background: var(--accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(247, 147, 26, 0.35);
+  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.35);
 }
 
 .wallet-btn--connect:active {
@@ -591,7 +655,7 @@ a {
   right: 0;
   width: 260px;
   background: #1a1a1a;
-  border: 1px solid rgba(247, 147, 26, 0.25);
+  border: 1px solid rgba(249, 115, 22, 0.25);
   border-radius: 14px;
   padding: 12px;
   z-index: 9999;
@@ -695,7 +759,7 @@ a {
   display: inline-block;
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(247, 147, 26, 0.25);
+  border: 2px solid rgba(249, 115, 22, 0.25);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -1108,7 +1172,7 @@ a {
 .wallet-picker-modal__connecting-ring {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(247, 147, 26, 0.25);
+  border: 2px solid rgba(249, 115, 22, 0.25);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -1248,7 +1312,7 @@ a {
   margin-bottom: 1.5rem;
   padding: 0.3rem 0.9rem;
   background: var(--accent-dim);
-  border: 1px solid rgba(255, 153, 0, 0.2);
+  border: 1px solid rgba(249, 115, 22, 0.2);
   border-radius: 100px;
 }
 
@@ -1379,7 +1443,7 @@ a {
   font-family: var(--font-heading);
   font-size: 4rem;
   font-weight: 900;
-  color: rgba(247, 147, 26, 0.12);
+  color: rgba(249, 115, 22, 0.12);
   position: absolute;
   top: 1rem;
   right: 1.25rem;
@@ -1418,7 +1482,7 @@ a {
   padding: 1.25rem 0;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-  background: rgba(247, 147, 26, 0.03);
+  background: rgba(249, 115, 22, 0.03);
   flex-wrap: wrap;
 }
 
@@ -1573,7 +1637,7 @@ a {
 
 .landing__cta-banner {
   padding: 5rem 0;
-  background: linear-gradient(135deg, rgba(255, 153, 0, 0.08) 0%, rgba(212, 160, 23, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, rgba(212, 160, 23, 0.05) 100%);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
@@ -1995,7 +2059,7 @@ a {
 
 .filter-btn--active {
   background: var(--accent-dim);
-  border-color: rgba(255, 153, 0, 0.3);
+  border-color: rgba(249, 115, 22, 0.3);
   color: var(--accent);
 }
 
