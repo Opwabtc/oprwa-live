@@ -13,7 +13,10 @@ const NAV_LINKS = [
 
 export function AppNav(): React.JSX.Element {
   const location = useLocation();
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('oprwa-theme') : null;
+    return (saved === 'light' ? 'light' : 'dark') as 'dark' | 'light';
+  });
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
@@ -25,6 +28,10 @@ export function AppNav(): React.JSX.Element {
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('oprwa-theme', next);
   };
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     const onScroll = (): void => {

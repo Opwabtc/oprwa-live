@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchAsset, postBuy } from '@/lib/api';
 import { usePricing } from '@/hooks/usePricing';
@@ -25,10 +25,17 @@ export function AssetDetail(): React.JSX.Element {
   const [buyState, setBuyState] = useState<BuyState>('idle');
   const [buyError, setBuyError] = useState<string | null>(null);
   const [lastTxId, setLastTxId] = useState<string | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { quote, loading: quoteLoading } = usePricing(id ?? '', fractions);
   const { address, refreshPortfolio } = useWalletStore();
   const { addPendingTx, settleTx } = usePortfolioStore();
+
+  useEffect(() => {
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!id) return;
@@ -85,9 +92,9 @@ export function AssetDetail(): React.JSX.Element {
           const adapter = new OPNetRWAVaultAdapter(CONTRACT_ADDRESS, 'testnet');
           const initialBal = await adapter.balanceOf(address, asset.id).catch(() => 0n);
           const deadline = Date.now() + 120_000;
-          const poll = setInterval(() => {
+          pollRef.current = setInterval(() => {
             if (Date.now() > deadline) {
-              clearInterval(poll);
+              if (pollRef.current) clearInterval(pollRef.current);
               sounds.success();
               settleTx(res.tx_id);
               setBuyState('settled');
@@ -96,7 +103,7 @@ export function AssetDetail(): React.JSX.Element {
             }
             void adapter.balanceOf(address, asset.id).then((bal: unknown) => {
               if (typeof bal === 'bigint' && bal > initialBal) {
-                clearInterval(poll);
+                if (pollRef.current) clearInterval(pollRef.current);
                 sounds.success();
                 settleTx(res.tx_id);
                 setBuyState('settled');

@@ -6,8 +6,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 let lenis: Lenis | null = null;
 
-export function initLenis(): Lenis {
-  if (typeof window === 'undefined' || window.innerWidth < 768) return lenis as unknown as Lenis;
+export function initLenis(): Lenis | null {
+  if (typeof window === 'undefined' || window.innerWidth < 768) return null;
 
   lenis = new Lenis({
     duration: 1.2,
