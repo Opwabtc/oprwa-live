@@ -24,7 +24,10 @@ const ASSET_TOKEN_IDS: Record<string, number> = {
   'london-grade-a-office': 8,
 };
 
-const RPC_URL = 'https://testnet.opnet.org';
+const RPC_URL: string =
+  (typeof import.meta !== 'undefined' &&
+    (import.meta as { env?: Record<string, string> }).env?.VITE_RPC_URL) ||
+  'https://testnet.opnet.org';
 
 // Simulated balances for mock mode: address → assetId → amount
 const balances = new Map<string, Map<string, bigint>>();
@@ -59,7 +62,11 @@ function computeMockFee(txValue: bigint): bigint {
 }
 
 function generateMockTxId(): string {
-  return `mock_tx_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+  const uid =
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID().replace(/-/g, '')
+      : Date.now().toString(36) + Math.random().toString(36).slice(2);
+  return `mock_tx_${uid}`;
 }
 
 function getOrCreateBalance(address: string): Map<string, bigint> {

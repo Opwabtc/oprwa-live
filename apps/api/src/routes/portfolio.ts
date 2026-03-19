@@ -32,8 +32,8 @@ portfolioRouter.post('/buy', async (c) => {
   if (!assetId || typeof assetId !== 'string') {
     return c.json({ error: 'assetId is required' }, 400);
   }
-  if (!amount || typeof amount !== 'number' || amount < 1) {
-    return c.json({ error: 'amount must be a positive number' }, 400);
+  if (!amount || typeof amount !== 'number' || amount < 1 || amount > 1_000_000 || !Number.isInteger(amount)) {
+    return c.json({ error: 'amount must be a positive integer (1–1,000,000)' }, 400);
   }
   if (!wallet || typeof wallet !== 'string' || wallet.length < 10) {
     return c.json({ error: 'wallet address is required' }, 400);
@@ -49,7 +49,7 @@ portfolioRouter.post('/buy', async (c) => {
   const fee = computeFee(total_price, asset.demand_factor);
   const total_cost = total_price + fee;
   const now = Date.now();
-  const txId = `tx_${now}_${Math.random().toString(36).slice(2, 9)}`;
+  const txId = `tx_${now}_${crypto.randomUUID().replace(/-/g, '').slice(0, 12)}`;
 
   const tx: Transaction = {
     id: txId,

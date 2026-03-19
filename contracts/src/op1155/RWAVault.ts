@@ -530,10 +530,10 @@ export class RWAVault extends OP_NET {
 
         let scaledValue = calldata.readU256();
 
-        // Clamp to [0, 1000]
+        // Enforce [0, 1000] — revert on out-of-range (no silent clamping)
         const maxVal = u256.fromU64(DEMAND_MAX);
         if (u256.gt(scaledValue, maxVal)) {
-            scaledValue = maxVal;
+            throw new Revert('RWAVault: demand factor exceeds maximum (1000)');
         }
         // Minimum is u256.Zero (0), already enforced by u256 unsigned type
 

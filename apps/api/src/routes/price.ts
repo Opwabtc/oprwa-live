@@ -9,7 +9,7 @@ priceRouter.get('/price/:assetId', (c) => {
   const amountParam = c.req.query('amount');
   const amount = amountParam !== undefined ? parseInt(amountParam, 10) : 1;
 
-  if (isNaN(amount) || amount < 1) {
+  if (isNaN(amount) || amount < 1 || amount > 1_000_000 || !Number.isInteger(amount)) {
     return c.json({ error: 'Invalid amount parameter' }, 400);
   }
 
