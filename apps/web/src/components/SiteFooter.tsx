@@ -81,7 +81,7 @@ export function SiteFooter(): React.JSX.Element {
                 </a>
               </li>
               <li>
-                <a href="https://opscan.org/accounts/opt1sqrx3wegg9au7l6amnd7jal5rety53sf9cg04s6sq?network=testnet" target="_blank" rel="noopener noreferrer" className="site-footer__link">
+                <a href="https://opscan.org/accounts/opt1sqp9mx9zujx607cpm40skg8u8fpl5ma4r0u797uls?network=testnet" target="_blank" rel="noopener noreferrer" className="site-footer__link">
                   <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   <ScrambleText steps={6} speed={28}>Contract ↗</ScrambleText>
                 </a>
@@ -112,14 +112,14 @@ export function SiteFooter(): React.JSX.Element {
                 </Link>
               </li>
               <li>
-                <Link to="/terms#risk" className="site-footer__link">
+                <Link to="/terms#risk-disclosure" className="site-footer__link">
                   <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   <ScrambleText steps={6} speed={28}>Risk Disclosure</ScrambleText>
                 </Link>
               </li>
             </ul>
             <p className="site-footer__col-title" style={{ marginTop: '1.5rem' }}>Contract</p>
-            <p className="site-footer__contract">opt1sqrx3wegg9au7l6amnd7jal5rety53sf9cg04s6sq</p>
+            <p className="site-footer__contract">opt1sqp9mx9zujx607cpm40skg8u8fpl5ma4r0u797uls</p>
           </div>
         </div>
 

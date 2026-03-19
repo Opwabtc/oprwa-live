@@ -50,7 +50,7 @@ export function Dashboard(): React.JSX.Element {
 
   return (
     <div className="page dashboard-page">
-      <div className="container">
+      <div className="container dashboard-content">
         <div className="page-header">
           <h1 className="page-title">Dashboard</h1>
           <button
@@ -208,7 +208,7 @@ export function Dashboard(): React.JSX.Element {
         </div>
 
         {/* Transaction History */}
-        <div className="dashboard__tx-history">
+        <div className="dashboard__tx-history transaction-history">
           <h2 className="dashboard__assets-title">Transaction History</h2>
           <div className="tx-table">
             <div className="tx-table__head">

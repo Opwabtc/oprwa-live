@@ -58,7 +58,7 @@ export function Terms(): React.JSX.Element {
           </div>
         ))}
 
-        <div id="risk" style={{ marginTop: '3rem', padding: '1.5rem', background: 'var(--danger-dim)', border: '1px solid var(--danger-border)', borderRadius: 'var(--radius-card)' }}>
+        <div id="risk-disclosure" style={{ marginTop: '3rem', padding: '1.5rem', background: 'var(--danger-dim)', border: '1px solid var(--danger-border)', borderRadius: 'var(--radius-card)' }}>
           <h2 style={{ fontSize: '1rem', color: 'var(--danger)', marginBottom: '0.5rem' }}>Risk Disclosure</h2>
           <p style={{ fontSize: '0.875rem', color: 'var(--text-2)', lineHeight: 1.72 }}>
             Investing in tokenized real-world assets carries substantial risk. The value of fractional ownership tokens may fluctuate dramatically. You may lose your entire investment. RWA tokens are not insured by any government deposit insurance scheme. Liquidity may be limited. Smart contract bugs may result in permanent loss of funds. Only invest what you can afford to lose entirely. This is not a solicitation to invest.

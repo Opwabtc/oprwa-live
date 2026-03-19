@@ -12,6 +12,7 @@ import { Terms } from '@/pages/Terms';
 import { Privacy } from '@/pages/Privacy';
 import { useWalletStore } from '@/store/walletStore';
 import { PopCatCursor } from '@/components/PopCatCursor';
+import { useBackgroundScroll } from '@/hooks/useBackgroundScroll';
 
 const PAGE_VARIANTS = {
   initial: { opacity: 0 },
@@ -25,6 +26,7 @@ export function App(): React.JSX.Element {
   const location = useLocation();
   const { address, connected, refreshPortfolio } = useWalletStore();
   const [loading, setLoading] = useState(true);
+  useBackgroundScroll();
 
   // Auto-load portfolio when wallet is restored from localStorage after page refresh
   useEffect(() => {
@@ -76,7 +78,7 @@ export function App(): React.JSX.Element {
 
   return (
     <>
-      <div className="bg-canvas" aria-hidden="true" />
+      <div id="bg-gradient" className="bg-canvas" aria-hidden="true" />
       <div className="bg-canvas-accent" aria-hidden="true" />
       <div className="grain-overlay" aria-hidden="true" />
       <CursorTrail />

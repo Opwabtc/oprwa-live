@@ -149,8 +149,8 @@ export function Docs(): React.JSX.Element {
               AssemblyScript contract. Only the contract is authoritative. The API can fail, the frontend
               can lie — the contract cannot.
             </p>
-            <div className="docs-arch-grid">
-              <div className="docs-arch-card glass-card">
+            <div className="docs-arch-grid docs-grid">
+              <div className="docs-arch-card glass-card doc-card reveal">
                 <div className="docs-arch-card__label">Layer 1 — Bitcoin L1</div>
                 <h3 className="docs-arch-card__title">RWAVault Contract</h3>
                 <p className="docs-arch-card__body">
@@ -161,7 +161,7 @@ export function Docs(): React.JSX.Element {
                   <span>opt1sqrx3wegg9au7l6amnd7jal5rety53sf9...04s6sq</span>
                 </div>
               </div>
-              <div className="docs-arch-card glass-card">
+              <div className="docs-arch-card glass-card doc-card reveal">
                 <div className="docs-arch-card__label">Layer 2 — Pricing API</div>
                 <h3 className="docs-arch-card__title">Deterministic Pricing</h3>
                 <p className="docs-arch-card__body">
@@ -173,7 +173,7 @@ export function Docs(): React.JSX.Element {
 demand_factor ∈ [-0.05, 0.05]`}
                 </pre>
               </div>
-              <div className="docs-arch-card glass-card">
+              <div className="docs-arch-card glass-card doc-card reveal">
                 <div className="docs-arch-card__label">Layer 3 — Interface</div>
                 <h3 className="docs-arch-card__title">React + OPNet SDK</h3>
                 <p className="docs-arch-card__body">
