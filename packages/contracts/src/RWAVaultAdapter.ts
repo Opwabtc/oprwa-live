@@ -194,12 +194,16 @@ export class OPNetRWAVaultAdapter implements IContractAdapter {
           : btcBitcoin.networks.bitcoin;
 
       // 2. Send — wallet signs (signer: null = NEVER pass keypair from frontend)
+      // maximumAllowedSatToSpend = purchase cost + 100k sats buffer for gas/fees
+      const PRICE_PER_FRACTION = 1000n;
+      const purchaseCost = amount * PRICE_PER_FRACTION;
+      const maxSpend = purchaseCost + 100_000n;
       const receipt = await sim.sendTransaction({
         signer: null,
         mldsaSigner: null,
         refundTo: callerAddress ?? '',
         network: NETWORK,
-        maximumAllowedSatToSpend: 100_000n,
+        maximumAllowedSatToSpend: maxSpend,
       });
 
       return {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWalletStore } from '@/store/walletStore';
 import { usePortfolio } from '@/hooks/usePortfolio';
@@ -37,6 +37,7 @@ export function Dashboard(): React.JSX.Element {
   const { positions } = usePortfolio(address);
   const { price: btcPrice } = useBTCPrice();
   const { transactions: allTransactions } = usePortfolioStore();
+  const [balanceShowUSD, setBalanceShowUSD] = useState(false);
   // Each wallet sees only its own transactions
   const transactions = allTransactions.filter((tx) => !address || tx.wallet === address);
 
@@ -97,15 +98,35 @@ export function Dashboard(): React.JSX.Element {
               Network: <strong>{network}</strong>
             </p>
           </div>
-          {/* BTC balance summary */}
-          {connected && totalSats > 0 && (
-            <div className="dashboard__wallet-balance">
-              <span className="dashboard__wallet-btc tabular-nums">
-                {totalBTC.toLocaleString('pt-BR', { minimumFractionDigits: 8, maximumFractionDigits: 8 })} BTC
-              </span>
+          {/* BTC / USD balance toggle */}
+          {connected && (
+            <div
+              className={`dashboard__wallet-balance dashboard__wallet-balance--toggle${btcPrice !== null ? ' dashboard__wallet-balance--clickable' : ''}`}
+              onClick={() => btcPrice !== null && setBalanceShowUSD((v) => !v)}
+              onKeyDown={(e) => e.key === 'Enter' && btcPrice !== null && setBalanceShowUSD((v) => !v)}
+              role={btcPrice !== null ? 'button' : undefined}
+              tabIndex={btcPrice !== null ? 0 : undefined}
+              aria-label={balanceShowUSD ? 'Show BTC balance' : 'Show USD balance'}
+              title={btcPrice !== null ? (balanceShowUSD ? 'Click to show BTC' : 'Click to show USD') : undefined}
+            >
+              {balanceShowUSD && btcPrice !== null ? (
+                <>
+                  <span className="dashboard__balance-symbol dashboard__balance-symbol--usd">$</span>
+                  <span className="dashboard__balance-value tabular-nums">
+                    {satsToUSD(totalSats, btcPrice)}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="dashboard__balance-symbol dashboard__balance-symbol--btc">₿</span>
+                  <span className="dashboard__balance-value tabular-nums">
+                    {totalBTC.toFixed(8)}
+                  </span>
+                </>
+              )}
               {btcPrice !== null && (
-                <span className="dashboard__wallet-usd tabular-nums">
-                  ≈ US$ {satsToUSD(totalSats, btcPrice)}
+                <span className="dashboard__balance-hint">
+                  {balanceShowUSD ? 'tap for ₿' : 'tap for $'}
                 </span>
               )}
             </div>
