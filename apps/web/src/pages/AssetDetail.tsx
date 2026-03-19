@@ -137,73 +137,31 @@ export function AssetDetail(): React.JSX.Element {
           {/* Right: Buy Panel */}
           <div className="asset-detail__buy glass-card">
             <h2 className="asset-detail__buy-title">Buy Fractions</h2>
-
             <div className="buy-panel__field">
-              <label htmlFor="buy-amount" className="buy-panel__label">
-                Number of Fractions
-              </label>
-              <input
-                id="buy-amount"
-                type="text"
-                inputMode="numeric"
+              <label htmlFor="buy-amount" className="buy-panel__label">Number of fractions</label>
+              <input id="buy-amount" type="text" inputMode="numeric"
                 value={fractions}
                 onChange={(e) => {
                   const n = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10) || 1;
                   setFractions(Math.max(1, Math.min(asset.available_fractions, n)));
                 }}
-                className="buy-modal__input"
-                aria-label="Fractions to buy"
+                className="buy-modal__input" aria-label="Fractions to buy"
               />
             </div>
-
-            <div className="buy-panel__quote">
-              {quoteLoading ? (
-                <>
-                  <div className="skeleton-row" />
-                  <div className="skeleton-row" />
-                  <div className="skeleton-row" />
-                </>
-              ) : quote ? (
-                <>
-                  <div className="buy-modal__row">
-                    <span>Price per fraction</span>
-                    <span className="buy-modal__value tabular-nums">
-                      {quote.price_per_fraction.toLocaleString('en-US')} sats
-                    </span>
-                  </div>
-                  <div className="buy-modal__row">
-                    <span>Subtotal</span>
-                    <span className="buy-modal__value tabular-nums">
-                      {quote.total_price.toLocaleString('en-US')} sats
-                    </span>
-                  </div>
-                  <div className="buy-modal__row">
-                    <span>Protocol fee</span>
-                    <span className="buy-modal__value buy-modal__fee tabular-nums">
-                      {quote.fee.toLocaleString('en-US')} sats
-                    </span>
-                  </div>
-                  <div className="buy-modal__row buy-modal__total">
-                    <span>Total</span>
-                    <span className="buy-modal__value tabular-nums">
-                      {quote.total_cost.toLocaleString('en-US')} sats
-                    </span>
-                  </div>
-                </>
-              ) : null}
-            </div>
-
-            <button
-              className="btn btn--primary btn--lg buy-modal__cta"
+            {quote && (
+              <div className="buy-panel__total">
+                <span className="buy-panel__total-label">Total cost</span>
+                <span className="buy-panel__total-value tabular-nums">{quote.total_cost.toLocaleString('en-US')} sats</span>
+              </div>
+            )}
+            <button className="btn btn--primary btn--lg buy-modal__cta"
               onClick={() => setBuyOpen(true)}
+              disabled={!quote}
               aria-label={`Buy fractions of ${asset.name}`}
             >
-              Buy Now
+              {quoteLoading ? 'Calculating...' : 'Buy Now'}
             </button>
-
-            <p className="buy-panel__note">
-              Fees enforced on-chain by RWAVault contract.
-            </p>
+            <p className="buy-panel__note">Fees enforced on-chain by RWAVault contract.</p>
           </div>
         </div>
       </div>

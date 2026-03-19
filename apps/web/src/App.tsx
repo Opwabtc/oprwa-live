@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AppNav } from '@/components/AppNav';
 import { CursorTrail } from '@/components/CursorTrail';
 import { LoadingScreen } from '@/components/LoadingScreen';
-import { StairOverlay } from '@/components/StairOverlay';
 import { Landing } from '@/pages/Landing';
 import { AssetDetail } from '@/pages/AssetDetail';
 import { Dashboard } from '@/pages/Dashboard';
@@ -43,7 +42,6 @@ export function App(): React.JSX.Element {
       <div className="bg-canvas" aria-hidden="true" />
       <CursorTrail />
       <AppNav />
-      <StairOverlay />
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={location.pathname}

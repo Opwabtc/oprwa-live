@@ -492,11 +492,11 @@ a {
   background: linear-gradient(145deg, #ffad33 0%, #f97316 40%, #c2410c 100%);
   color: #fff;
   border: none;
-  border-bottom: 4px solid #92340a;
+  border-bottom: 2px solid #92340a;
   border-right: 2px solid #b84a10;
   box-shadow:
-    0 6px 0 #7c2d09,
-    0 10px 24px rgba(249, 115, 22, 0.38),
+    0 3px 0 #7c2d09,
+    0 6px 16px rgba(249, 115, 22, 0.28),
     inset 0 1px 0 rgba(255,255,255,0.22);
   position: relative;
   overflow: hidden;
@@ -514,20 +514,20 @@ a {
 }
 
 .btn--primary:hover:not(:disabled) {
-  transform: translateY(-3px) translateZ(0);
+  transform: translateY(-2px) translateZ(0);
   box-shadow:
-    0 9px 0 #7c2d09,
-    0 16px 32px rgba(249, 115, 22, 0.48),
+    0 5px 0 #7c2d09,
+    0 10px 22px rgba(249, 115, 22, 0.38),
     inset 0 1px 0 rgba(255,255,255,0.22);
 }
 
 .btn--primary:active:not(:disabled) {
-  transform: translateY(4px) translateZ(0);
+  transform: translateY(2px) translateZ(0);
   border-bottom-width: 1px;
   box-shadow:
-    0 2px 0 #7c2d09,
-    0 4px 12px rgba(249, 115, 22, 0.28),
-    inset 0 2px 4px rgba(0,0,0,0.18);
+    0 1px 0 #7c2d09,
+    0 3px 8px rgba(249, 115, 22, 0.22),
+    inset 0 2px 4px rgba(0,0,0,0.15);
 }
 
 .btn--secondary {
@@ -536,10 +536,10 @@ a {
   border-top: 1px solid var(--border-hover);
   border-left: 1px solid var(--border-hover);
   border-right: 1px solid rgba(0,0,0,0.4);
-  border-bottom: 3px solid rgba(0,0,0,0.5);
+  border-bottom: 2px solid rgba(0,0,0,0.5);
   box-shadow:
-    0 5px 0 rgba(0,0,0,0.35),
-    0 8px 20px rgba(0,0,0,0.22),
+    0 3px 0 rgba(0,0,0,0.35),
+    0 5px 14px rgba(0,0,0,0.20),
     inset 0 1px 0 rgba(255,255,255,0.08);
   transform: translateY(0) translateZ(0);
   transition: transform 0.1s ease, box-shadow 0.1s ease, border-bottom-width 0.1s ease;
@@ -550,15 +550,15 @@ a {
   border-top-color: var(--accent-border);
   border-left-color: var(--accent-border);
   color: var(--text);
-  transform: translateY(-3px) translateZ(0);
+  transform: translateY(-2px) translateZ(0);
   box-shadow:
-    0 8px 0 rgba(0,0,0,0.35),
-    0 14px 28px rgba(255,153,0,0.18),
+    0 5px 0 rgba(0,0,0,0.35),
+    0 10px 22px rgba(255,153,0,0.14),
     inset 0 1px 0 rgba(255,255,255,0.10);
 }
 
 .btn--secondary:active:not(:disabled) {
-  transform: translateY(3px) translateZ(0);
+  transform: translateY(2px) translateZ(0);
   border-bottom-width: 1px;
   box-shadow:
     0 1px 0 rgba(0,0,0,0.35),
@@ -851,8 +851,9 @@ a {
 
 .wallet-dropdown {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 10px);
   right: 0;
+  min-width: 220px;
   width: 260px;
   background: #1a1a1a;
   border: 1px solid rgba(249, 115, 22, 0.25);
@@ -1828,7 +1829,7 @@ a {
    ============================================================ */
 .why-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
@@ -3027,14 +3028,6 @@ a {
   line-height: 1.65;
 }
 
-/* ── Staircase entrance for Why Bitcoin ─────────────────────── */
-@keyframes stair-in {
-  from { opacity: 0; transform: translateX(-32px) translateY(16px); }
-  to   { opacity: 1; transform: translateX(0) translateY(0); }
-}
-.why-item.stair-visible {
-  animation: stair-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
 
 /* ── Gradient scroll text (overridden at bottom of file) ──── */
 
@@ -4384,31 +4377,6 @@ a {
   letter-spacing: 0.06em;
 }
 
-/* ============================================================
-   STAIR TRANSITION OVERLAY
-   ============================================================ */
-.stair-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-}
-.stair-strip {
-  flex: 1;
-  transform: translateX(100%);
-  background: var(--accent);
-  transition: transform 0.42s cubic-bezier(0.76, 0, 0.24, 1);
-  transition-delay: calc(var(--strip-i) * 48ms);
-}
-.stair-strip--in {
-  transform: translateX(0%);
-}
-.stair-strip--out {
-  transform: translateX(-100%);
-  transition-delay: calc(var(--strip-i) * 40ms);
-}
 
 /* ============================================================
    SC-SECTION PARALLAX ELEMENTS
@@ -4521,13 +4489,6 @@ a {
   line-height: 1;
 }
 
-/* ============================================================
-   LIGHT THEME — stair strip color
-   ============================================================ */
-[data-theme='light'] .stair-strip {
-  background: var(--accent);
-}
-
 [data-theme='light'] .loading-screen {
   background: var(--bg);
 }
@@ -4608,22 +4569,6 @@ a {
 /* Section headings — no overflow clip (would hide reveal animations) */
 /* .section-title { overflow: hidden; } — intentionally left transparent */
 
-/* ============================================================
-   3D BTN — light theme overrides
-   ============================================================ */
-[data-theme='light'] .btn--primary {
-  box-shadow:
-    0 6px 0 #7c2d09,
-    0 10px 24px rgba(249, 115, 22, 0.28),
-    inset 0 1px 0 rgba(255,255,255,0.35);
-}
-
-[data-theme='light'] .btn--primary:hover:not(:disabled) {
-  box-shadow:
-    0 9px 0 #7c2d09,
-    0 16px 32px rgba(249, 115, 22, 0.38),
-    inset 0 1px 0 rgba(255,255,255,0.35);
-}
 
 /* ============================================================
    HERO EYEBROW — remove pill if still rendered elsewhere
@@ -4758,4 +4703,181 @@ a {
 @media (max-width: 768px) {
   .landing, .page { overflow-x: hidden; }
   .hero__video { min-width: 100%; min-height: 100%; }
+}
+
+/* ============================================================
+   LIGHT THEME — primary button becomes purple
+   ============================================================ */
+[data-theme='light'] .btn--primary {
+  background: linear-gradient(145deg, #a78bfa 0%, #7c3aed 40%, #5b21b6 100%);
+  border-bottom-color: #3b0764;
+  border-right-color: #4c1d95;
+  box-shadow: 0 3px 0 #3b0764, 0 6px 16px rgba(124,58,237,0.30), inset 0 1px 0 rgba(255,255,255,0.22);
+  color: #fff;
+}
+[data-theme='light'] .btn--primary:hover:not(:disabled) {
+  box-shadow: 0 5px 0 #3b0764, 0 10px 22px rgba(124,58,237,0.40), inset 0 1px 0 rgba(255,255,255,0.22);
+}
+[data-theme='light'] .btn--primary:active:not(:disabled) {
+  box-shadow: 0 1px 0 #3b0764, 0 3px 8px rgba(124,58,237,0.22), inset 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* ============================================================
+   WALLET DROPDOWN — light theme
+   ============================================================ */
+[data-theme='light'] .wallet-dropdown {
+  background: rgba(255,255,255,0.95);
+  border-color: rgba(124,58,237,0.15);
+  color: #1a0533;
+}
+[data-theme='light'] .wallet-dropdown__title { color: #3b0764; }
+[data-theme='light'] .wallet-dropdown__name { color: #1a0533; }
+[data-theme='light'] .wallet-dropdown__desc { color: #4c1d95; }
+[data-theme='light'] .wallet-dropdown__option { color: #1a0533; }
+[data-theme='light'] .wallet-dropdown__option:hover { background: rgba(124,58,237,0.08); }
+[data-theme='light'] .wallet-dropdown__note { color: #6d28d9; }
+
+/* ============================================================
+   WHY BITCOIN — section title/eyebrow centering
+   ============================================================ */
+.landing__section--why .section-title { text-align: center; }
+.landing__section--why .section-eyebrow { text-align: center; }
+
+/* ============================================================
+   WHY BITCOIN — grid responsive
+   ============================================================ */
+@media (max-width: 768px) {
+  .why-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   BUY PANEL — simplified total cost display
+   ============================================================ */
+.buy-panel__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.875rem 1rem;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-card);
+  margin-bottom: 0.5rem;
+}
+.buy-panel__total-label { font-size: 0.875rem; color: var(--text-2); }
+.buy-panel__total-value { font-size: 1.125rem; font-weight: 700; color: var(--accent); font-family: var(--font-mono); }
+[data-theme='light'] .buy-panel__total { background: var(--purple-dim); border-color: var(--purple-border); }
+[data-theme='light'] .buy-panel__total-value { color: var(--purple); }
+
+/* ============================================================
+   DASHBOARD — BTC pill in wallet status bar
+   ============================================================ */
+.dashboard__wallet-btc-pill {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 100px;
+  padding: 0.2rem 0.75rem;
+}
+[data-theme='light'] .dashboard__wallet-btc-pill { color: var(--purple); background: var(--purple-dim); border-color: var(--purple-border); }
+
+/* ============================================================
+   DASHBOARD — transaction history table
+   ============================================================ */
+.dashboard__tx-history { margin-top: 2.5rem; }
+.tx-table { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: var(--radius-card); overflow: hidden; }
+.tx-table__head {
+  display: grid;
+  grid-template-columns: 2fr 3fr 1fr 2fr 1.5fr 2fr;
+  padding: 0.75rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  gap: 0.5rem;
+}
+.tx-table__row {
+  display: grid;
+  grid-template-columns: 2fr 3fr 1fr 2fr 1.5fr 2fr;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  gap: 0.5rem;
+  align-items: center;
+  transition: background 0.15s;
+}
+.tx-table__row:last-child { border-bottom: none; }
+.tx-table__row:hover { background: var(--bg-surface); }
+.tx-table__txid { color: var(--accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.8rem; }
+.tx-table__txid:hover { text-decoration: underline; }
+.tx-table__date { color: var(--text-2); font-size: 0.8rem; }
+@media (max-width: 768px) {
+  .tx-table__head { grid-template-columns: 1fr 2fr 1fr 1fr; }
+  .tx-table__head span:nth-child(5), .tx-table__head span:nth-child(6) { display: none; }
+  .tx-table__row { grid-template-columns: 1fr 2fr 1fr 1fr; }
+  .tx-table__row > *:nth-child(5), .tx-table__row > *:nth-child(6) { display: none; }
+}
+
+/* ============================================================
+   GREY TEXT — readability overrides
+   ============================================================ */
+.asset-card__stat-label { color: var(--text); opacity: 0.7; }
+.asset-card__demand-label { color: var(--text); opacity: 0.7; }
+.buy-modal__row span:first-child { color: var(--text); }
+.dashboard__stat-label { color: var(--text); }
+.dashboard__wallet-label { color: var(--text); }
+.portfolio__label { color: var(--text); }
+[data-theme='light'] .asset-card__stat-label { color: #1a0533; opacity: 1; }
+[data-theme='light'] .asset-card__demand-label { color: #1a0533; }
+[data-theme='light'] .dashboard__stat-label { color: #1a0533; }
+
+/* ============================================================
+   BACKGROUND UNIFICATION — landing transparent sections
+   ============================================================ */
+.landing > section:not(.hero),
+.landing__section {
+  background: transparent !important;
+  position: relative;
+}
+.hero { position: relative; }
+
+/* ============================================================
+   REVEAL ANIMATIONS — clip-path mask + fade-up
+   ============================================================ */
+.reveal-mask {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-mask.is-visible {
+  clip-path: inset(0 0 0% 0);
+}
+.reveal-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   BADGE — warning/danger variants
+   ============================================================ */
+.badge--warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+.badge--danger {
+  background: var(--danger-dim);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
 }

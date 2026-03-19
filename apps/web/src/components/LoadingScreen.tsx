@@ -9,7 +9,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps): React.JSX.Ele
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
-    const totalMs = 1400;
+    const totalMs = 800;
     const steps = 70;
     const intervalMs = totalMs / steps;
     let current = 0;
@@ -22,7 +22,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps): React.JSX.Ele
         clearInterval(timer);
         setTimeout(() => {
           setLeaving(true);
-          setTimeout(onComplete, 500);
+          setTimeout(onComplete, 300);
         }, 200);
       }
     }, intervalMs);

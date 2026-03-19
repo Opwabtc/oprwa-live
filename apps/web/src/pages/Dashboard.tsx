@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useWalletStore } from '@/store/walletStore';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { useBTCPrice } from '@/hooks/useBTCPrice';
+import { usePortfolioStore } from '@/store/portfolioStore';
 import { SiteFooter } from '@/components/SiteFooter';
 
 function truncateAddress(addr: string): string {
@@ -35,6 +36,7 @@ export function Dashboard(): React.JSX.Element {
   const { address, connected, verified, network, portfolioLoading, refreshPortfolio } = useWalletStore();
   const { positions } = usePortfolio(address);
   const { price: btcPrice } = useBTCPrice();
+  const { transactions } = usePortfolioStore();
 
   const totalSats = positions.reduce(
     (sum, pos) => sum + pos.current_price * pos.amount,
@@ -76,6 +78,11 @@ export function Dashboard(): React.JSX.Element {
               {verified && (
                 <span className="badge badge--success" aria-label="Verified">
                   Verified
+                </span>
+              )}
+              {connected && totalBTC > 0 && (
+                <span className="dashboard__wallet-btc-pill tabular-nums">
+                  {totalBTC.toFixed(8)} BTC
                 </span>
               )}
             </div>
@@ -197,6 +204,38 @@ export function Dashboard(): React.JSX.Element {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Transaction History */}
+        <div className="dashboard__tx-history">
+          <h2 className="dashboard__assets-title">Transaction History</h2>
+          <div className="tx-table">
+            <div className="tx-table__head">
+              <span>Tx ID</span>
+              <span>Asset</span>
+              <span>Fractions</span>
+              <span>Value (sats)</span>
+              <span>Status</span>
+              <span>Date</span>
+            </div>
+            {transactions.map((tx) => (
+              <div key={tx.id} className="tx-table__row">
+                <a href={`https://opscan.org/transactions/${tx.id}?network=testnet`} target="_blank" rel="noopener noreferrer" className="tx-table__txid">
+                  {tx.id.slice(0, 10)}...
+                </a>
+                <span>{ASSET_NAMES[tx.asset_id] ?? tx.asset_id}</span>
+                <span className="tabular-nums">{tx.amount.toLocaleString()}</span>
+                <span className="tabular-nums">{tx.total_cost.toLocaleString()} sats</span>
+                <span className={`badge ${tx.status === 'SETTLED' ? 'badge--success' : tx.status === 'PENDING' ? 'badge--warning' : 'badge--danger'}`}>
+                  {tx.status}
+                </span>
+                <span className="tx-table__date">{new Date(tx.created_at).toLocaleDateString()}</span>
+              </div>
+            ))}
+            {transactions.length === 0 && (
+              <p className="portfolio__empty">No transactions yet.</p>
+            )}
+          </div>
         </div>
       </div>
       <SiteFooter />

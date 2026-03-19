@@ -27,7 +27,7 @@ const STACKED_CARDS = [
   {
     number: '03',
     title: 'Sign and you own it',
-    desc: 'One signature. Your position is recorded on Bitcoin. You hold it — nobody else.',
+    desc: 'One signature. Your position is recorded on Bitcoin. You hold it. Nobody else.',
     tag: 'On-chain',
   },
 ];
@@ -360,7 +360,7 @@ export function Landing(): React.JSX.Element {
             >
               <div className="why-item__label">Ownership</div>
               <h3 className="why-item__title">You own it, for real</h3>
-              <p className="why-item__desc">No bank. No fund manager. When you buy, you hold it — and nobody else can touch it.</p>
+              <p className="why-item__desc">No bank. No fund manager. When you buy, you hold it. Nobody else can touch it.</p>
             </div>
             <div
               className="why-item glass-card"
@@ -378,7 +378,7 @@ export function Landing(): React.JSX.Element {
             >
               <div className="why-item__label">Transparency</div>
               <h3 className="why-item__title">See every number, always</h3>
-              <p className="why-item__desc">Every position lives on Bitcoin's blockchain. Check it yourself any time — no trust required.</p>
+              <p className="why-item__desc">Every position lives on Bitcoin's blockchain. Check it yourself any time. No trust required.</p>
             </div>
           </div>
         </div>
