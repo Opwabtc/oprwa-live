@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -18,19 +18,37 @@ interface AssetCardProps {
 
 export function AssetCard({ asset, index = 0 }: AssetCardProps): React.JSX.Element {
   const [buyOpen, setBuyOpen] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const availablePct = ((asset.available_fractions / asset.total_fractions) * 100).toFixed(1);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty('--mx', ((( e.clientX - rect.left) / rect.width) * 100).toFixed(1));
+    el.style.setProperty('--my', (((e.clientY - rect.top) / rect.height) * 100).toFixed(1));
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    const el = cardRef.current;
+    if (el) { el.style.setProperty('--mx', '50'); el.style.setProperty('--my', '50'); }
+  }, []);
 
   return (
     <>
       <motion.div
+        ref={cardRef}
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -6, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } }}
         transition={{
           duration: 0.5,
           delay: index * 0.08,
           ease: [0.16, 1, 0.3, 1],
         }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         className="asset-card glass-card glass-card--hoverable"
       >
         <div className="asset-card__header">

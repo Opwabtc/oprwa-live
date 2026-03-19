@@ -7,21 +7,9 @@ import { useAssets } from '@/hooks/useAssets';
 import { AssetCard } from '@/components/AssetCard';
 import { TextReveal } from '@/components/TextReveal';
 import { TextShuffle } from '@/components/TextShuffle';
-import { InfiniteMarquee } from '@/components/InfiniteMarquee';
 import { StackedCards } from '@/components/StackedCards';
 
 gsap.registerPlugin(ScrollTrigger);
-
-const MARQUEE_ITEMS = [
-  { label: 'Real Estate' },
-  { label: 'T-Bills' },
-  { label: 'Gold' },
-  { label: 'Bitcoin' },
-  { label: 'On-Chain' },
-  { label: 'Non-Custodial' },
-  { label: 'Testnet Live' },
-  { label: 'OPNet' },
-];
 
 const STACKED_CARDS = [
   {
@@ -184,9 +172,6 @@ export function Landing(): React.JSX.Element {
           <div className="hero__scroll-dot" />
         </div>
       </section>
-
-      {/* ── Infinite Marquee ─────────────────────────── */}
-      <InfiniteMarquee items={MARQUEE_ITEMS} speed={60} />
 
       {/* ── Assets / Markets ─────────────────────────── */}
       <section

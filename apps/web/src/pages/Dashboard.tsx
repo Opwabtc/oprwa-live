@@ -1,9 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useWalletStore } from '@/store/walletStore';
 import { usePortfolio } from '@/hooks/usePortfolio';
-import { useAssets } from '@/hooks/useAssets';
-import { AssetCard } from '@/components/AssetCard';
 import { WalletConnectButton } from '@/components/WalletConnectButton';
 
 function truncateAddress(addr: string): string {
@@ -11,10 +8,15 @@ function truncateAddress(addr: string): string {
   return `${addr.slice(0, 10)}...${addr.slice(-8)}`;
 }
 
+const ASSET_NAMES: Record<string, string> = {
+  'sp-commercial-tower': 'Sao Paulo Commercial Tower',
+  'us-tbill-fund': 'US T-Bill Fund',
+  'gold-vault-reserve': 'Gold Vault Reserve',
+};
+
 export function Dashboard(): React.JSX.Element {
   const { address, connected, verified, network } = useWalletStore();
   const { positions } = usePortfolio(address);
-  const { assets } = useAssets();
 
   const totalValue = positions.reduce(
     (sum, pos) => sum + pos.current_price * pos.amount,
@@ -93,31 +95,40 @@ export function Dashboard(): React.JSX.Element {
           </div>
         </div>
 
-        {/* Featured assets */}
+        {/* Portfolio */}
         <div className="dashboard__assets">
           <div className="dashboard__assets-header">
-            <h2 className="dashboard__assets-title">Featured Assets</h2>
-            <Link to="/marketplace" className="btn btn--ghost btn--sm">
-              View all
-            </Link>
+            <h2 className="dashboard__assets-title">Portfolio</h2>
           </div>
-          <div className="asset-grid">
-            {assets.slice(0, 2).map((asset) => (
-              <AssetCard key={asset.id} asset={asset} />
-            ))}
-            {assets.length === 0 &&
-              [0, 1].map((i) => (
-                <div
-                  key={i}
-                  className="glass-card"
-                  style={{ height: '200px' }}
-                  aria-hidden="true"
-                >
-                  <div className="skeleton-block skeleton-block--header" />
-                  <div className="skeleton-block skeleton-block--body" />
+          {!connected ? (
+            <p className="portfolio__empty">Connect your wallet to view your positions.</p>
+          ) : positions.length === 0 ? (
+            <p className="portfolio__empty">No positions yet. Buy fractions from the <a href="/#markets" className="text-accent">market</a> to get started.</p>
+          ) : (
+            <div className="portfolio__grid">
+              {positions.map((pos) => (
+                <div key={pos.id} className="portfolio__card glass-card">
+                  <div className="portfolio__asset-name">
+                    {ASSET_NAMES[pos.asset_id] ?? pos.asset_id}
+                  </div>
+                  <div className="portfolio__row">
+                    <span className="portfolio__label">Fractions</span>
+                    <span className="portfolio__value tabular-nums">{pos.amount.toLocaleString('en-US')}</span>
+                  </div>
+                  <div className="portfolio__row">
+                    <span className="portfolio__label">Value</span>
+                    <span className="portfolio__value tabular-nums">
+                      {(pos.current_price * pos.amount).toLocaleString('en-US')} sats
+                    </span>
+                  </div>
+                  <div className="portfolio__row">
+                    <span className="portfolio__label">Status</span>
+                    <span className="badge badge--success">{pos.status}</span>
+                  </div>
                 </div>
               ))}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
