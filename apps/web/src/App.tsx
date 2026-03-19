@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppNav } from '@/components/AppNav';
+import { CursorTrail } from '@/components/CursorTrail';
 import { Landing } from '@/pages/Landing';
 import { AssetDetail } from '@/pages/AssetDetail';
 import { Dashboard } from '@/pages/Dashboard';
@@ -20,6 +21,7 @@ export function App(): React.JSX.Element {
 
   return (
     <>
+      <CursorTrail />
       <AppNav />
       <AnimatePresence mode="wait" initial={false}>
         <motion.div

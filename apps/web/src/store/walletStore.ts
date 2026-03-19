@@ -16,7 +16,31 @@ interface WalletState {
   refreshPortfolio: () => Promise<void>;
 }
 
-const ASSET_IDS = ['sp-commercial-tower', 'us-tbill-fund', 'gold-vault-reserve'] as const;
+const ASSET_IDS = [
+  'sp-commercial-tower',
+  'us-tbill-fund',
+  'gold-vault-reserve',
+  'miami-sunset-bay',
+  'manhattan-midtown-commerce',
+  'dubai-marina-view',
+  'eu-corporate-bond-fund',
+  'silver-vault-zurich',
+  'london-grade-a-office',
+] as const;
+
+// tokenId matches array index (mirrors contract storage layout)
+const ASSET_TOKEN_IDS: Record<string, number> = {
+  'sp-commercial-tower': 0,
+  'us-tbill-fund': 1,
+  'gold-vault-reserve': 2,
+  'miami-sunset-bay': 3,
+  'manhattan-midtown-commerce': 4,
+  'dubai-marina-view': 5,
+  'eu-corporate-bond-fund': 6,
+  'silver-vault-zurich': 7,
+  'london-grade-a-office': 8,
+};
+
 const PRICE_PER_FRACTION = 1000; // sats — fixed
 
 async function loadOnChainPortfolio(walletAddress: string): Promise<Position[]> {
@@ -24,7 +48,8 @@ async function loadOnChainPortfolio(walletAddress: string): Promise<Position[]> 
   const now = Date.now();
 
   const results = await Promise.allSettled(
-    ASSET_IDS.map(async (assetId, tokenId) => {
+    ASSET_IDS.map(async (assetId) => {
+      const tokenId = ASSET_TOKEN_IDS[assetId] ?? 0;
       const balance = await adapter.balanceOf(walletAddress, assetId);
       if (balance === 0n) return null;
       const pos: Position = {

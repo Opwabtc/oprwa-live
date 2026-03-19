@@ -1,9 +1,7 @@
 /**
- * StackedCards — pinned GSAP section. Cards start stacked with 3D perspective.
- * As scroll advances, each card peels off (scale down, y up, opacity fade).
- * The last card stays visible.
+ * StackedCards — pinned GSAP section with slow scroll peel and 3D mouse tilt.
  */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -35,7 +33,6 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
 
     const n = cardEls.length;
 
-    // Set initial stacked state — card[0] on top, cards behind scaled/offset
     cardEls.forEach((card, i) => {
       gsap.set(card, {
         scale: 1 - i * 0.05,
@@ -46,18 +43,17 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
     });
 
     const ctx = gsap.context(() => {
-      // Pin stage for n * 300px of scroll travel
+      // Slower: increased scroll travel (500px/card) and scrub (2.5)
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: stage,
           start: 'top top',
-          end: `+=${n * 300}`,
+          end: `+=${n * 500}`,
           pin: true,
-          scrub: 1.2,
+          scrub: 2.5,
         },
       });
 
-      // Each card except last peels off in its own segment
       const segSize = 1 / (n - 1);
 
       for (let i = 0; i < n - 1; i++) {
@@ -65,14 +61,12 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
         if (!card) continue;
         const at = i * segSize;
 
-        // Peel current top card off
         tl.to(
           card,
-          { y: '-120%', opacity: 0, rotateX: 8, ease: 'power2.in', duration: segSize * 0.8 },
+          { y: '-120%', opacity: 0, rotateX: 8, ease: 'power2.in', duration: segSize * 0.85 },
           at,
         );
 
-        // Promote remaining cards
         for (let j = i + 1; j < n; j++) {
           const downstream = cardEls[j];
           if (!downstream) continue;
@@ -83,7 +77,7 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
               scale: 1 - newRank * 0.05,
               y: newRank * 20,
               ease: 'power2.out',
-              duration: segSize * 0.8,
+              duration: segSize * 0.85,
             },
             at,
           );
@@ -94,13 +88,34 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
     return () => ctx.revert();
   }, [cards]);
 
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    el.style.transform = `perspective(900px) rotateX(${-dy * 7}deg) rotateY(${dx * 7}deg) translateZ(10px)`;
+    el.style.setProperty('--mx', (((e.clientX - rect.left) / rect.width) * 100).toFixed(1));
+    el.style.setProperty('--my', (((e.clientY - rect.top) / rect.height) * 100).toFixed(1));
+  }, []);
+
+  const handleMouseLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.style.transform = '';
+  }, []);
+
   return (
     <div className="sc-section" ref={sectionRef}>
       <div className="sc-stage" ref={stageRef}>
         {heading !== undefined && <p className="sc-heading">{heading}</p>}
         <div className="sc-stack">
           {cards.map((card, i) => (
-            <div key={i} className="sc-card">
+            <div
+              key={i}
+              className="sc-card glass-card"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+            >
               <div className="sc-card__top">
                 <span className="sc-card__num">{card.number}</span>
                 {card.tag !== undefined && (

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { WalletConnectButton } from './WalletConnectButton';
+import { ScrambleText } from './ScrambleText';
 
 const NAV_LINKS = [
   { label: 'Market', href: '/#markets', anchor: true },
@@ -43,11 +44,8 @@ export function AppNav(): React.JSX.Element {
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               {link.anchor ? (
-                <a
-                  href={link.href}
-                  className="app-nav__link"
-                >
-                  {link.label}
+                <a href={link.href} className="app-nav__link">
+                  <ScrambleText steps={8} speed={30}>{link.label}</ScrambleText>
                 </a>
               ) : (
                 <Link
@@ -55,7 +53,7 @@ export function AppNav(): React.JSX.Element {
                   className={`app-nav__link${location.pathname === link.href ? ' app-nav__link--active' : ''}`}
                   aria-current={location.pathname === link.href ? 'page' : undefined}
                 >
-                  {link.label}
+                  <ScrambleText steps={8} speed={30}>{link.label}</ScrambleText>
                 </Link>
               )}
             </li>

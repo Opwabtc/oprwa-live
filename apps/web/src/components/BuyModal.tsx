@@ -7,6 +7,7 @@ import { postBuy } from '@/lib/api';
 import { useWalletStore } from '@/store/walletStore';
 import { usePortfolioStore } from '@/store/portfolioStore';
 import { onModalOpen, onModalClose } from '@/lib/lenis';
+import { WalletConnectButton } from '@/components/WalletConnectButton';
 import type { Asset, Transaction } from '@/types';
 
 type ModalState = 'idle' | 'signing' | 'pending' | 'settled' | 'error';
@@ -138,7 +139,7 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
         exit="hidden"
         transition={{ duration: 0.2 }}
         onClick={(e) => {
-          if (e.target === e.currentTarget && state === 'idle') onClose();
+          if (e.target === e.currentTarget && state !== 'signing') onClose();
         }}
         role="dialog"
         aria-modal="true"
@@ -157,7 +158,7 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
             <button
               className="modal__close"
               onClick={onClose}
-              disabled={state === 'signing' || state === 'pending'}
+              disabled={state === 'signing'}
               aria-label="Close"
             >
               <X size={18} />
@@ -183,24 +184,32 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
                 <p>
                   {amount} fraction{amount !== 1 ? 's' : ''} of {asset.name} added to your portfolio.
                 </p>
-                {isRealTx && lastTxId !== null && (
+                {lastTxId && (
                   <div className="buy-modal__explorer-links">
-                    <a
-                      href={`https://mempool.opnet.org/testnet4/tx/${lastTxId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="buy-modal__explorer-link"
-                    >
-                      View on Mempool
-                    </a>
-                    <a
-                      href={`https://opscan.org/transactions/${lastTxId}?network=testnet`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="buy-modal__explorer-link buy-modal__explorer-link--primary"
-                    >
-                      View on OPScan
-                    </a>
+                    {isRealTx ? (
+                      <>
+                        <a
+                          href={`https://mempool.opnet.org/testnet4/tx/${lastTxId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="buy-modal__explorer-link"
+                        >
+                          View on Mempool
+                        </a>
+                        <a
+                          href={`https://opscan.org/transactions/${lastTxId}?network=testnet`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="buy-modal__explorer-link buy-modal__explorer-link--primary"
+                        >
+                          View on OPScan ↗
+                        </a>
+                      </>
+                    ) : (
+                      <p className="buy-modal__testnet-note">
+                        Testnet simulation confirmed. Position added to your portfolio.
+                      </p>
+                    )}
                   </div>
                 )}
                 <button className="btn btn--primary btn--md" onClick={onClose}>
@@ -314,20 +323,25 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
                   </span>
                 </div>
 
-                <button
-                  className="btn btn--primary btn--lg buy-modal__cta"
-                  onClick={() => void handleBuy()}
-                  disabled={state !== 'idle' || !address || quoteLoading}
-                  aria-busy={state === 'signing' || state === 'pending'}
-                >
-                  {state === 'signing'
-                    ? 'Signing...'
-                    : state === 'pending'
-                      ? 'Confirming...'
-                      : !address
-                        ? 'Connect Wallet First'
+                {!address ? (
+                  <div className="buy-modal__connect-wallet">
+                    <p className="buy-modal__connect-label">Connect your wallet to buy</p>
+                    <WalletConnectButton />
+                  </div>
+                ) : (
+                  <button
+                    className="btn btn--primary btn--lg buy-modal__cta"
+                    onClick={() => void handleBuy()}
+                    disabled={state !== 'idle' || quoteLoading}
+                    aria-busy={state === 'signing' || state === 'pending'}
+                  >
+                    {state === 'signing'
+                      ? 'Signing...'
+                      : state === 'pending'
+                        ? 'Confirming...'
                         : 'Sign Transaction'}
-                </button>
+                  </button>
+                )}
 
                 {state === 'pending' && (
                   <p className="buy-modal__pending-note">

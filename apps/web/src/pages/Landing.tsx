@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -8,6 +8,7 @@ import { AssetCard } from '@/components/AssetCard';
 import { TextReveal } from '@/components/TextReveal';
 import { TextShuffle } from '@/components/TextShuffle';
 import { StackedCards } from '@/components/StackedCards';
+import { ScrambleText } from '@/components/ScrambleText';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,19 +16,19 @@ const STACKED_CARDS = [
   {
     number: '01',
     title: 'Connect your wallet',
-    desc: 'OPWallet, UniSat or OKX. No KYC. No registration. Just your keys.',
+    desc: 'OPWallet, UniSat or OKX. No signup. No KYC. Your keys, your call.',
     tag: '30 seconds',
   },
   {
     number: '02',
-    title: 'Choose an asset',
-    desc: 'Real estate. T-Bills. Gold. Browse on-chain properties with full transparency.',
+    title: 'Pick your asset',
+    desc: 'Real estate in São Paulo, gold in Zurich, T-bills. Choose what you believe in.',
     tag: 'Your choice',
   },
   {
     number: '03',
-    title: 'Sign & confirm',
-    desc: 'One signature. Position minted on Bitcoin L1. Fully non-custodial.',
+    title: 'Sign and you own it',
+    desc: 'One signature. Your position is recorded on Bitcoin. You hold it — nobody else.',
     tag: 'On-chain',
   },
 ];
@@ -40,26 +41,21 @@ export function Landing(): React.JSX.Element {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Hero entrance
       gsap.fromTo('.hero__sub', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.65 });
       gsap.fromTo('.hero__cta', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.9 });
-      gsap.fromTo('.hero__scroll-indicator', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, delay: 1.3 });
 
-      // 2. Parallax hero text
       gsap.to('.hero__content', {
         yPercent: 18,
         ease: 'none',
         scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
       });
 
-      // 3. Video parallax (subtle)
       gsap.to('.hero__video', {
         yPercent: -8,
         ease: 'none',
         scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
       });
 
-      // 4. Asset cards stagger
       gsap.fromTo(
         '.asset-grid .asset-card',
         { autoAlpha: 0, y: 40 },
@@ -69,7 +65,6 @@ export function Landing(): React.JSX.Element {
         },
       );
 
-      // 5. Gradient scroll text on #markets heading
       const gradientEl = gradientHeadRef.current;
       if (gradientEl) {
         gsap.fromTo(
@@ -88,7 +83,6 @@ export function Landing(): React.JSX.Element {
         );
       }
 
-      // 6. Why Bitcoin staircase: add .stair-visible to each .why-item with stagger
       const whyGrid = whyGridRef.current;
       if (whyGrid) {
         const whyItems = Array.from(whyGrid.querySelectorAll<HTMLElement>('.why-item'));
@@ -101,7 +95,7 @@ export function Landing(): React.JSX.Element {
             opacity: 1,
             duration: 0.65,
             stagger: 0.12,
-            ease: 'cubic.bezier(0.22, 1, 0.36, 1)',
+            ease: 'power2.out',
             scrollTrigger: {
               trigger: whyGrid,
               start: 'top 80%',
@@ -120,6 +114,22 @@ export function Landing(): React.JSX.Element {
     });
 
     return () => ctx.revert();
+  }, []);
+
+  const handleCardTilt = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    el.style.transform = `perspective(900px) rotateX(${-dy * 6}deg) rotateY(${dx * 6}deg) translateZ(8px)`;
+    el.style.setProperty('--mx', (((e.clientX - rect.left) / rect.width) * 100).toFixed(1));
+    el.style.setProperty('--my', (((e.clientY - rect.top) / rect.height) * 100).toFixed(1));
+  }, []);
+
+  const handleCardTiltLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.style.transform = '';
   }, []);
 
   return (
@@ -141,35 +151,28 @@ export function Landing(): React.JSX.Element {
 
         <div className="hero__content">
           <div className="hero__eyebrow">
-            <TextShuffle text="Bitcoin-Native · Testnet Live" delay={200} speed={35} />
+            <TextShuffle text="Real assets · Live on testnet" delay={200} speed={35} />
           </div>
           <h1 className="hero__headline">
-            <TextReveal as="span" delay={0.3} stagger={0.06} className="hero__headline-line">
+            <TextReveal as="span" delay={0.3} stagger={0.06} className="hero__headline-line hero__headline-white">
               Own a piece
             </TextReveal>
-            <span className="hero__headline--accent" style={{ display: 'block' }}>
-              <TextReveal as="span" delay={0.5} stagger={0.06}>
-                of the world.
-              </TextReveal>
+            <span className="hero__headline--accent hero__accent-reveal" style={{ display: 'block' }}>
+              of the world.
             </span>
           </h1>
           <p className="hero__sub">
-            Real estate, T-bills and gold — straight from your Bitcoin wallet.
-            No bank. No broker. Just you.
+            Buy into real estate, gold and government bonds with any amount of Bitcoin.
+            No bank. No minimum. No bullshit.
           </p>
           <div className="hero__cta">
             <a href="#markets" className="btn btn--primary btn--lg">
-              Start Investing →
+              Start owning →
             </a>
             <Link to="/docs" className="btn btn--secondary btn--lg">
               How it works
             </Link>
           </div>
-        </div>
-
-        <div className="hero__scroll-indicator" aria-hidden="true">
-          <span>scroll</span>
-          <div className="hero__scroll-dot" />
         </div>
       </section>
 
@@ -188,7 +191,7 @@ export function Landing(): React.JSX.Element {
               today
             </span>
           </h2>
-          <p className="section-body">Pick one. Sign once. Done.</p>
+          <p className="section-body">Pick your asset. Decide how much. Done.</p>
           <div className="asset-grid">
             {assets.length > 0
               ? assets.map((asset, i) => (
@@ -208,7 +211,7 @@ export function Landing(): React.JSX.Element {
       {/* ── Stacked Cards (Three Steps) ───────────────── */}
       <StackedCards
         cards={STACKED_CARDS}
-        heading="Three Steps. One Wallet."
+        heading="Three steps. One wallet."
       />
 
       {/* ── Why Bitcoin? ─────────────────────────────── */}
@@ -220,20 +223,32 @@ export function Landing(): React.JSX.Element {
             </TextReveal>
           </h2>
           <div className="why-grid" ref={whyGridRef}>
-            <div className="why-item glass-card" data-staircase>
+            <div
+              className="why-item glass-card"
+              onMouseMove={handleCardTilt}
+              onMouseLeave={handleCardTiltLeave}
+            >
               <div className="why-item__label">Ownership</div>
-              <h3 className="why-item__title">No middleman</h3>
-              <p className="why-item__desc">Your asset. Your keys. No bank takes a cut.</p>
+              <h3 className="why-item__title">You own it, for real</h3>
+              <p className="why-item__desc">No bank. No fund manager. When you buy, you hold it — and nobody else can touch it.</p>
             </div>
-            <div className="why-item glass-card" data-staircase>
+            <div
+              className="why-item glass-card"
+              onMouseMove={handleCardTilt}
+              onMouseLeave={handleCardTiltLeave}
+            >
               <div className="why-item__label">Availability</div>
-              <h3 className="why-item__title">Always open</h3>
-              <p className="why-item__desc">Bitcoin doesn't close at 5pm. Neither do we.</p>
+              <h3 className="why-item__title">Invest at 3am if you want</h3>
+              <p className="why-item__desc">Bitcoin doesn't close at 5pm. Neither do we. Buy any time, from anywhere.</p>
             </div>
-            <div className="why-item glass-card" data-staircase>
+            <div
+              className="why-item glass-card"
+              onMouseMove={handleCardTilt}
+              onMouseLeave={handleCardTiltLeave}
+            >
               <div className="why-item__label">Transparency</div>
-              <h3 className="why-item__title">Verifiable</h3>
-              <p className="why-item__desc">Every number is on-chain. Check it yourself.</p>
+              <h3 className="why-item__title">See every number, always</h3>
+              <p className="why-item__desc">Every position lives on Bitcoin's blockchain. Check it yourself any time — no trust required.</p>
             </div>
           </div>
         </div>
@@ -241,12 +256,13 @@ export function Landing(): React.JSX.Element {
 
       {/* ── Footer ───────────────────────────────────── */}
       <footer className="site-footer" role="contentinfo">
+        <div className="site-footer__bg-overlay" aria-hidden="true" />
         <div className="container">
           <div className="site-footer__grid">
             <div className="site-footer__brand-col">
               <span className="site-footer__brand">OPRWA</span>
               <p className="site-footer__tagline">
-                Real World Assets on Bitcoin. Own fractions of global properties
+                Real assets on Bitcoin. Own fractions of global properties
                 directly from your wallet. No bank. No broker.
               </p>
               <span className="site-footer__badge">Testnet Live</span>
@@ -255,16 +271,16 @@ export function Landing(): React.JSX.Element {
             <div>
               <p className="site-footer__col-title">Platform</p>
               <ul className="site-footer__links">
-                <li><a href="#markets" className="site-footer__link">Markets</a></li>
-                <li><Link to="/app" className="site-footer__link">Dashboard</Link></li>
-                <li><Link to="/docs" className="site-footer__link">Docs</Link></li>
+                <li><a href="#markets" className="site-footer__link"><ScrambleText steps={6} speed={28}>Markets</ScrambleText></a></li>
+                <li><Link to="/app" className="site-footer__link"><ScrambleText steps={6} speed={28}>Dashboard</ScrambleText></Link></li>
+                <li><Link to="/docs" className="site-footer__link"><ScrambleText steps={6} speed={28}>Docs</ScrambleText></Link></li>
               </ul>
             </div>
 
             <div>
               <p className="site-footer__col-title">Resources</p>
               <ul className="site-footer__links">
-                <li><a href="https://opnet.org" target="_blank" rel="noopener noreferrer" className="site-footer__link">OPNet</a></li>
+                <li><a href="https://opnet.org" target="_blank" rel="noopener noreferrer" className="site-footer__link"><ScrambleText steps={6} speed={28}>OPNet</ScrambleText></a></li>
                 <li>
                   <a
                     href="https://opscan.org/accounts/opt1sqrectyl6jplc9jesnuupzluxpak6d42qwu6dxec0?network=testnet"
@@ -272,7 +288,7 @@ export function Landing(): React.JSX.Element {
                     rel="noopener noreferrer"
                     className="site-footer__link"
                   >
-                    Contract ↗
+                    <ScrambleText steps={6} speed={28}>Contract ↗</ScrambleText>
                   </a>
                 </li>
                 <li>
@@ -282,7 +298,7 @@ export function Landing(): React.JSX.Element {
                     rel="noopener noreferrer"
                     className="site-footer__link"
                   >
-                    GitHub ↗
+                    <ScrambleText steps={6} speed={28}>GitHub ↗</ScrambleText>
                   </a>
                 </li>
               </ul>
@@ -291,9 +307,9 @@ export function Landing(): React.JSX.Element {
             <div>
               <p className="site-footer__col-title">Legal</p>
               <ul className="site-footer__links">
-                <li><a href="#" className="site-footer__link">Terms of Use</a></li>
-                <li><a href="#" className="site-footer__link">Privacy Policy</a></li>
-                <li><a href="#" className="site-footer__link">Risk Disclosure</a></li>
+                <li><a href="#" className="site-footer__link"><ScrambleText steps={6} speed={28}>Terms of Use</ScrambleText></a></li>
+                <li><a href="#" className="site-footer__link"><ScrambleText steps={6} speed={28}>Privacy Policy</ScrambleText></a></li>
+                <li><a href="#" className="site-footer__link"><ScrambleText steps={6} speed={28}>Risk Disclosure</ScrambleText></a></li>
               </ul>
               <p className="site-footer__col-title" style={{ marginTop: '1.5rem' }}>Contract</p>
               <p className="site-footer__contract">opt1sqrectyl6jplc9jesnuupzluxpak6d42qwu6dxec0</p>
