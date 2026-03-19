@@ -3020,3 +3020,90 @@ a {
 [data-theme='light'] .hero__sub {
   color: rgba(255, 255, 255, 0.72) !important;
 }
+
+/* ============================================================
+   TEXT MASKS — gradient clip on section headings
+   ============================================================ */
+.section-title {
+  background: linear-gradient(135deg, var(--text) 0%, var(--text-2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+/* Gradient scroll text keeps its own gradient */
+.gradient-scroll-text {
+  -webkit-text-fill-color: transparent;
+}
+
+/* ============================================================
+   MOBILE NAV — hamburger toggle
+   ============================================================ */
+.app-nav__hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.app-nav__hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.app-nav__hamburger--open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.app-nav__hamburger--open span:nth-child(2) {
+  opacity: 0;
+}
+.app-nav__hamburger--open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+  .app-nav__hamburger {
+    display: flex;
+  }
+
+  .app-nav__links {
+    display: none;
+    position: absolute;
+    top: calc(var(--navbar-h) + 8px);
+    left: 0;
+    right: 0;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+    flex-direction: column;
+    gap: 0;
+    backdrop-filter: blur(20px);
+  }
+
+  .app-nav__links--open {
+    display: flex;
+  }
+
+  .app-nav__links li {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .app-nav__links li:last-child {
+    border-bottom: none;
+  }
+
+  .app-nav__link {
+    display: block;
+    padding: 0.85rem 0;
+    font-size: 1rem;
+  }
+}

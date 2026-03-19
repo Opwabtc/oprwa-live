@@ -14,6 +14,7 @@ export function AppNav(): React.JSX.Element {
   const location = useLocation();
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleTheme = (): void => {
     const next = theme === 'dark' ? 'light' : 'dark';
@@ -40,7 +41,7 @@ export function AppNav(): React.JSX.Element {
           <span className="app-nav__logo-text">OPRWA</span>
         </Link>
 
-        <ul className="app-nav__links" role="list">
+        <ul className={`app-nav__links${menuOpen ? ' app-nav__links--open' : ''}`} role="list">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               {link.anchor ? (
@@ -61,6 +62,16 @@ export function AppNav(): React.JSX.Element {
         </ul>
 
         <div className="app-nav__actions">
+          <button
+            className={`app-nav__hamburger${menuOpen ? ' app-nav__hamburger--open' : ''}`}
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
           <button
             className="app-nav__theme-toggle"
             onClick={toggleTheme}

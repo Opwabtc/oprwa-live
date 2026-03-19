@@ -139,7 +139,7 @@ export function Landing(): React.JSX.Element {
         <video
           ref={videoRef}
           className="hero__video"
-          src="/buidl.mp4"
+          src="/hero-bg.mp4"
           autoPlay
           muted
           loop

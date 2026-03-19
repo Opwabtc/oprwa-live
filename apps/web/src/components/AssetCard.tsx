@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BuyModal } from './BuyModal';
+import { ScrambleText } from './ScrambleText';
 import type { Asset } from '@/types';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -60,7 +61,9 @@ export function AssetCard({ asset, index = 0 }: AssetCardProps): React.JSX.Eleme
           </span>
         </div>
 
-        <h3 className="asset-card__name">{asset.name}</h3>
+        <h3 className="asset-card__name">
+          <ScrambleText steps={8} speed={28}>{asset.name}</ScrambleText>
+        </h3>
 
         <div className="asset-card__stats">
           <div className="asset-card__stat">
