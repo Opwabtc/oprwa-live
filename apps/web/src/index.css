@@ -6,73 +6,93 @@
    CSS CUSTOM PROPERTIES — OPWA Design System v5
    ============================================================ */
 :root {
-  /* ── Backgrounds (OPWA DS v4 dark) ── */
+  /* ── Backgrounds (OPWA DS v5 dark) ── */
   --bg:            #0a0a0a;
+  --bg-base:       #0a0a0a;
   --color-bg:      #0a0a0a;
+  --bg-surface:    #111111;
   --bg-2:          #111111;
   --bg-3:          #161616;
   --bg-card:       #161616;
   --bg-elevated:   #1e1e1e;
+  --bg-elevated2:  #242424;
   --bg-card-hover: #242424;
 
-  /* ── Accent — Bitcoin Orange (DS v4) ── */
-  --accent:        #f97316;
-  --accent-dark:   #ea580c;
-  --accent-hover:  #fb923c;
-  --accent-dim:    rgba(249, 115, 22, 0.12);
-  --accent-border: rgba(249, 115, 22, 0.30);
-  --accent-glow:   rgba(249, 115, 22, 0.25);
+  /* ── Accent — Bitcoin Gold (DS v5 dark) ── */
+  --accent:        #FF9900;
+  --accent-dark:   #cc7a00;
+  --accent-hover:  #ffaa22;
+  --accent-dim:    rgba(255, 153, 0, 0.12);
+  --accent-border: rgba(255, 153, 0, 0.30);
+  --accent-glow:   rgba(255, 153, 0, 0.25);
 
-  /* ── Gold — financial values ── */
+  /* ── Gold — financial values (DS v5) ── */
   --gold:          #fbbf24;
   --gold-dim:      rgba(251, 191, 36, 0.12);
   --gold-border:   rgba(251, 191, 36, 0.28);
 
-  /* ── Text (DS v4 dark) ── */
-  --text:          #f5f5f5;
+  /* ── Purple (DS v5) ── */
+  --purple:        #7c3aed;
+  --purple-soft:   #a78bfa;
+  --purple-dim:    rgba(124, 58, 237, 0.12);
+  --purple-border: rgba(124, 58, 237, 0.28);
+  --purple-clr:    #a78bfa;
+
+  /* ── Blue (DS v5) ── */
+  --blue:          #3b82f6;
+  --blue-dim:      rgba(59, 130, 246, 0.15);
+  --blue-border:   rgba(59, 130, 246, 0.28);
+
+  /* ── Text (DS v5 dark) ── */
+  --text:          #f0ede8;
+  --text-1:        #f0ede8;
   --text-2:        #a3a3a3;
   --text-muted:    #6b6b6b;
   --text-3:        #525252;
+  --text-4:        #333333;
   --text-faint:    #333333;
 
-  /* ── Borders ── */
+  /* ── Borders (DS v5 dark) ── */
   --border:        rgba(255, 255, 255, 0.06);
   --border-hover:  rgba(255, 255, 255, 0.12);
-  --border-focus:  rgba(249, 115, 22, 0.45);
+  --border-strong: rgba(255, 255, 255, 0.13);
+  --border-focus:  rgba(255, 153, 0, 0.45);
 
   /* ── Status ── */
   --success:        #10b981;
   --success-dim:    rgba(16, 185, 129, 0.12);
-  --success-border: rgba(16, 185, 129, 0.25);
+  --success-border: rgba(16, 185, 129, 0.28);
   --warning:        #f59e0b;
   --danger:         #ef4444;
   --danger-dim:     rgba(239, 68, 68, 0.12);
   --danger-border:  rgba(239, 68, 68, 0.28);
   --info:           #3b82f6;
+  --gas-toggle:     #ae005b;
 
-  /* ── Badge tokens (DS v4 dark) ── */
-  --badge-res-bg:      rgba(59, 130, 246, 0.20);
-  --badge-res-color:   #60a5fa;
-  --badge-res-border:  rgba(59, 130, 246, 0.30);
-  --badge-com-bg:      rgba(139, 92, 246, 0.20);
-  --badge-com-color:   #a78bfa;
-  --badge-com-border:  rgba(139, 92, 246, 0.30);
-  --badge-active-bg:   rgba(16, 185, 129, 0.15);
-  --badge-active-color:#34d399;
+  /* ── Badge tokens (DS v5 dark) ── */
+  --badge-res-bg:       rgba(59, 130, 246, 0.20);
+  --badge-res-color:    #60a5fa;
+  --badge-res-border:   rgba(59, 130, 246, 0.30);
+  --badge-com-bg:       rgba(139, 92, 246, 0.20);
+  --badge-com-color:    #a78bfa;
+  --badge-com-border:   rgba(139, 92, 246, 0.30);
+  --badge-active-bg:    rgba(16, 185, 129, 0.15);
+  --badge-active-color: #34d399;
   --badge-active-border:rgba(16, 185, 129, 0.25);
-  --badge-soon-bg:     rgba(251, 191, 36, 0.12);
-  --badge-soon-color:  #fbbf24;
-  --badge-soon-border: rgba(251, 191, 36, 0.25);
+  --badge-soon-bg:      rgba(251, 191, 36, 0.12);
+  --badge-soon-color:   #fbbf24;
+  --badge-soon-border:  rgba(251, 191, 36, 0.25);
 
-  /* ── Radii ── */
+  /* ── Radii (DS v5) ── */
+  --radius:      14px;
   --radius-card: 14px;
   --radius-btn:  10px;
   --radius-badge: 6px;
 
-  /* ── Shadows ── */
+  /* ── Shadows (DS v5 dark) ── */
   --shadow-card:     0 10px 30px rgba(0, 0, 0, 0.35), 0 4px 10px rgba(0, 0, 0, 0.2);
-  --shadow-elevated: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 40px rgba(249, 115, 22, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  --shadow-glow:     0 0 30px rgba(249, 115, 22, 0.18);
+  --shadow-elevated: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 153, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-glow:     0 0 30px rgba(255, 153, 0, 0.18);
 
   /* ── Blur ── */
   --blur-glass: blur(16px);
@@ -82,7 +102,9 @@
   --font-heading: 'Syne', 'DM Sans', -apple-system, sans-serif;
   --font-mono:    'DM Mono', 'JetBrains Mono', monospace;
 
-  /* ── Transitions ── */
+  /* ── Transitions (DS v5) ── */
+  --t1:              100ms cubic-bezier(0.4, 0, 0.2, 1);
+  --t2:              180ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-fast: 100ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 180ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 380ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -92,67 +114,85 @@
 }
 
 [data-theme='light'] {
-  /* ── Backgrounds (DS v4 warm parchment) ── */
+  /* ── Backgrounds (DS v5 light) ── */
   --bg:            #ffffff;
+  --bg-base:       #ffffff;
   --color-bg:      #ffffff;
-  --bg-2:          #fafaf8;
-  --bg-3:          #f5f3ef;
-  --bg-card:       #f5f3ef;
-  --bg-elevated:   #ede9e1;
-  --bg-card-hover: #e4dfd6;
+  --bg-surface:    #fafafa;
+  --bg-2:          #fafafa;
+  --bg-3:          #f6f5f3;
+  --bg-card:       #f6f5f3;
+  --bg-elevated:   #eeecea;
+  --bg-elevated2:  #e6e3df;
+  --bg-card-hover: #e6e3df;
 
-  /* ── Accent — keeps Bitcoin orange ── */
-  --accent:        #f97316;
-  --accent-dark:   #ea580c;
-  --accent-hover:  #fb923c;
-  --accent-dim:    rgba(249, 115, 22, 0.10);
-  --accent-border: rgba(249, 115, 22, 0.30);
-  --accent-glow:   rgba(249, 115, 22, 0.20);
+  /* ── Accent — Purple (DS v5 light) ── */
+  --accent:        #7c3aed;
+  --accent-dark:   #6d28d9;
+  --accent-hover:  #8b5cf6;
+  --accent-dim:    rgba(124, 58, 237, 0.09);
+  --accent-border: rgba(124, 58, 237, 0.28);
+  --accent-glow:   rgba(124, 58, 237, 0.18);
 
-  /* ── Gold ── */
-  --gold:          #d97706;
-  --gold-dim:      rgba(217, 119, 6, 0.10);
-  --gold-border:   rgba(217, 119, 6, 0.28);
+  /* ── Gold — Bitcoin gold in light (DS v5 light) ── */
+  --gold:          #FF9900;
+  --gold-dim:      rgba(255, 153, 0, 0.09);
+  --gold-border:   rgba(255, 153, 0, 0.28);
 
-  /* ── Text (warm dark brown) ── */
-  --text:          #1a1409;
-  --text-2:        #5c4f3a;
-  --text-muted:    #7a6f5e;
-  --text-3:        #9c8e7a;
-  --text-faint:    #c4b9a8;
+  /* ── Purple (DS v5 light) ── */
+  --purple:        #7c3aed;
+  --purple-soft:   #6d28d9;
+  --purple-dim:    rgba(124, 58, 237, 0.09);
+  --purple-border: rgba(124, 58, 237, 0.22);
+  --purple-clr:    #6d28d9;
 
-  /* ── Borders (accent-tinted per DS v4) ── */
-  --border:        rgba(249, 115, 22, 0.12);
-  --border-hover:  rgba(249, 115, 22, 0.22);
-  --border-focus:  rgba(249, 115, 22, 0.50);
+  /* ── Blue (DS v5 light) ── */
+  --blue:          #2563eb;
+  --blue-dim:      rgba(37, 99, 235, 0.09);
+  --blue-border:   rgba(37, 99, 235, 0.22);
 
-  /* ── Status ── */
+  /* ── Text (DS v5 light) ── */
+  --text:          #0f0a1a;
+  --text-1:        #0f0a1a;
+  --text-2:        #4a3f6e;
+  --text-muted:    #7a6f9e;
+  --text-3:        #9585c0;
+  --text-4:        #d4cfe8;
+  --text-faint:    #d4cfe8;
+
+  /* ── Borders (DS v5 light — purple-tinted) ── */
+  --border:        rgba(124, 58, 237, 0.09);
+  --border-hover:  rgba(124, 58, 237, 0.18);
+  --border-strong: rgba(124, 58, 237, 0.15);
+  --border-focus:  rgba(124, 58, 237, 0.50);
+
+  /* ── Status (DS v5 light) ── */
   --success:        #059669;
-  --success-dim:    rgba(5, 150, 105, 0.10);
+  --success-dim:    rgba(5, 150, 105, 0.09);
   --success-border: rgba(5, 150, 105, 0.22);
   --danger:         #dc2626;
-  --danger-dim:     rgba(220, 38, 38, 0.08);
-  --danger-border:  rgba(220, 38, 38, 0.22);
-  --info:           #f97316;
+  --danger-dim:     rgba(220, 38, 38, 0.07);
+  --danger-border:  rgba(220, 38, 38, 0.20);
+  --info:           #7c3aed;
 
-  /* ── Badge tokens (DS v4 light) ── */
-  --badge-res-bg:      rgba(249, 115, 22, 0.10);
-  --badge-res-color:   #ea580c;
-  --badge-res-border:  rgba(249, 115, 22, 0.25);
-  --badge-com-bg:      rgba(124, 58, 237, 0.10);
-  --badge-com-color:   #7c3aed;
-  --badge-com-border:  rgba(124, 58, 237, 0.22);
-  --badge-active-bg:   rgba(5, 150, 105, 0.10);
-  --badge-active-color:#047857;
+  /* ── Badge tokens (DS v5 light) ── */
+  --badge-res-bg:       rgba(37, 99, 235, 0.10);
+  --badge-res-color:    #1d4ed8;
+  --badge-res-border:   rgba(37, 99, 235, 0.25);
+  --badge-com-bg:       rgba(124, 58, 237, 0.10);
+  --badge-com-color:    #7c3aed;
+  --badge-com-border:   rgba(124, 58, 237, 0.22);
+  --badge-active-bg:    rgba(5, 150, 105, 0.10);
+  --badge-active-color: #047857;
   --badge-active-border:rgba(5, 150, 105, 0.22);
-  --badge-soon-bg:     rgba(217, 119, 6, 0.10);
-  --badge-soon-color:  #b45309;
-  --badge-soon-border: rgba(217, 119, 6, 0.22);
+  --badge-soon-bg:      rgba(255, 153, 0, 0.10);
+  --badge-soon-color:   #b45309;
+  --badge-soon-border:  rgba(255, 153, 0, 0.25);
 
-  /* ── Shadows (lighter for bright bg) ── */
-  --shadow-card:     0 4px 24px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.05);
-  --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.10), 0 0 24px rgba(249, 115, 22, 0.06);
-  --shadow-glow:     0 0 24px rgba(249, 115, 22, 0.15);
+  /* ── Shadows (DS v5 light) ── */
+  --shadow-card:     0 10px 30px rgba(109, 40, 217, 0.06), 0 1px 4px rgba(0, 0, 0, 0.05);
+  --shadow-elevated: 0 10px 30px rgba(109, 40, 217, 0.12), 0 4px 10px rgba(0, 0, 0, 0.07);
+  --shadow-glow:     0 0 24px rgba(124, 58, 237, 0.20);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -438,21 +478,21 @@ a {
 
 /* Category-specific badge colors */
 .badge--real-estate {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.28);
+  background: var(--badge-res-bg);
+  color: var(--badge-res-color);
+  border: 1px solid var(--badge-res-border);
 }
 
 .badge--fixed-income {
-  background: rgba(251, 191, 36, 0.15);
-  color: var(--gold);
-  border: 1px solid var(--gold-border);
+  background: var(--badge-soon-bg);
+  color: var(--badge-soon-color);
+  border: 1px solid var(--badge-soon-border);
 }
 
 .badge--commodity {
-  background: rgba(139, 92, 246, 0.15);
-  color: #a78bfa;
-  border: 1px solid rgba(139, 92, 246, 0.28);
+  background: var(--badge-com-bg);
+  color: var(--badge-com-color);
+  border: 1px solid var(--badge-com-border);
 }
 
 .badge--pending {
