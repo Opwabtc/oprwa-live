@@ -1890,9 +1890,9 @@ a {
 .asset-card__yield {
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--gold);
-  background: rgba(212, 160, 23, 0.12);
-  border: 1px solid rgba(212, 160, 23, 0.22);
+  color: var(--success);
+  background: var(--success-dim);
+  border: 1px solid var(--success-border);
   border-radius: 100px;
   padding: 0.2rem 0.65rem;
   letter-spacing: 0.02em;
