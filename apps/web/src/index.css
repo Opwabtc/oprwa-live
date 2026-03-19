@@ -250,11 +250,11 @@ body {
   position: absolute;
   inset: -40%;
   background:
-    radial-gradient(ellipse 65% 48% at 80% 15%, rgba(255, 153, 0, 0.13) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 55% at 15% 75%, rgba(124, 58, 237, 0.10) 0%, transparent 58%),
-    radial-gradient(ellipse 45% 40% at 58% 48%, rgba(59, 130, 246, 0.07) 0%, transparent 55%),
-    radial-gradient(ellipse 38% 35% at 88% 82%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse 30% 25% at 5% 20%,  rgba(251, 191, 36, 0.05) 0%, transparent 50%);
+    radial-gradient(ellipse 65% 48% at 80% 15%, rgba(255, 153, 0, 0.20) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 55% at 15% 75%, rgba(124, 58, 237, 0.16) 0%, transparent 58%),
+    radial-gradient(ellipse 45% 40% at 58% 48%, rgba(59, 130, 246, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 38% 35% at 88% 82%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 30% 25% at 5% 20%,  rgba(251, 191, 36, 0.12) 0%, transparent 50%);
   animation: bg-orb-drift 42s ease-in-out infinite alternate;
   will-change: transform;
 }
@@ -265,9 +265,9 @@ body {
   position: absolute;
   inset: -40%;
   background:
-    radial-gradient(ellipse 40% 50% at 25% 35%, rgba(255, 153, 0, 0.06) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 35% at 72% 62%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 42% at 45% 88%, rgba(59, 130, 246, 0.05) 0%, transparent 55%);
+    radial-gradient(ellipse 40% 50% at 25% 35%, rgba(255, 153, 0, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 35% at 72% 62%, rgba(124, 58, 237, 0.13) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 42% at 45% 88%, rgba(59, 130, 246, 0.08) 0%, transparent 55%);
   animation: bg-orb-drift 58s ease-in-out infinite alternate-reverse;
   will-change: transform;
 }
@@ -303,6 +303,79 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .bg-canvas::before,
   .bg-canvas::after {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   ACCENT GRADIENT CANVAS — dramatic animated layer for mid-page
+   sections (Markets, StackedCards, Why Bitcoin).
+   Starts invisible; GSAP ScrollTrigger fades it in/out.
+   Dark theme: black / gold / orange
+   Light theme: warm white / deep purple / bordeaux
+   ============================================================ */
+.bg-canvas-accent {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-canvas-accent::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background:
+    radial-gradient(ellipse 70% 55% at 78% 20%, rgba(255, 185, 0, 0.30) 0%, transparent 58%),
+    radial-gradient(ellipse 55% 60% at 12% 70%, rgba(255, 100, 0, 0.25) 0%, transparent 56%),
+    radial-gradient(ellipse 50% 45% at 50% 50%, rgba(180, 60, 0, 0.18) 0%, transparent 52%),
+    radial-gradient(ellipse 35% 30% at 90% 82%, rgba(255, 145, 0, 0.14) 0%, transparent 48%),
+    radial-gradient(ellipse 30% 28% at 8% 18%,  rgba(251, 200, 30, 0.16) 0%, transparent 50%);
+  animation: accent-orb-drift 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.bg-canvas-accent::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background:
+    radial-gradient(ellipse 45% 55% at 30% 28%, rgba(255, 120, 0, 0.18) 0%, transparent 54%),
+    radial-gradient(ellipse 60% 40% at 68% 65%, rgba(220, 80, 0, 0.20) 0%, transparent 58%),
+    radial-gradient(ellipse 38% 45% at 48% 88%, rgba(255, 200, 0, 0.12) 0%, transparent 52%);
+  animation: accent-orb-drift 36s ease-in-out infinite alternate-reverse;
+  will-change: transform;
+}
+
+@keyframes accent-orb-drift {
+  0%   { transform: rotate(0deg)   scale(1);    }
+  30%  { transform: rotate(4deg)   scale(1.06); }
+  55%  { transform: rotate(-3deg)  scale(0.96); }
+  80%  { transform: rotate(6deg)   scale(1.03); }
+  100% { transform: rotate(-4deg)  scale(1.07); }
+}
+
+/* Light theme — deep purple, bordeaux, dark orange */
+[data-theme='light'] .bg-canvas-accent::before {
+  background:
+    radial-gradient(ellipse 70% 55% at 78% 20%, rgba(109, 40, 217, 0.20) 0%, transparent 58%),
+    radial-gradient(ellipse 55% 60% at 12% 70%, rgba(128, 0, 32, 0.14) 0%, transparent 56%),
+    radial-gradient(ellipse 50% 45% at 50% 50%, rgba(160, 50, 0, 0.12) 0%, transparent 52%),
+    radial-gradient(ellipse 35% 30% at 90% 82%, rgba(124, 58, 237, 0.16) 0%, transparent 48%),
+    radial-gradient(ellipse 30% 28% at 8% 18%,  rgba(100, 0, 40, 0.10) 0%, transparent 50%);
+}
+[data-theme='light'] .bg-canvas-accent::after {
+  background:
+    radial-gradient(ellipse 45% 55% at 30% 28%, rgba(124, 58, 237, 0.14) 0%, transparent 54%),
+    radial-gradient(ellipse 60% 40% at 68% 65%, rgba(90, 10, 60, 0.12) 0%, transparent 58%),
+    radial-gradient(ellipse 38% 45% at 48% 88%, rgba(150, 30, 0, 0.10) 0%, transparent 52%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-canvas-accent::before,
+  .bg-canvas-accent::after {
     animation: none;
   }
 }

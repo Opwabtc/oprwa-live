@@ -184,6 +184,16 @@ export function Landing(): React.JSX.Element {
         }
       );
 
+      /* 14. Accent gradient canvas — fades in at markets, out at footer */
+      gsap.to('.bg-canvas-accent', {
+        opacity: 1, duration: 0.8, ease: 'power2.out',
+        scrollTrigger: { trigger: '#markets', start: 'top 80%', toggleActions: 'play none none reverse' },
+      });
+      gsap.to('.bg-canvas-accent', {
+        opacity: 0, duration: 0.6, ease: 'power2.in',
+        scrollTrigger: { trigger: '.site-footer', start: 'top 70%', toggleActions: 'play none none reverse' },
+      });
+
     });
 
     return () => ctx.revert();

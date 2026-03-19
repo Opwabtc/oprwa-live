@@ -85,12 +85,10 @@ export function StackedCards({ cards, heading, eyebrow }: StackedCardsProps): Re
         }
       }
 
-      // Parallax atmosphere elements
+      // Parallax atmosphere lines
       const parallax = parallaxRef.current;
       if (parallax) {
-        const orbs = Array.from(parallax.querySelectorAll<HTMLElement>('.sc-parallax__orb'));
         const lines = Array.from(parallax.querySelectorAll<HTMLElement>('.sc-parallax__line'));
-        const nums = Array.from(parallax.querySelectorAll<HTMLElement>('.sc-parallax__num'));
 
         const st = {
           trigger: stage,
@@ -99,13 +97,8 @@ export function StackedCards({ cards, heading, eyebrow }: StackedCardsProps): Re
           scrub: 1.8,
         };
 
-        orbs[0] && gsap.fromTo(orbs[0], { y: 0, opacity: 0.6 }, { y: -180, opacity: 0.2, scrollTrigger: st });
-        orbs[1] && gsap.fromTo(orbs[1], { y: 0, opacity: 0.4 }, { y: -120, opacity: 0.8, scrollTrigger: st });
-        orbs[2] && gsap.fromTo(orbs[2], { x: 0, opacity: 0.3 }, { x: 80, opacity: 0.6, scrollTrigger: st });
         lines[0] && gsap.fromTo(lines[0], { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, scrollTrigger: { ...st, scrub: 1.2 } });
         lines[1] && gsap.fromTo(lines[1], { scaleX: 1, opacity: 0.5 }, { scaleX: 0.3, opacity: 0, scrollTrigger: { ...st, scrub: 1.0 } });
-        nums[0] && gsap.fromTo(nums[0], { y: 40, opacity: 0 }, { y: -80, opacity: 0.06, scrollTrigger: st });
-        nums[1] && gsap.fromTo(nums[1], { y: -40, opacity: 0 }, { y: 60, opacity: 0.04, scrollTrigger: st });
       }
     }, section);
 
@@ -116,13 +109,8 @@ export function StackedCards({ cards, heading, eyebrow }: StackedCardsProps): Re
     <div className="sc-section" ref={sectionRef}>
       {/* Parallax atmosphere — behind the stage */}
       <div className="sc-parallax" ref={parallaxRef} aria-hidden="true">
-        <div className="sc-parallax__orb sc-parallax__orb--1" />
-        <div className="sc-parallax__orb sc-parallax__orb--2" />
-        <div className="sc-parallax__orb sc-parallax__orb--3" />
         <div className="sc-parallax__line sc-parallax__line--1" />
         <div className="sc-parallax__line sc-parallax__line--2" />
-        <div className="sc-parallax__num sc-parallax__num--1">01</div>
-        <div className="sc-parallax__num sc-parallax__num--2">03</div>
       </div>
 
       <div className="sc-stage" ref={stageRef}>

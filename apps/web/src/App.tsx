@@ -40,6 +40,7 @@ export function App(): React.JSX.Element {
   return (
     <>
       <div className="bg-canvas" aria-hidden="true" />
+      <div className="bg-canvas-accent" aria-hidden="true" />
       <CursorTrail />
       <AppNav />
       <AnimatePresence mode="wait" initial={false}>
