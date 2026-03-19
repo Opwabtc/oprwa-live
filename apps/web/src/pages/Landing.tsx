@@ -283,7 +283,7 @@ export function Landing(): React.JSX.Element {
                 <li><a href="https://opnet.org" target="_blank" rel="noopener noreferrer" className="site-footer__link"><ScrambleText steps={6} speed={28}>OPNet</ScrambleText></a></li>
                 <li>
                   <a
-                    href="https://opscan.org/accounts/opt1sqrectyl6jplc9jesnuupzluxpak6d42qwu6dxec0?network=testnet"
+                    href="https://opscan.org/accounts/opt1sqrx3wegg9au7l6amnd7jal5rety53sf9cg04s6sq?network=testnet"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="site-footer__link"
@@ -312,7 +312,7 @@ export function Landing(): React.JSX.Element {
                 <li><a href="#" className="site-footer__link"><ScrambleText steps={6} speed={28}>Risk Disclosure</ScrambleText></a></li>
               </ul>
               <p className="site-footer__col-title" style={{ marginTop: '1.5rem' }}>Contract</p>
-              <p className="site-footer__contract">opt1sqrectyl6jplc9jesnuupzluxpak6d42qwu6dxec0</p>
+              <p className="site-footer__contract">opt1sqrx3wegg9au7l6amnd7jal5rety53sf9cg04s6sq</p>
             </div>
           </div>
 
