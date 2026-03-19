@@ -48,117 +48,148 @@ export function Landing(): React.JSX.Element {
   const gradientHeadRef = useRef<HTMLSpanElement>(null);
   const heroRef = useRef<HTMLElement>(null);
 
+  /* ── Main scroll animation system ─────────────────────── */
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo('.hero__sub', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.65 });
-      gsap.fromTo('.hero__cta', { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.9 });
 
+      /* 1. Hero entrance */
+      gsap.fromTo('.hero__sub',
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out', delay: 0.6 }
+      );
+      gsap.fromTo('.hero__cta',
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.85 }
+      );
+
+      /* 2. Hero content — parallax depth on scroll */
       gsap.to('.hero__content', {
-        yPercent: 18,
-        ease: 'none',
+        yPercent: 18, ease: 'none',
         scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
       });
 
-      gsap.to('.hero__video', {
-        yPercent: -8,
-        ease: 'none',
-        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-      });
-
-      // Blur + fade hero content as user scrolls into assets
+      /* 3. Hero blur-out as user scrolls into markets */
       gsap.to('.hero__content', {
-        filter: 'blur(14px)',
-        opacity: 0,
-        ease: 'none',
+        filter: 'blur(14px)', opacity: 0, ease: 'none',
         scrollTrigger: { trigger: '.hero', start: '42% top', end: '86% top', scrub: 1.4 },
       });
 
-      // Assets heading reveal
-      gsap.fromTo('#assets-heading',
-        { autoAlpha: 0, y: 32, scale: 0.96 },
-        {
-          autoAlpha: 1, y: 0, scale: 1, duration: 0.85, ease: 'power3.out',
-          scrollTrigger: { trigger: '#assets-heading', start: 'top 88%', toggleActions: 'play none none none' },
-        },
-      );
+      /* 4. Eyebrow clip-mask reveals
+         `inset(0 0 100% 0)` = element clipped at bottom = invisible
+         `inset(0 0 0% 0)`   = fully visible */
+      gsap.utils.toArray<HTMLElement>('.section-eyebrow').forEach((el) => {
+        gsap.fromTo(el,
+          { clipPath: 'inset(0 0 100% 0)', y: 14, opacity: 0 },
+          {
+            clipPath: 'inset(0 0 0% 0)', y: 0, opacity: 1,
+            duration: 0.65, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 92%', toggleActions: 'play none none none' },
+          }
+        );
+      });
 
-      // Section body text parallax depth
+      /* 5. Section titles — clip-mask + subtle scale */
+      gsap.utils.toArray<HTMLElement>('.section-title, #why-heading').forEach((el) => {
+        gsap.fromTo(el,
+          { clipPath: 'inset(0 0 100% 0)', y: 26, opacity: 0 },
+          {
+            clipPath: 'inset(0 0 0% 0)', y: 0, opacity: 1,
+            duration: 0.9, ease: 'expo.out', delay: 0.1,
+            scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' },
+          }
+        );
+      });
+
+      /* 6. Gradient heading scroll-drive */
+      const gradientEl = gradientHeadRef.current;
+      if (gradientEl) {
+        gsap.fromTo(gradientEl,
+          { backgroundPosition: '100% 50%' },
+          {
+            backgroundPosition: '0% 50%', ease: 'none',
+            scrollTrigger: { trigger: gradientEl, start: 'top 90%', end: 'top 40%', scrub: 1 },
+          }
+        );
+      }
+
+      /* 7. Section body — fade up */
       gsap.utils.toArray<HTMLElement>('.section-body').forEach((el) => {
-        gsap.fromTo(el, { y: 18, autoAlpha: 0 }, {
-          y: 0, autoAlpha: 1, duration: 0.7, ease: 'power2.out',
-          scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' },
+        gsap.fromTo(el,
+          { opacity: 0, y: 18 },
+          {
+            opacity: 1, y: 0, duration: 0.7, ease: 'power2.out',
+            scrollTrigger: { trigger: el, start: 'top 92%', toggleActions: 'play none none none' },
+          }
+        );
+      });
+
+      /* 8. Why Bitcoin cards — stagger from below with scale */
+      const whyGrid = whyGridRef.current;
+      if (whyGrid) {
+        gsap.fromTo(
+          whyGrid.querySelectorAll('.why-item'),
+          { y: 60, opacity: 0, scale: 0.94 },
+          {
+            y: 0, opacity: 1, scale: 1,
+            duration: 0.8, stagger: 0.14, ease: 'power3.out',
+            scrollTrigger: { trigger: whyGrid, start: 'top 86%', toggleActions: 'play none none none' },
+          }
+        );
+      }
+
+      /* 9. Continuous depth parallax on section headings
+         (they move at 0.4× scroll speed, creating depth illusion) */
+      gsap.utils.toArray<HTMLElement>('.landing__section .section-title').forEach((el) => {
+        const section = el.closest('.landing__section');
+        if (!section) return;
+        gsap.to(el, {
+          yPercent: -8, ease: 'none',
+          scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 0.8 },
         });
       });
 
-      const gradientEl = gradientHeadRef.current;
-      if (gradientEl) {
-        gsap.fromTo(
-          gradientEl,
-          { backgroundPosition: '100% 50%' },
-          {
-            backgroundPosition: '0% 50%',
-            ease: 'none',
-            scrollTrigger: {
-              trigger: gradientEl,
-              start: 'top 90%',
-              end: 'top 40%',
-              scrub: 1,
-            },
-          },
-        );
-      }
-
-      const whyGrid = whyGridRef.current;
-      if (whyGrid) {
-        const whyItems = Array.from(whyGrid.querySelectorAll<HTMLElement>('.why-item'));
-        gsap.fromTo(
-          whyItems,
-          { y: 30, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.65,
-            stagger: 0.12,
-            ease: 'power2.out',
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: whyGrid,
-              start: 'top 88%',
-              toggleActions: 'play none none none',
-            },
-          },
-        );
-      }
-
-      gsap.fromTo('#why-heading',
-        { opacity: 0, y: 28 },
+      /* 10. Asset cards — stagger reveal (behind Framer Motion stagger) */
+      gsap.fromTo('.asset-grid',
+        { opacity: 0 },
         {
-          opacity: 1, y: 0, duration: 0.75, ease: 'power3.out',
-          scrollTrigger: { trigger: '#why-heading', start: 'top 90%', toggleActions: 'play none none none' },
-        },
+          opacity: 1, duration: 0.5, ease: 'power2.out',
+          scrollTrigger: { trigger: '.asset-grid', start: 'top 90%', toggleActions: 'play none none none' },
+        }
       );
+
+      /* 11. Asset toolbar */
+      gsap.fromTo('.asset-toolbar',
+        { opacity: 0, y: 12 },
+        {
+          opacity: 1, y: 0, duration: 0.5, ease: 'power2.out',
+          scrollTrigger: { trigger: '.asset-toolbar', start: 'top 92%', toggleActions: 'play none none none' },
+        }
+      );
+
+      /* 12. Footer fade-in */
+      gsap.fromTo('.site-footer',
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
+          scrollTrigger: { trigger: '.site-footer', start: 'top 96%', toggleActions: 'play none none none' },
+        }
+      );
+
+      /* 13. Marquee strip — subtle entrance */
+      gsap.fromTo('.marquee-strip',
+        { opacity: 0 },
+        {
+          opacity: 1, duration: 0.6, ease: 'power2.out',
+          scrollTrigger: { trigger: '.marquee-strip', start: 'top 98%', toggleActions: 'play none none none' },
+        }
+      );
+
     });
 
     return () => ctx.revert();
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12 },
-    );
-    document.querySelectorAll('.reveal-up, .reveal-stagger').forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-
-  // Hero headline mouse parallax — moves opposite to cursor, max ±10px
+  /* ── Hero headline mouse parallax ─────────────────────── */
   useEffect(() => {
     const heroEl = heroRef.current;
     if (!heroEl) return;
@@ -176,12 +207,9 @@ export function Landing(): React.JSX.Element {
       const cy = window.innerHeight / 2;
       const rx = (e.clientX - cx) / cx;
       const ry = (e.clientY - cy) / cy;
-      xTo(-rx * 10);
-      yTo(-ry * 6);
-      xToSub?.(-rx * 5);
-      yToSub?.(-ry * 3);
+      xTo(-rx * 10); yTo(-ry * 6);
+      xToSub?.(-rx * 5); yToSub?.(-ry * 3);
     };
-
     const onMouseLeave = () => {
       xTo(0); yTo(0);
       xToSub?.(0); yToSub?.(0);
@@ -189,7 +217,6 @@ export function Landing(): React.JSX.Element {
 
     heroEl.addEventListener('mousemove', onMouseMove);
     heroEl.addEventListener('mouseleave', onMouseLeave);
-
     return () => {
       heroEl.removeEventListener('mousemove', onMouseMove);
       heroEl.removeEventListener('mouseleave', onMouseLeave);
@@ -216,16 +243,14 @@ export function Landing(): React.JSX.Element {
 
   return (
     <div className="landing">
-      {/* ── Hero ─────────────────────────────────────── */}
+
+      {/* ── Hero ─────────────────────────────────────────── */}
       <section ref={heroRef} className="hero" aria-label="Hero section">
         <video
           ref={videoRef}
           className="hero__video"
           src="/hero-bg.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
+          autoPlay muted loop playsInline
           aria-hidden="true"
         />
         <div className="hero__overlay" aria-hidden="true" />
@@ -255,7 +280,7 @@ export function Landing(): React.JSX.Element {
         </div>
       </section>
 
-      {/* ── Marquee strip ─────────────────────────────── */}
+      {/* ── Marquee strip ──────────────────────────────────── */}
       <div className="marquee-strip" aria-hidden="true">
         <div className="marquee-track">
           {Array.from({ length: 4 }, (_, gi) =>
@@ -266,22 +291,23 @@ export function Landing(): React.JSX.Element {
         </div>
       </div>
 
-      {/* ── Assets / Markets ─────────────────────────── */}
+      {/* ── Assets / Markets ───────────────────────────────── */}
       <section
         id="markets"
         className="landing__section landing__section--assets"
         aria-labelledby="assets-heading"
       >
         <div className="container">
-          <div className="section-eyebrow">Markets</div>
-          <h2 id="assets-heading" className="section-title">
-            <span ref={gradientHeadRef} className="gradient-scroll-text">
-              What you can own today
-            </span>
-          </h2>
-          <p className="section-body reveal-up">Pick your asset. Decide how much. Done.</p>
+          <div className="landing__section-header">
+            <div className="section-eyebrow">Markets</div>
+            <h2 id="assets-heading" className="section-title">
+              <span ref={gradientHeadRef} className="gradient-scroll-text">
+                What you can own today
+              </span>
+            </h2>
+            <p className="section-body">Pick your asset. Decide how much. Done.</p>
+          </div>
 
-          {/* Search + filter bar */}
           <div className="asset-toolbar">
             <div className="asset-toolbar__search">
               <span className="asset-toolbar__search-icon" aria-hidden="true">⌕</span>
@@ -294,11 +320,7 @@ export function Landing(): React.JSX.Element {
                 aria-label="Search assets"
               />
               {search && (
-                <button
-                  className="asset-toolbar__clear"
-                  onClick={() => setSearch('')}
-                  aria-label="Clear search"
-                >
+                <button className="asset-toolbar__clear" onClick={() => setSearch('')} aria-label="Clear search">
                   ×
                 </button>
               )}
@@ -320,13 +342,11 @@ export function Landing(): React.JSX.Element {
           <div className="asset-grid">
             {assets.length > 0
               ? assets
-                  .filter((asset) =>
-                    (filterCat === '' || asset.category === filterCat) &&
-                    (search === '' || asset.name.toLowerCase().includes(search.toLowerCase()))
+                  .filter((a) =>
+                    (filterCat === '' || a.category === filterCat) &&
+                    (search === '' || a.name.toLowerCase().includes(search.toLowerCase()))
                   )
-                  .map((asset, i) => (
-                    <AssetCard key={asset.id} asset={asset} index={i} />
-                  ))
+                  .map((asset, i) => <AssetCard key={asset.id} asset={asset} index={i} />)
               : [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                   <div key={i} className="asset-card-skeleton glass-card" aria-hidden="true">
                     <div className="skeleton-block skeleton-block--header" />
@@ -338,44 +358,34 @@ export function Landing(): React.JSX.Element {
         </div>
       </section>
 
-      {/* ── Stacked Cards (Three Steps) ───────────────── */}
+      {/* ── Stacked Cards (Three Steps) ──────────────────── */}
       <StackedCards
         cards={STACKED_CARDS}
         heading="Three steps. One wallet."
         eyebrow="How it works"
       />
 
-      {/* ── Why Bitcoin? ─────────────────────────────── */}
+      {/* ── Why Bitcoin? ──────────────────────────────────── */}
       <section className="landing__section landing__section--why" aria-labelledby="why-heading">
         <div className="container">
-          <div className="section-eyebrow">Built on Bitcoin</div>
-          <h2 id="why-heading" className="section-title">
-            Why Bitcoin?
-          </h2>
-          <div className="why-grid reveal-stagger" ref={whyGridRef}>
-            <div
-              className="why-item glass-card"
-              onMouseMove={handleCardTilt}
-              onMouseLeave={handleCardTiltLeave}
-            >
+          <div className="landing__section-header landing__section-header--center">
+            <div className="section-eyebrow">Built on Bitcoin</div>
+            <h2 id="why-heading" className="section-title">
+              Why Bitcoin?
+            </h2>
+          </div>
+          <div className="why-grid" ref={whyGridRef}>
+            <div className="why-item glass-card" onMouseMove={handleCardTilt} onMouseLeave={handleCardTiltLeave}>
               <div className="why-item__label">Ownership</div>
               <h3 className="why-item__title">You own it, for real</h3>
               <p className="why-item__desc">No bank. No fund manager. When you buy, you hold it. Nobody else can touch it.</p>
             </div>
-            <div
-              className="why-item glass-card"
-              onMouseMove={handleCardTilt}
-              onMouseLeave={handleCardTiltLeave}
-            >
+            <div className="why-item glass-card" onMouseMove={handleCardTilt} onMouseLeave={handleCardTiltLeave}>
               <div className="why-item__label">Availability</div>
               <h3 className="why-item__title">Invest at 3am if you want</h3>
               <p className="why-item__desc">Bitcoin doesn't close at 5pm. Neither do we. Buy any time, from anywhere.</p>
             </div>
-            <div
-              className="why-item glass-card"
-              onMouseMove={handleCardTilt}
-              onMouseLeave={handleCardTiltLeave}
-            >
+            <div className="why-item glass-card" onMouseMove={handleCardTilt} onMouseLeave={handleCardTiltLeave}>
               <div className="why-item__label">Transparency</div>
               <h3 className="why-item__title">See every number, always</h3>
               <p className="why-item__desc">Every position lives on Bitcoin's blockchain. Check it yourself any time. No trust required.</p>
@@ -384,7 +394,7 @@ export function Landing(): React.JSX.Element {
         </div>
       </section>
 
-      {/* ── Footer ───────────────────────────────────── */}
+      {/* ── Footer ───────────────────────────────────────── */}
       <SiteFooter />
     </div>
   );

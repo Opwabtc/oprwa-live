@@ -1949,12 +1949,12 @@ a {
 .site-footer {
   padding: 4rem 0 0;
   border-top: 1px solid var(--border);
-  background: var(--bg-2);
+  background: transparent;
   position: relative;
 }
 
 [data-theme='light'] .site-footer {
-  background: rgba(196, 181, 253, 0.20);
+  background: transparent;
   border-top-color: rgba(124, 58, 237, 0.13);
 }
 
@@ -3258,7 +3258,7 @@ a {
 }
 
 /* ============================================================
-   FOOTER — background image with blur
+   FOOTER — no background image, unified with bg-canvas
    ============================================================ */
 .site-footer {
   position: relative;
@@ -3266,6 +3266,7 @@ a {
 }
 
 .site-footer__bg-overlay {
+  display: none; /* bg-canvas provides the unified background */
   position: absolute;
   inset: 0;
   background-image: url('/footer-bg.jpg');
@@ -4935,6 +4936,77 @@ a {
   background: rgba(255, 253, 248, 0.9);
   border-color: rgba(124, 58, 237, 0.2);
   color: #1a0533;
+}
+
+/* ============================================================
+   UNIFIED BACKGROUND — kill per-section gradient zones
+   The bg-canvas is the ONLY background. All sections transparent.
+   ============================================================ */
+.landing__section::before,
+.landing__section::after {
+  display: none !important;
+}
+.landing__section--dark {
+  background: transparent !important;
+}
+
+/* Remove overflow:clip that was set for the ::before approach */
+.landing__section {
+  overflow: visible;
+}
+
+/* Footer — match the unified canvas feel */
+.site-footer {
+  background: transparent !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+[data-theme='light'] .site-footer {
+  background: transparent !important;
+  border-top-color: rgba(124, 58, 237, 0.10);
+}
+
+/* ============================================================
+   SECTION HEADER — centered wrapper for eyebrow + title + body
+   ============================================================ */
+.landing__section-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+}
+.landing__section-header--center {
+  align-items: center;
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+.landing__section-header--center .section-title {
+  text-align: center;
+}
+
+/* Why Bitcoin — ensure grid is centered */
+.landing__section--why .why-grid {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tighten vertical rhythm between sections for one-page feel */
+.landing__section {
+  padding: 6rem 0;
+}
+@media (max-width: 768px) {
+  .landing__section {
+    padding: 4.5rem 0;
+  }
+}
+
+/* ============================================================
+   SCROLL REVEAL — initial states (GSAP will animate these)
+   ============================================================ */
+.section-eyebrow,
+.section-title,
+#why-heading {
+  will-change: transform, opacity, clip-path;
 }
 
 /* ============================================================
