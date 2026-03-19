@@ -131,10 +131,10 @@ export function Landing(): React.JSX.Element {
       }
 
       gsap.fromTo('#why-heading',
-        { autoAlpha: 0, y: 20 },
+        { opacity: 0, y: 28 },
         {
-          autoAlpha: 1, y: 0, duration: 0.7, ease: 'power2.out',
-          scrollTrigger: { trigger: '#why-heading', start: 'top 92%', toggleActions: 'play none none none' },
+          opacity: 1, y: 0, duration: 0.75, ease: 'power3.out',
+          scrollTrigger: { trigger: '#why-heading', start: 'top 90%', toggleActions: 'play none none none' },
         },
       );
     });
@@ -347,9 +347,7 @@ export function Landing(): React.JSX.Element {
       <section className="landing__section landing__section--why" aria-labelledby="why-heading">
         <div className="container">
           <h2 id="why-heading" className="section-title">
-            <TextReveal as="span" stagger={0.07}>
-              Why Bitcoin?
-            </TextReveal>
+            Why Bitcoin?
           </h2>
           <div className="why-grid reveal-stagger" ref={whyGridRef}>
             <div

@@ -1885,10 +1885,13 @@ a {
 /* ============================================================
    LANDING HERO BG GRADIENT (richer atmosphere)
    ============================================================ */
+.landing,
+.landing__section,
 .landing__section--why,
 .landing__section--assets,
-.sc-section {
-  background: transparent;
+.sc-section,
+.sc-stage {
+  background: transparent !important;
 }
 
 .landing__cta-banner {
@@ -1926,6 +1929,18 @@ a {
 [data-theme='light'] .site-footer {
   background: rgba(196, 181, 253, 0.20);
   border-top-color: rgba(124, 58, 237, 0.13);
+}
+
+[data-theme='light'] .site-footer__tagline {
+  color: #1a0533;
+}
+
+[data-theme='light'] .site-footer__col-title {
+  color: #1a0533;
+}
+
+[data-theme='light'] .site-footer__contract {
+  color: #3b0764;
 }
 
 .site-footer__bg-overlay {
@@ -1974,8 +1989,8 @@ a {
 }
 
 .site-footer__tagline {
-  font-size: 0.875rem;
-  color: var(--text-2);
+  font-size: 0.95rem;
+  color: var(--text);
   line-height: 1.72;
   max-width: 250px;
   margin: 0 0 1.25rem;
@@ -2026,7 +2041,7 @@ a {
 
 .site-footer__col-title {
   font-family: var(--font-heading);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -2047,8 +2062,8 @@ a {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 0.84rem;
-  color: var(--text-2);
+  font-size: 0.95rem;
+  color: var(--text);
   text-decoration: none;
   transition: color 0.18s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
   transform: translateX(0);
@@ -2056,7 +2071,7 @@ a {
 
 .site-footer__link svg {
   flex-shrink: 0;
-  color: var(--text-3);
+  color: var(--text-2);
   transition: color 0.18s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -2071,7 +2086,7 @@ a {
 }
 
 [data-theme='light'] .site-footer__link {
-  color: rgba(59, 7, 100, 0.8);
+  color: #1a0533;
 }
 
 [data-theme='light'] .site-footer__link:hover {
@@ -2084,8 +2099,8 @@ a {
 
 .site-footer__contract {
   font-family: var(--font-mono);
-  font-size: 0.64rem;
-  color: var(--text-3);
+  font-size: 0.72rem;
+  color: var(--text-2);
   word-break: break-all;
   line-height: 1.5;
   margin: 0;
@@ -2103,13 +2118,13 @@ a {
 
 .site-footer__copy,
 .site-footer__note {
-  font-size: 0.78rem;
-  color: var(--text-3);
+  font-size: 0.88rem;
+  color: var(--text-2);
 }
 
 [data-theme='light'] .site-footer__copy,
 [data-theme='light'] .site-footer__note {
-  color: rgba(59, 7, 100, 0.7);
+  color: #1a0533;
 }
 
 @media (max-width: 900px) {
@@ -3537,37 +3552,49 @@ a {
 }
 
 /* ============================================================
-   GLASS CARD — upgraded premium depth
+   GLASS CARD — premium liquid glass + deep 3D shadow
    ============================================================ */
 .glass-card {
   box-shadow:
-    var(--shadow-card),
-    inset 0 1px 0 rgba(255, 255, 255, 0.09),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+    0 4px 8px rgba(0, 0, 0, 0.35),
+    0 12px 32px rgba(0, 0, 0, 0.45),
+    0 28px 64px rgba(0, 0, 0, 0.30),
+    0 0 0 1px rgba(255, 153, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    inset 1px 0 0 rgba(255, 255, 255, 0.04),
+    inset -1px 0 0 rgba(0, 0, 0, 0.10);
 }
 
 .glass-card--hoverable:hover {
   box-shadow:
-    0 24px 64px rgba(0, 0, 0, 0.6),
-    0 0 48px rgba(249, 115, 22, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    0 20px 48px rgba(0, 0, 0, 0.50),
+    0 40px 80px rgba(0, 0, 0, 0.35),
+    0 0 60px rgba(249, 115, 22, 0.12),
+    0 0 0 1px rgba(255, 153, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22);
 }
 
 [data-theme='light'] .glass-card {
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.6) 100%),
-    var(--bg-card);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.55) 100%);
   box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.07),
-    0 1px 4px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    0 4px 8px rgba(0, 0, 0, 0.06),
+    0 12px 32px rgba(0, 0, 0, 0.10),
+    0 24px 56px rgba(0, 0, 0, 0.07),
+    0 0 0 1px rgba(124, 58, 237, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.04);
   border-color: rgba(124, 58, 237, 0.10);
 }
 
 [data-theme='light'] .glass-card--hoverable:hover {
   box-shadow:
-    0 20px 48px rgba(0, 0, 0, 0.12),
-    0 0 32px rgba(124, 58, 237, 0.08),
+    0 8px 20px rgba(0, 0, 0, 0.10),
+    0 24px 56px rgba(0, 0, 0, 0.14),
+    0 0 48px rgba(124, 58, 237, 0.10),
+    0 0 0 1px rgba(124, 58, 237, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.98);
   border-color: rgba(124, 58, 237, 0.22);
 }
@@ -4523,10 +4550,8 @@ a {
   will-change: transform, opacity;
 }
 
-/* Section headings scroll clip reveal */
-.section-title {
-  overflow: hidden;
-}
+/* Section headings — no overflow clip (would hide reveal animations) */
+/* .section-title { overflow: hidden; } — intentionally left transparent */
 
 /* ============================================================
    3D BTN — light theme overrides
