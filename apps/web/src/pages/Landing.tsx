@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
@@ -33,8 +33,17 @@ const STACKED_CARDS = [
   },
 ];
 
+const FILTER_OPTS = [
+  { value: '', label: 'All assets' },
+  { value: 'real_estate', label: 'Real Estate' },
+  { value: 'fixed_income', label: 'Fixed Income' },
+  { value: 'commodity', label: 'Commodity' },
+];
+
 export function Landing(): React.JSX.Element {
   const { assets } = useAssets();
+  const [search, setSearch] = useState('');
+  const [filterCat, setFilterCat] = useState('');
   const videoRef = useRef<HTMLVideoElement>(null);
   const whyGridRef = useRef<HTMLDivElement>(null);
   const gradientHeadRef = useRef<HTMLSpanElement>(null);
@@ -55,15 +64,6 @@ export function Landing(): React.JSX.Element {
         ease: 'none',
         scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
       });
-
-      gsap.fromTo(
-        '.asset-grid .asset-card',
-        { autoAlpha: 0, y: 40 },
-        {
-          autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out',
-          scrollTrigger: { trigger: '.asset-grid', start: 'top 80%' },
-        },
-      );
 
       const gradientEl = gradientHeadRef.current;
       if (gradientEl) {
@@ -88,25 +88,18 @@ export function Landing(): React.JSX.Element {
         const whyItems = Array.from(whyGrid.querySelectorAll<HTMLElement>('.why-item'));
         gsap.fromTo(
           whyItems,
-          { x: -40, y: 20, opacity: 0 },
+          { y: 30, opacity: 0 },
           {
-            x: 0,
             y: 0,
             opacity: 1,
             duration: 0.65,
             stagger: 0.12,
             ease: 'power2.out',
+            immediateRender: false,
             scrollTrigger: {
               trigger: whyGrid,
-              start: 'top 80%',
-              onEnter: () => {
-                whyItems.forEach((item, i) => {
-                  setTimeout(() => {
-                    item.classList.add('stair-visible');
-                  }, i * 120);
-                });
-              },
-              once: true,
+              start: 'top 88%',
+              toggleActions: 'play none none none',
             },
           },
         );
@@ -189,11 +182,53 @@ export function Landing(): React.JSX.Element {
             </span>
           </h2>
           <p className="section-body">Pick your asset. Decide how much. Done.</p>
+
+          {/* Search + filter bar */}
+          <div className="asset-toolbar">
+            <div className="asset-toolbar__search">
+              <span className="asset-toolbar__search-icon" aria-hidden="true">⌕</span>
+              <input
+                type="text"
+                placeholder="Search assets..."
+                className="asset-toolbar__input"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                aria-label="Search assets"
+              />
+              {search && (
+                <button
+                  className="asset-toolbar__clear"
+                  onClick={() => setSearch('')}
+                  aria-label="Clear search"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+            <div className="asset-toolbar__filters" role="group" aria-label="Filter by category">
+              {FILTER_OPTS.map((opt) => (
+                <button
+                  key={opt.value}
+                  className={`asset-toolbar__filter-btn${filterCat === opt.value ? ' asset-toolbar__filter-btn--active' : ''}`}
+                  onClick={() => setFilterCat(opt.value)}
+                  aria-pressed={filterCat === opt.value}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="asset-grid">
             {assets.length > 0
-              ? assets.map((asset, i) => (
-                  <AssetCard key={asset.id} asset={asset} index={i} />
-                ))
+              ? assets
+                  .filter((asset) =>
+                    (filterCat === '' || asset.category === filterCat) &&
+                    (search === '' || asset.name.toLowerCase().includes(search.toLowerCase()))
+                  )
+                  .map((asset, i) => (
+                    <AssetCard key={asset.id} asset={asset} index={i} />
+                  ))
               : [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                   <div key={i} className="asset-card-skeleton glass-card" aria-hidden="true">
                     <div className="skeleton-block skeleton-block--header" />

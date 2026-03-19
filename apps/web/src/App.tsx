@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppNav } from '@/components/AppNav';
 import { CursorTrail } from '@/components/CursorTrail';
+import { LoadingScreen } from '@/components/LoadingScreen';
+import { StairOverlay } from '@/components/StairOverlay';
 import { Landing } from '@/pages/Landing';
 import { AssetDetail } from '@/pages/AssetDetail';
 import { Dashboard } from '@/pages/Dashboard';
@@ -10,16 +12,17 @@ import { Docs } from '@/pages/Docs';
 import { useWalletStore } from '@/store/walletStore';
 
 const PAGE_VARIANTS = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
 };
 
-const PAGE_TRANSITION = { duration: 0.28, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] };
+const PAGE_TRANSITION = { duration: 0.18, ease: 'easeOut' as const };
 
 export function App(): React.JSX.Element {
   const location = useLocation();
   const { address, connected, refreshPortfolio } = useWalletStore();
+  const [loading, setLoading] = useState(true);
 
   // Auto-load portfolio when wallet is restored from localStorage after page refresh
   useEffect(() => {
@@ -29,10 +32,15 @@ export function App(): React.JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (loading) {
+    return <LoadingScreen onComplete={() => setLoading(false)} />;
+  }
+
   return (
     <>
       <CursorTrail />
       <AppNav />
+      <StairOverlay />
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={location.pathname}

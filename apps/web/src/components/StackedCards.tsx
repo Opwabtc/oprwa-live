@@ -1,5 +1,5 @@
 /**
- * StackedCards — pinned GSAP section with slow scroll peel.
+ * StackedCards — pinned GSAP section with slow scroll peel + parallax atmosphere.
  */
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
@@ -22,6 +22,7 @@ interface StackedCardsProps {
 export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.Element {
   const sectionRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const parallaxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -43,20 +44,19 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
     });
 
     const ctx = gsap.context(() => {
-      // Slower: increased scroll travel (500px/card) and scrub (2.5)
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: stage,
           start: 'top top',
-          end: `+=${n * 500}`,
+          end: `+=${(n + 1) * 500}`,
           pin: true,
           scrub: 2.5,
         },
       });
 
-      const segSize = 1 / (n - 1);
+      const segSize = 1 / n;
 
-      for (let i = 0; i < n - 1; i++) {
+      for (let i = 0; i < n; i++) {
         const card = cardEls[i];
         if (!card) continue;
         const at = i * segSize;
@@ -83,6 +83,29 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
           );
         }
       }
+
+      // Parallax atmosphere elements
+      const parallax = parallaxRef.current;
+      if (parallax) {
+        const orbs = Array.from(parallax.querySelectorAll<HTMLElement>('.sc-parallax__orb'));
+        const lines = Array.from(parallax.querySelectorAll<HTMLElement>('.sc-parallax__line'));
+        const nums = Array.from(parallax.querySelectorAll<HTMLElement>('.sc-parallax__num'));
+
+        const st = {
+          trigger: stage,
+          start: 'top top',
+          end: `+=${(n + 1) * 500}`,
+          scrub: 1.8,
+        };
+
+        orbs[0] && gsap.fromTo(orbs[0], { y: 0, opacity: 0.6 }, { y: -180, opacity: 0.2, scrollTrigger: st });
+        orbs[1] && gsap.fromTo(orbs[1], { y: 0, opacity: 0.4 }, { y: -120, opacity: 0.8, scrollTrigger: st });
+        orbs[2] && gsap.fromTo(orbs[2], { x: 0, opacity: 0.3 }, { x: 80, opacity: 0.6, scrollTrigger: st });
+        lines[0] && gsap.fromTo(lines[0], { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, scrollTrigger: { ...st, scrub: 1.2 } });
+        lines[1] && gsap.fromTo(lines[1], { scaleX: 1, opacity: 0.5 }, { scaleX: 0.3, opacity: 0, scrollTrigger: { ...st, scrub: 1.0 } });
+        nums[0] && gsap.fromTo(nums[0], { y: 40, opacity: 0 }, { y: -80, opacity: 0.06, scrollTrigger: st });
+        nums[1] && gsap.fromTo(nums[1], { y: -40, opacity: 0 }, { y: 60, opacity: 0.04, scrollTrigger: st });
+      }
     }, section);
 
     return () => ctx.revert();
@@ -90,6 +113,17 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
 
   return (
     <div className="sc-section" ref={sectionRef}>
+      {/* Parallax atmosphere — behind the stage */}
+      <div className="sc-parallax" ref={parallaxRef} aria-hidden="true">
+        <div className="sc-parallax__orb sc-parallax__orb--1" />
+        <div className="sc-parallax__orb sc-parallax__orb--2" />
+        <div className="sc-parallax__orb sc-parallax__orb--3" />
+        <div className="sc-parallax__line sc-parallax__line--1" />
+        <div className="sc-parallax__line sc-parallax__line--2" />
+        <div className="sc-parallax__num sc-parallax__num--1">01</div>
+        <div className="sc-parallax__num sc-parallax__num--2">03</div>
+      </div>
+
       <div className="sc-stage" ref={stageRef}>
         {heading !== undefined && <p className="sc-heading">{heading}</p>}
         <div className="sc-stack">

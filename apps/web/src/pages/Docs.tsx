@@ -20,15 +20,15 @@ const STATS = [
 ];
 
 const ASSETS_TABLE = [
-  { name: 'São Paulo — Faria Lima Tower', category: 'Real Estate', apy: '14.2%', fractions: '500,000', price: '1,000 sats' },
-  { name: 'US Treasury Bill Fund (3M)', category: 'Fixed Income', apy: '5.3%', fractions: '1,000,000', price: '1,000 sats' },
-  { name: 'Gold Vault Reserve — Zurich', category: 'Commodity', apy: '4.8%', fractions: '250,000', price: '1,000 sats' },
-  { name: 'Miami Beach — Sunset Bay', category: 'Real Estate', apy: '15.0%', fractions: '420,000', price: '1,000 sats' },
-  { name: 'Manhattan — Midtown Commerce', category: 'Real Estate', apy: '12.0%', fractions: '690,000', price: '1,000 sats' },
-  { name: 'Dubai Marina — View Tower', category: 'Real Estate', apy: '18.0%', fractions: '100,000', price: '1,000 sats' },
-  { name: 'EU Corporate Bond Fund', category: 'Fixed Income', apy: '6.1%', fractions: '800,000', price: '1,000 sats' },
-  { name: 'Silver Vault Reserve — Zurich', category: 'Commodity', apy: '3.9%', fractions: '300,000', price: '1,000 sats' },
-  { name: 'London — Grade-A Office', category: 'Real Estate', apy: '11.5%', fractions: '450,000', price: '1,000 sats' },
+  { name: 'São Paulo — Faria Lima Tower', category: 'Real Estate', apy: '12.0%', fractions: '1,000,000', price: '1,000 sats' },
+  { name: 'US Treasury Bill Fund (3M)', category: 'Fixed Income', apy: '5.2%', fractions: '1,000,000', price: '1,000 sats' },
+  { name: 'Gold Vault Reserve — Zurich', category: 'Commodity', apy: '8.5%', fractions: '1,000,000', price: '1,000 sats' },
+  { name: 'Miami Beach — Sunset Bay Residences', category: 'Real Estate', apy: '15.0%', fractions: '1,000,000', price: '1,000 sats' },
+  { name: 'Manhattan — Midtown Commerce Tower', category: 'Real Estate', apy: '9.5%', fractions: '1,000,000', price: '1,000 sats' },
+  { name: 'Dubai Marina — Marina View Tower', category: 'Real Estate', apy: '18.0%', fractions: '1,000,000', price: '1,000 sats' },
+  { name: 'EU Investment-Grade Corporate Bond Fund', category: 'Fixed Income', apy: '4.8%', fractions: '1,000,000', price: '1,000 sats' },
+  { name: 'Silver Vault Reserve — Zurich', category: 'Commodity', apy: '5.5%', fractions: '1,000,000', price: '1,000 sats' },
+  { name: 'London — Grade-A Office Portfolio', category: 'Real Estate', apy: '7.8%', fractions: '1,000,000', price: '1,000 sats' },
 ];
 
 const FAQ = [
