@@ -34,21 +34,38 @@ export function App(): React.JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Scroll-reactive hue shift — drives --scroll-hue on :root (0 → 100)
+  // Scroll-reactive hue shift — lerp-damped so fast scrolling never causes jarring jumps
   useEffect(() => {
     let raf = 0;
+    let currentHue = 0;
+    let targetHue = 0;
+    const LERP = 0.04; // damping factor — lower = smoother but slower to catch up
+
     const onScroll = (): void => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        const pct = max > 0 ? window.scrollY / max : 0;
-        document.documentElement.style.setProperty('--scroll-hue', String(Math.round(pct * 110)));
-        document.documentElement.style.setProperty('--scroll-pct', pct.toFixed(3));
-      });
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = max > 0 ? window.scrollY / max : 0;
+      targetHue = pct * 80; // max 80deg shift — subtle, not garish
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
+
+    const tick = (): void => {
+      currentHue += (targetHue - currentHue) * LERP;
+      if (Math.abs(targetHue - currentHue) > 0.05) {
+        document.documentElement.style.setProperty('--scroll-hue', currentHue.toFixed(2));
+        raf = requestAnimationFrame(tick);
+      } else {
+        document.documentElement.style.setProperty('--scroll-hue', targetHue.toFixed(2));
+        raf = 0;
+      }
+    };
+
+    const handleScroll = (): void => {
+      onScroll();
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('scroll', handleScroll);
       cancelAnimationFrame(raf);
     };
   }, []);
