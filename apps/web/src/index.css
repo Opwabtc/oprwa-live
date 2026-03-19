@@ -3,60 +3,91 @@
 @tailwind utilities;
 
 /* ============================================================
-   CSS CUSTOM PROPERTIES (SNL Design System)
+   CSS CUSTOM PROPERTIES — OPWA Design System v5
    ============================================================ */
 :root {
-  --accent: #f7931a;
-  --accent-hover: #ffaa33;
-  --accent-dim: rgba(247, 147, 26, 0.10);
-  --gold: #d4a017;
-  --gold-dim: rgba(212, 160, 23, 0.12);
-  --bg: #080808;
-  --color-bg: #080808;
-  --bg-2: #0d0d0d;
-  --bg-3: #141414;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --bg-card-hover: rgba(255, 255, 255, 0.055);
-  --border: rgba(255, 255, 255, 0.06);
-  --border-focus: rgba(247, 147, 26, 0.45);
-  --text: #f0ede8;
-  --text-2: rgba(240, 237, 232, 0.62);
-  --text-muted: rgba(240, 237, 232, 0.40);
-  --text-3: rgba(240, 237, 232, 0.28);
-  --text-faint: rgba(240, 237, 232, 0.18);
-  --success: #22c55e;
-  --success-dim: rgba(34, 197, 94, 0.12);
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --danger-dim: rgba(239, 68, 68, 0.12);
-  --radius-card: 16px;
-  --radius-btn: 10px;
+  /* Backgrounds */
+  --bg:          #0a0a0a;
+  --color-bg:    #0a0a0a;
+  --bg-2:        #111111;
+  --bg-3:        #161616;
+  --bg-card:     #161616;
+  --bg-elevated: #1e1e1e;
+  --bg-card-hover: #242424;
+
+  /* Accent — Bitcoin Orange */
+  --accent:        #FF9900;
+  --accent-dark:   #cc7a00;
+  --accent-hover:  #ffaa22;
+  --accent-dim:    rgba(255, 153, 0, 0.12);
+  --accent-border: rgba(255, 153, 0, 0.30);
+  --accent-glow:   rgba(255, 153, 0, 0.25);
+
+  /* Gold — financial values */
+  --gold:          #fbbf24;
+  --gold-dim:      rgba(251, 191, 36, 0.12);
+  --gold-border:   rgba(251, 191, 36, 0.28);
+
+  /* Text */
+  --text:        #f0ede8;
+  --text-2:      #a3a3a3;
+  --text-muted:  #6b6b6b;
+  --text-3:      #525252;
+  --text-faint:  #333333;
+
+  /* Borders */
+  --border:        rgba(255, 255, 255, 0.06);
+  --border-hover:  rgba(255, 255, 255, 0.12);
+  --border-focus:  rgba(255, 153, 0, 0.45);
+
+  /* Status */
+  --success:        #10b981;
+  --success-dim:    rgba(16, 185, 129, 0.12);
+  --success-border: rgba(16, 185, 129, 0.28);
+  --warning:        #f59e0b;
+  --danger:         #ef4444;
+  --danger-dim:     rgba(239, 68, 68, 0.12);
+  --danger-border:  rgba(239, 68, 68, 0.28);
+
+  /* Radii */
+  --radius-card: 14px;
+  --radius-btn:  10px;
   --radius-badge: 6px;
+
+  /* Shadows */
+  --shadow-card:     0 10px 30px rgba(0, 0, 0, 0.35), 0 4px 10px rgba(0, 0, 0, 0.2);
+  --shadow-elevated: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 153, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-glow:     0 0 30px rgba(255, 153, 0, 0.18);
+
+  /* Blur */
   --blur-glass: blur(16px);
-  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(247, 147, 26, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  /* Fonts */
   --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Barlow Condensed', 'DM Sans', -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-  --transition-fast: 120ms ease;
-  --transition-base: 220ms ease;
-  --transition-slow: 380ms ease;
+  --font-heading: 'Syne', 'DM Sans', -apple-system, sans-serif;
+  --font-mono:    'DM Mono', 'JetBrains Mono', monospace;
+
+  /* Transitions */
+  --transition-fast: 100ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 380ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme='light'] {
-  --bg: #ffffff;
-  --bg-2: #f5f5f5;
-  --bg-3: #ebebeb;
-  --bg-card: rgba(0, 0, 0, 0.03);
-  --bg-card-hover: rgba(0, 0, 0, 0.06);
-  --border: rgba(0, 0, 0, 0.08);
-  --border-focus: rgba(255, 153, 0, 0.5);
-  --text: #0a0a0a;
-  --text-2: rgba(0, 0, 0, 0.7);
-  --text-muted: rgba(0, 0, 0, 0.55);
-  --text-3: rgba(0, 0, 0, 0.45);
-  --text-faint: rgba(0, 0, 0, 0.25);
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --bg:          #ffffff;
+  --bg-2:        #fafafa;
+  --bg-3:        #f5f3ef;
+  --bg-card:     #f5f3ef;
+  --bg-elevated: #eeece8;
+  --bg-card-hover: #e8e4de;
+  --border:        rgba(0, 0, 0, 0.07);
+  --border-hover:  rgba(0, 0, 0, 0.13);
+  --text:        #0f0a1a;
+  --text-2:      #4a4540;
+  --text-muted:  #7a7570;
+  --text-3:      #a3a09c;
+  --text-faint:  #ccc8c2;
+  --shadow-card:     0 4px 24px rgba(0, 0, 0, 0.08);
   --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.12);
 }
 
@@ -83,7 +114,7 @@
 html {
   font-family: var(--font-display);
   font-size: 16px;
-  /* scroll-behavior is managed by Lenis — do not set scroll-behavior: smooth here */
+  /* scroll-behavior managed by Lenis — do not set scroll-behavior: smooth here */
 }
 
 body {
@@ -136,20 +167,16 @@ a {
    GLASS CARD
    ============================================================ */
 .glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 20px;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
   position: relative;
+  overflow: hidden;
   transition:
-    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.3s ease,
-    border-color 0.3s ease,
-    background 0.2s ease;
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
 }
 
 .glass-card::before {
@@ -254,36 +281,55 @@ a {
   font-size: 1rem;
 }
 
-/* Variants */
+/* Variants — DS v5 */
 .btn--primary {
-  background: var(--accent);
-  color: #000;
+  background: linear-gradient(135deg, #FF9900, #cc7a00);
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 18px rgba(255, 153, 0, 0.32);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn--primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.10), transparent);
+  pointer-events: none;
 }
 
 .btn--primary:hover:not(:disabled) {
-  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(255, 153, 0, 0.42);
+}
+
+.btn--primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 12px rgba(255, 153, 0, 0.28);
 }
 
 .btn--secondary {
-  background: var(--bg-card);
+  background: var(--bg-elevated);
   color: var(--text);
   border: 1px solid var(--border);
-  backdrop-filter: var(--blur-glass);
 }
 
 .btn--secondary:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  color: var(--text);
   background: var(--bg-card-hover);
-  border-color: var(--accent);
 }
 
 .btn--ghost {
   background: transparent;
   color: var(--text-muted);
-  border: none;
+  border: 1px solid var(--border);
 }
 
 .btn--ghost:hover:not(:disabled) {
   color: var(--accent);
+  border-color: var(--accent-border);
 }
 
 /* Loading state */
@@ -353,37 +399,36 @@ a {
 }
 
 .app-nav__inner {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 1.5rem;
   width: 100%;
-  padding: 0 18px;
+  padding: 0 20px;
 }
 
 .app-nav__logo {
   display: flex;
   align-items: center;
   text-decoration: none;
-  flex-shrink: 0;
+  justify-self: start;
 }
 
 .app-nav__logo-text {
   font-family: var(--font-heading);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: var(--accent);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .app-nav__links {
   display: flex;
   align-items: center;
-  gap: 1px;
+  gap: 2px;
   list-style: none;
   margin: 0;
   padding: 0;
-  flex: 1;
   justify-content: center;
 }
 
@@ -427,7 +472,7 @@ a {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  flex-shrink: 0;
+  justify-self: end;
 }
 
 .app-nav__theme-toggle {
@@ -1128,19 +1173,34 @@ a {
    ============================================================ */
 .hero {
   position: relative;
-  min-height: 700px;
-  max-height: 700px;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: var(--bg);
+}
+
+/* Video background */
+.hero__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  will-change: transform;
+}
+
+/* Dark overlay so text stays readable */
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   background:
-    radial-gradient(ellipse 70% 60% at 50% 30%, rgba(247, 147, 26, 0.10) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 40% at 80% 80%, rgba(212, 160, 23, 0.05) 0%, transparent 60%),
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    var(--bg);
-  background-size: auto, auto, 60px 60px, 60px 60px, auto;
+    linear-gradient(to bottom, rgba(8,8,8,0.55) 0%, rgba(8,8,8,0.3) 50%, rgba(8,8,8,0.75) 100%),
+    radial-gradient(ellipse 70% 60% at 50% 30%, rgba(247,147,26,0.08) 0%, transparent 65%);
 }
 
 /* bottom fade to hide the grid line at section boundary */
@@ -1156,10 +1216,11 @@ a {
 }
 
 .hero__content {
+  position: relative;
   text-align: center;
   max-width: 720px;
   padding: 0 1.5rem;
-  z-index: 1;
+  z-index: 2;
 }
 
 .hero__eyebrow {
@@ -1177,12 +1238,11 @@ a {
 }
 
 .hero__headline {
-  font-family: 'Bebas Neue', var(--font-heading), sans-serif;
-  font-size: clamp(5rem, 10vw, 8rem);
-  font-weight: 400;
-  line-height: 0.95;
-  letter-spacing: 0.04em;
-  letter-spacing: -0.04em;
+  font-family: var(--font-heading);
+  font-size: clamp(4rem, 9vw, 7.5rem);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.03em;
   margin: 0 0 1.5rem;
   color: var(--text);
   white-space: normal;
@@ -1224,12 +1284,13 @@ a {
 
 .section-title {
   font-family: var(--font-heading);
-  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
-  margin: 0 0 1.25rem;
+  margin: 0 0 1rem;
   text-align: center;
+  color: var(--text);
 }
 
 .section-body {
@@ -1388,6 +1449,7 @@ a {
   bottom: 2.5rem;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2398,4 +2460,149 @@ a {
    ============================================================ */
 .marketplace-page .container {
   padding-top: 2rem;
+}
+
+/* ── TextReveal ─────────────────────────────────────────────── */
+.tr-word { display: inline-block; overflow: hidden; vertical-align: bottom; }
+.tr-char { display: inline-block; will-change: transform; }
+
+/* ── TextShuffle ────────────────────────────────────────────── */
+.text-shuffle { font-variant-numeric: tabular-nums; }
+
+/* ── StackedCards ───────────────────────────────────────────── */
+.sc-section { position: relative; }
+.sc-stage {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+}
+.sc-heading {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 3rem;
+  text-align: center;
+}
+.sc-stack {
+  position: relative;
+  width: min(520px, 90vw);
+  height: 280px;
+}
+.sc-card {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  will-change: transform, opacity;
+  transform-origin: bottom center;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-card);
+}
+.sc-card__top { display: flex; align-items: center; justify-content: space-between; }
+.sc-card__num {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+.sc-card__tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.25rem 0.65rem;
+}
+.sc-card__title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text);
+  letter-spacing: 0.02em;
+  margin: 1rem 0 0.5rem;
+}
+.sc-card__desc {
+  font-size: 0.9rem;
+  color: var(--text-2);
+  line-height: 1.65;
+}
+
+/* ── Staircase entrance for Why Bitcoin ─────────────────────── */
+@keyframes stair-in {
+  from { opacity: 0; transform: translateX(-32px) translateY(16px); }
+  to   { opacity: 1; transform: translateX(0) translateY(0); }
+}
+.why-item.stair-visible {
+  animation: stair-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Gradient scroll text ───────────────────────────────────── */
+.gradient-scroll-text {
+  background: linear-gradient(90deg, var(--accent) 0%, var(--gold) 40%, var(--text) 70%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-size: 200%;
+  background-position: 100%;
+  display: inline-block;
+}
+
+/* ── Fluid shader overlay on hero ───────────────────────────── */
+.hero__fluid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(247,147,26,0.07) 0%, transparent 65%);
+  animation: fluid-pulse 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes fluid-pulse {
+  0%   { background-position: 50% 40%; opacity: 0.6; }
+  50%  { background-position: 55% 45%; opacity: 1; }
+  100% { background-position: 45% 35%; opacity: 0.7; }
+}
+
+/* ── InfiniteMarquee ────────────────────────────────────────── */
+.marquee-strip {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 0;
+  background: var(--bg-2);
+}
+.marquee-track { display: flex; gap: 0; will-change: transform; }
+.marquee-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 2.5rem;
+  white-space: nowrap;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.marquee-item::after {
+  content: '·';
+  color: var(--accent);
+  font-size: 1.2rem;
+  margin-left: 1rem;
 }

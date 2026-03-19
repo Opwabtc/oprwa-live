@@ -4,10 +4,9 @@ import { useState, useEffect } from 'react';
 import { WalletConnectButton } from './WalletConnectButton';
 
 const NAV_LINKS = [
-  { label: 'Markets', href: '/marketplace' },
-  { label: 'Portfolio', href: '/portfolio' },
-  { label: 'Dashboard', href: '/app' },
-  { label: 'Docs', href: '/docs' },
+  { label: 'Market', href: '/#markets', anchor: true },
+  { label: 'Dashboard', href: '/app', anchor: false },
+  { label: 'Docs', href: '/docs', anchor: false },
 ];
 
 export function AppNav(): React.JSX.Element {
@@ -43,13 +42,22 @@ export function AppNav(): React.JSX.Element {
         <ul className="app-nav__links" role="list">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
-              <Link
-                to={link.href}
-                className={`app-nav__link${location.pathname === link.href ? ' app-nav__link--active' : ''}`}
-                aria-current={location.pathname === link.href ? 'page' : undefined}
-              >
-                {link.label}
-              </Link>
+              {link.anchor ? (
+                <a
+                  href={link.href}
+                  className="app-nav__link"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  to={link.href}
+                  className={`app-nav__link${location.pathname === link.href ? ' app-nav__link--active' : ''}`}
+                  aria-current={location.pathname === link.href ? 'page' : undefined}
+                >
+                  {link.label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>

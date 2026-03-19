@@ -1,11 +1,9 @@
 import React from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppNav } from '@/components/AppNav';
 import { Landing } from '@/pages/Landing';
-import { Marketplace } from '@/pages/Marketplace';
 import { AssetDetail } from '@/pages/AssetDetail';
-import { Portfolio } from '@/pages/Portfolio';
 import { Dashboard } from '@/pages/Dashboard';
 import { Docs } from '@/pages/Docs';
 
@@ -34,9 +32,9 @@ export function App(): React.JSX.Element {
         >
           <Routes location={location}>
             <Route path="/" element={<Landing />} />
-            <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/marketplace" element={<Navigate to="/#markets" replace />} />
             <Route path="/asset/:id" element={<AssetDetail />} />
-            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/portfolio" element={<Navigate to="/app" replace />} />
             <Route path="/app" element={<Dashboard />} />
             <Route path="/docs" element={<Docs />} />
           </Routes>
