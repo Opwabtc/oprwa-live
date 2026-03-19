@@ -8,15 +8,11 @@ export function useBackgroundScroll(): void {
     if (!el) return;
 
     let raf: number;
-    let lastY = 0;
 
     const onScroll = (): void => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         const y = window.scrollY;
-        const delta = (y - lastY) * 0.008;
-        void delta; // used conceptually for damping, actual transform uses raw y
-        lastY = y;
         el.style.transform = `translateY(${-y * 0.012}px)`;
       });
     };

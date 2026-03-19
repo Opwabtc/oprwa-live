@@ -57,20 +57,24 @@ export function AssetCarousel({ assets, filter, onFilterChange }: Props): React.
         ))}
       </div>
 
-      <div
-        ref={trackRef}
-        className="carousel-track"
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onMouseLeave={onMouseUp}
-        role="list"
-        aria-label="Asset carousel"
-      >
-        {filtered.map((asset, i) => (
-          <AssetCard key={asset.id} asset={asset} index={i} />
-        ))}
-      </div>
+      {filtered.length === 0 ? (
+        <div className="carousel-empty">No assets match this filter.</div>
+      ) : (
+        <div
+          ref={trackRef}
+          className="carousel-track"
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          onMouseLeave={onMouseUp}
+          role="list"
+          aria-label="Asset carousel"
+        >
+          {filtered.map((asset, i) => (
+            <AssetCard key={asset.id} asset={asset} index={i} />
+          ))}
+        </div>
+      )}
 
       <div className="carousel-fade-left" aria-hidden="true" />
       <div className="carousel-fade-right" aria-hidden="true" />

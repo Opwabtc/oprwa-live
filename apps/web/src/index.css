@@ -122,6 +122,7 @@
   --grad-a:      rgba(255,153,0,0.07);
   --grad-b:      rgba(212,160,23,0.05);
   --grad-c:      rgba(255,153,0,0.03);
+  --modal-overlay-bg: rgba(10, 10, 10, 0.72);
 }
 
 [data-theme='light'] {
@@ -213,6 +214,7 @@
   --grad-a: rgba(109,40,217,0.06);
   --grad-b: rgba(139,92,246,0.04);
   --grad-c: rgba(237,233,254,0.7);
+  --modal-overlay-bg: rgba(200, 196, 190, 0.65);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -339,6 +341,10 @@ body {
   100% { transform: translate(1%,   -2.5%)  scale(1.01); }
 }
 
+#bg-gradient {
+  animation: bgDrift 24s ease-in-out infinite alternate;
+}
+
 /* Light theme grain adjustment */
 [data-theme="light"] .grain-overlay { opacity: 0.018; }
 
@@ -416,7 +422,7 @@ body {
 .filter-pill.active {
   background: var(--accent);
   border-color: var(--accent);
-  color: white;
+  color: var(--bg-base);
 }
 
 .carousel-track {
@@ -430,7 +436,7 @@ body {
   user-select: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  will-change: scroll-position;
+  will-change: transform;
 }
 .carousel-track::-webkit-scrollbar { display: none; }
 .carousel-track:active { cursor: grabbing; }
@@ -483,7 +489,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: var(--modal-overlay-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   display: flex;
@@ -1215,6 +1221,7 @@ a {
    ============================================================ */
 .wallet-btn--connect {
   padding: 0.5rem 1.1rem;
+  height: 36px;
   background: var(--accent);
   color: #000;
   border: none;
@@ -1428,7 +1435,7 @@ a {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.75);
+  background: var(--modal-overlay-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   padding: 5rem 1.5rem 1.5rem; /* top padding clears the nav */

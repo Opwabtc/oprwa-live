@@ -39,6 +39,8 @@ const FILTER_OPTS = [
   { value: 'commodity', label: 'Commodity' },
 ];
 
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
 export function Landing(): React.JSX.Element {
   const { assets } = useAssets();
   const [search, setSearch] = useState('');
@@ -256,13 +258,17 @@ export function Landing(): React.JSX.Element {
 
       {/* ── Hero ─────────────────────────────────────────── */}
       <section ref={heroRef} className="hero" aria-label="Hero section">
-        <video
-          ref={videoRef}
-          className="hero__video"
-          src="/hero-bg.mp4"
-          autoPlay muted loop playsInline
-          aria-hidden="true"
-        />
+        {isMobile ? (
+          <img src="/hero-poster.webp" alt="" className="hero-poster" aria-hidden="true" />
+        ) : (
+          <video
+            ref={videoRef}
+            className="hero__video"
+            src="/hero-bg.mp4"
+            autoPlay muted loop playsInline
+            aria-hidden="true"
+          />
+        )}
         <div className="hero__overlay" aria-hidden="true" />
         <div className="hero__fluid" aria-hidden="true" />
 

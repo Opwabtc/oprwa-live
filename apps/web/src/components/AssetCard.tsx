@@ -21,9 +21,10 @@ const CATEGORY_BADGE_CLASS: Record<string, string> = {
 interface AssetCardProps {
   asset: Asset;
   index?: number;
+  delay?: number;
 }
 
-export function AssetCard({ asset, index = 0 }: AssetCardProps): React.JSX.Element {
+export function AssetCard({ asset, index = 0, delay }: AssetCardProps): React.JSX.Element {
   const [buyOpen, setBuyOpen] = useState(false);
   const [showUSD, setShowUSD] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -72,7 +73,8 @@ export function AssetCard({ asset, index = 0 }: AssetCardProps): React.JSX.Eleme
           ref={cardRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="asset-card glass-card glass-card--hoverable"
+          className="asset-card glass-card glass-card--hoverable reveal"
+          style={{ transitionDelay: delay ? `${delay}ms` : undefined }}
         >
           <div className="asset-card__header">
             <span className={`badge ${CATEGORY_BADGE_CLASS[asset.category] ?? 'badge--category'}`}>
