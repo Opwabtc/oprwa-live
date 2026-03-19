@@ -3098,6 +3098,52 @@ a {
 }
 
 /* ============================================================
+   DASHBOARD — refresh button + BTC/USD balance display
+   ============================================================ */
+.dashboard__refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+}
+
+.dashboard__refresh-spin {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(249, 115, 22, 0.25);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+.dashboard__wallet-balance {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.dashboard__wallet-btc {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.dashboard__wallet-usd {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.dashboard__stat-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: -0.25rem;
+}
+
+/* ============================================================
    BUY MODAL — inline wallet picker (replaces navbar dropdown)
    ============================================================ */
 .buy-modal__wallet-picker {

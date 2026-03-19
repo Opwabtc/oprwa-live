@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppNav } from '@/components/AppNav';
@@ -7,6 +7,7 @@ import { Landing } from '@/pages/Landing';
 import { AssetDetail } from '@/pages/AssetDetail';
 import { Dashboard } from '@/pages/Dashboard';
 import { Docs } from '@/pages/Docs';
+import { useWalletStore } from '@/store/walletStore';
 
 const PAGE_VARIANTS = {
   initial: { opacity: 0, y: 12 },
@@ -18,6 +19,15 @@ const PAGE_TRANSITION = { duration: 0.28, ease: [0.4, 0, 0.2, 1] as [number, num
 
 export function App(): React.JSX.Element {
   const location = useLocation();
+  const { address, connected, refreshPortfolio } = useWalletStore();
+
+  // Auto-load portfolio when wallet is restored from localStorage after page refresh
+  useEffect(() => {
+    if (address && connected) {
+      void refreshPortfolio();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

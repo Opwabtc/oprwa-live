@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { OPNetRWAVaultAdapter, CONTRACT_ADDRESS } from '@oprwa/contracts';
 import type { Position } from '@/types';
 
@@ -77,11 +78,13 @@ async function loadOnChainPortfolio(walletAddress: string): Promise<Position[]> 
   return positions;
 }
 
-export const useWalletStore = create<WalletState>((set, get) => ({
+export const useWalletStore = create<WalletState>()(
+  persist(
+    (set, get) => ({
   address: null,
   connected: false,
   verified: false,
-  network: 'testnet',
+  network: 'testnet' as const,
   walletType: null,
   onChainPositions: [],
   portfolioLoading: false,
@@ -127,4 +130,15 @@ export const useWalletStore = create<WalletState>((set, get) => ({
       set({ portfolioLoading: false });
     }
   },
-}));
+}),
+{
+  name: 'oprwa-wallet',
+  partialize: (state) => ({
+    address: state.address,
+    walletType: state.walletType,
+    network: state.network,
+    connected: state.connected,
+    verified: state.verified,
+  }),
+}
+));
