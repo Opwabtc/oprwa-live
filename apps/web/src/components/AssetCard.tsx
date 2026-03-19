@@ -27,7 +27,7 @@ export function AssetCard({ asset, index = 0 }: AssetCardProps): React.JSX.Eleme
   const [buyOpen, setBuyOpen] = useState(false);
   const [showUSD, setShowUSD] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { price: btcPrice } = useBTCPrice();
+  const { price: btcPrice, loading: priceLoading } = useBTCPrice();
 
   const availablePct = ((asset.available_fractions / asset.total_fractions) * 100).toFixed(1);
 
@@ -91,7 +91,7 @@ export function AssetCard({ asset, index = 0 }: AssetCardProps): React.JSX.Eleme
             <div
               className="asset-card__stat asset-card__stat--price"
               onClick={() => setShowUSD((v) => !v)}
-              title={showUSD ? 'Show sats' : 'Show USD'}
+              title={showUSD ? 'Click to show sats' : 'Click to show USD value'}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => { if (e.key === 'Enter') setShowUSD((v) => !v); }}
@@ -106,8 +106,12 @@ export function AssetCard({ asset, index = 0 }: AssetCardProps): React.JSX.Eleme
                   transition: 'color 0.2s ease',
                 }}
               >
-                {showUSD && usdPrice !== null
-                  ? `≈ $${usdPrice}`
+                {showUSD
+                  ? usdPrice !== null
+                    ? `≈ $${usdPrice}`
+                    : priceLoading
+                      ? '≈ $ …'
+                      : `${asset.price_per_fraction.toLocaleString('en-US')} sats`
                   : `${asset.price_per_fraction.toLocaleString('en-US')} sats`}
               </span>
             </div>

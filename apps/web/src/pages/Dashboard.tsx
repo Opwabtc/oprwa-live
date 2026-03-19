@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useWalletStore } from '@/store/walletStore';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { useBTCPrice } from '@/hooks/useBTCPrice';
@@ -153,9 +154,16 @@ export function Dashboard(): React.JSX.Element {
               ))}
             </div>
           ) : !connected ? (
-            <p className="portfolio__empty">Connect your wallet to view your positions.</p>
+            <div className="portfolio__empty">
+              <p>Connect your wallet to view your positions.</p>
+            </div>
           ) : positions.length === 0 ? (
-            <p className="portfolio__empty">No positions yet. Buy fractions from the <a href="/#markets" className="text-accent">market</a> to get started.</p>
+            <div className="portfolio__empty">
+              <p>No positions yet. Start by browsing available assets in the marketplace.</p>
+              <Link to="/marketplace" className="btn btn--primary btn--md">
+                Browse Markets
+              </Link>
+            </div>
           ) : (
             <div className="portfolio__grid">
               {positions.map((pos) => (

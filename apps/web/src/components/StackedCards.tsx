@@ -17,9 +17,10 @@ interface StackedCard {
 interface StackedCardsProps {
   cards: StackedCard[];
   heading?: string;
+  eyebrow?: string;
 }
 
-export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.Element {
+export function StackedCards({ cards, heading, eyebrow }: StackedCardsProps): React.JSX.Element {
   const sectionRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const parallaxRef = useRef<HTMLDivElement>(null);
@@ -125,6 +126,7 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
       </div>
 
       <div className="sc-stage" ref={stageRef}>
+        {eyebrow !== undefined && <div className="section-eyebrow sc-eyebrow">{eyebrow}</div>}
         {heading !== undefined && <p className="sc-heading">{heading}</p>}
         <div className="sc-stack">
           {cards.map((card, i) => (

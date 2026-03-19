@@ -273,6 +273,7 @@ export function Landing(): React.JSX.Element {
         aria-labelledby="assets-heading"
       >
         <div className="container">
+          <div className="section-eyebrow">Markets</div>
           <h2 id="assets-heading" className="section-title">
             <span ref={gradientHeadRef} className="gradient-scroll-text">
               What you can own today
@@ -341,11 +342,13 @@ export function Landing(): React.JSX.Element {
       <StackedCards
         cards={STACKED_CARDS}
         heading="Three steps. One wallet."
+        eyebrow="How it works"
       />
 
       {/* ── Why Bitcoin? ─────────────────────────────── */}
       <section className="landing__section landing__section--why" aria-labelledby="why-heading">
         <div className="container">
+          <div className="section-eyebrow">Built on Bitcoin</div>
           <h2 id="why-heading" className="section-title">
             Why Bitcoin?
           </h2>
