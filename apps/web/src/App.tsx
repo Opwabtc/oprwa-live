@@ -40,6 +40,7 @@ export function App(): React.JSX.Element {
 
   return (
     <>
+      <div className="bg-canvas" aria-hidden="true" />
       <CursorTrail />
       <AppNav />
       <StairOverlay />
