@@ -9,6 +9,8 @@ import { Landing } from '@/pages/Landing';
 import { AssetDetail } from '@/pages/AssetDetail';
 import { Dashboard } from '@/pages/Dashboard';
 import { Docs } from '@/pages/Docs';
+import { Terms } from '@/pages/Terms';
+import { Privacy } from '@/pages/Privacy';
 import { useWalletStore } from '@/store/walletStore';
 
 const PAGE_VARIANTS = {
@@ -57,6 +59,8 @@ export function App(): React.JSX.Element {
             <Route path="/portfolio" element={<Navigate to="/app" replace />} />
             <Route path="/app" element={<Dashboard />} />
             <Route path="/docs" element={<Docs />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
           </Routes>
         </motion.div>
       </AnimatePresence>

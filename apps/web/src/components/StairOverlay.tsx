@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const N = 5;
+const N = 6;
 const STRIP_DELAY = 55; // ms between each strip
 const DURATION = 380;   // ms for each strip's transition
 

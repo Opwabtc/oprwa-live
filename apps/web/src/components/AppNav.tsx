@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { WalletConnectButton } from './WalletConnectButton';
 import { ScrambleText } from './ScrambleText';
+import { useBTCPrice } from '@/hooks/useBTCPrice';
 
 const NAV_LINKS = [
   { label: 'Market', href: '/#markets', anchor: true },
@@ -15,6 +16,7 @@ export function AppNav(): React.JSX.Element {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { price: btcPrice } = useBTCPrice();
 
   const toggleTheme = (): void => {
     const next = theme === 'dark' ? 'light' : 'dark';
@@ -62,6 +64,12 @@ export function AppNav(): React.JSX.Element {
         </ul>
 
         <div className="app-nav__actions">
+          {btcPrice !== null && (
+            <span className="app-nav__btc-price" aria-label="Live Bitcoin price">
+              <span className="app-nav__btc-symbol">₿</span>
+              {btcPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 })}
+            </span>
+          )}
           <button
             className={`app-nav__hamburger${menuOpen ? ' app-nav__hamburger--open' : ''}`}
             onClick={() => setMenuOpen((v) => !v)}

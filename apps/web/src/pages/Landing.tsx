@@ -8,7 +8,7 @@ import { AssetCard } from '@/components/AssetCard';
 import { TextReveal } from '@/components/TextReveal';
 import { TextShuffle } from '@/components/TextShuffle';
 import { StackedCards } from '@/components/StackedCards';
-import { ScrambleText } from '@/components/ScrambleText';
+import { SiteFooter } from '@/components/SiteFooter';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -104,9 +104,33 @@ export function Landing(): React.JSX.Element {
           },
         );
       }
+
+      gsap.fromTo('#why-heading',
+        { autoAlpha: 0, y: 20 },
+        {
+          autoAlpha: 1, y: 0, duration: 0.7, ease: 'power2.out',
+          scrollTrigger: { trigger: '#why-heading', start: 'top 92%', toggleActions: 'play none none none' },
+        },
+      );
     });
 
     return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+    document.querySelectorAll('.reveal-up, .reveal-stagger').forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
   const handleCardTilt = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -181,7 +205,7 @@ export function Landing(): React.JSX.Element {
               What you can own today
             </span>
           </h2>
-          <p className="section-body">Pick your asset. Decide how much. Done.</p>
+          <p className="section-body reveal-up">Pick your asset. Decide how much. Done.</p>
 
           {/* Search + filter bar */}
           <div className="asset-toolbar">
@@ -254,7 +278,7 @@ export function Landing(): React.JSX.Element {
               Why Bitcoin?
             </TextReveal>
           </h2>
-          <div className="why-grid" ref={whyGridRef}>
+          <div className="why-grid reveal-stagger" ref={whyGridRef}>
             <div
               className="why-item glass-card"
               onMouseMove={handleCardTilt}
@@ -287,73 +311,7 @@ export function Landing(): React.JSX.Element {
       </section>
 
       {/* ── Footer ───────────────────────────────────── */}
-      <footer className="site-footer" role="contentinfo">
-        <div className="site-footer__bg-overlay" aria-hidden="true" />
-        <div className="container">
-          <div className="site-footer__grid">
-            <div className="site-footer__brand-col">
-              <span className="site-footer__brand">OPRWA</span>
-              <p className="site-footer__tagline">
-                Real assets on Bitcoin. Own fractions of global properties
-                directly from your wallet. No bank. No broker.
-              </p>
-              <span className="site-footer__badge">Testnet Live</span>
-            </div>
-
-            <div>
-              <p className="site-footer__col-title">Platform</p>
-              <ul className="site-footer__links">
-                <li><a href="#markets" className="site-footer__link"><ScrambleText steps={6} speed={28}>Markets</ScrambleText></a></li>
-                <li><Link to="/app" className="site-footer__link"><ScrambleText steps={6} speed={28}>Dashboard</ScrambleText></Link></li>
-                <li><Link to="/docs" className="site-footer__link"><ScrambleText steps={6} speed={28}>Docs</ScrambleText></Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <p className="site-footer__col-title">Resources</p>
-              <ul className="site-footer__links">
-                <li><a href="https://opnet.org" target="_blank" rel="noopener noreferrer" className="site-footer__link"><ScrambleText steps={6} speed={28}>OPNet</ScrambleText></a></li>
-                <li>
-                  <a
-                    href="https://opscan.org/accounts/opt1sqrx3wegg9au7l6amnd7jal5rety53sf9cg04s6sq?network=testnet"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="site-footer__link"
-                  >
-                    <ScrambleText steps={6} speed={28}>Contract ↗</ScrambleText>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/Opwabtc/oprwa-live"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="site-footer__link"
-                  >
-                    <ScrambleText steps={6} speed={28}>GitHub ↗</ScrambleText>
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <p className="site-footer__col-title">Legal</p>
-              <ul className="site-footer__links">
-                <li><a href="#" className="site-footer__link"><ScrambleText steps={6} speed={28}>Terms of Use</ScrambleText></a></li>
-                <li><a href="#" className="site-footer__link"><ScrambleText steps={6} speed={28}>Privacy Policy</ScrambleText></a></li>
-                <li><a href="#" className="site-footer__link"><ScrambleText steps={6} speed={28}>Risk Disclosure</ScrambleText></a></li>
-              </ul>
-              <p className="site-footer__col-title" style={{ marginTop: '1.5rem' }}>Contract</p>
-              <p className="site-footer__contract">opt1sqrx3wegg9au7l6amnd7jal5rety53sf9cg04s6sq</p>
-            </div>
-          </div>
-
-          <div className="site-footer__bottom">
-            <span className="site-footer__copy">© 2026 OPRWA. All rights reserved.</span>
-            <span className="site-footer__note">Built on Bitcoin · OPNet Testnet</span>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { SiteFooter } from '@/components/SiteFooter';
 
 const SECTIONS = [
   { id: 'overview', label: 'Overview' },
@@ -413,6 +414,7 @@ fee = max(1,000 sats, txValue × basisPoints / 100,000)`}
 
         </main>
       </div>
+      <SiteFooter />
     </div>
   );
 }

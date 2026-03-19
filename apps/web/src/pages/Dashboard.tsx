@@ -2,6 +2,7 @@ import React from 'react';
 import { useWalletStore } from '@/store/walletStore';
 import { usePortfolio } from '@/hooks/usePortfolio';
 import { useBTCPrice } from '@/hooks/useBTCPrice';
+import { SiteFooter } from '@/components/SiteFooter';
 
 function truncateAddress(addr: string): string {
   if (addr.length <= 20) return addr;
@@ -190,6 +191,7 @@ export function Dashboard(): React.JSX.Element {
           )}
         </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }
