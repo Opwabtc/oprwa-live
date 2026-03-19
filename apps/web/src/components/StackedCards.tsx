@@ -1,7 +1,7 @@
 /**
- * StackedCards — pinned GSAP section with slow scroll peel and 3D mouse tilt.
+ * StackedCards — pinned GSAP section with slow scroll peel.
  */
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -88,22 +88,6 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
     return () => ctx.revert();
   }, [cards]);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const el = e.currentTarget;
-    const rect = el.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = (e.clientX - cx) / (rect.width / 2);
-    const dy = (e.clientY - cy) / (rect.height / 2);
-    el.style.transform = `perspective(900px) rotateX(${-dy * 7}deg) rotateY(${dx * 7}deg) translateZ(10px)`;
-    el.style.setProperty('--mx', (((e.clientX - rect.left) / rect.width) * 100).toFixed(1));
-    el.style.setProperty('--my', (((e.clientY - rect.top) / rect.height) * 100).toFixed(1));
-  }, []);
-
-  const handleMouseLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.transform = '';
-  }, []);
-
   return (
     <div className="sc-section" ref={sectionRef}>
       <div className="sc-stage" ref={stageRef}>
@@ -113,8 +97,6 @@ export function StackedCards({ cards, heading }: StackedCardsProps): React.JSX.E
             <div
               key={i}
               className="sc-card glass-card"
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
             >
               <div className="sc-card__top">
                 <span className="sc-card__num">{card.number}</span>

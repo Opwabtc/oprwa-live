@@ -1,8 +1,6 @@
 import React from 'react';
 import { useWalletStore } from '@/store/walletStore';
 import { usePortfolio } from '@/hooks/usePortfolio';
-import { WalletConnectButton } from '@/components/WalletConnectButton';
-
 function truncateAddress(addr: string): string {
   if (addr.length <= 20) return addr;
   return `${addr.slice(0, 10)}...${addr.slice(-8)}`;
@@ -64,9 +62,6 @@ export function Dashboard(): React.JSX.Element {
               Network: <strong>{network}</strong>
             </p>
           </div>
-          {!connected && (
-            <WalletConnectButton />
-          )}
         </div>
 
         {/* Stats */}

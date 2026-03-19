@@ -184,11 +184,8 @@ export function Landing(): React.JSX.Element {
       >
         <div className="container">
           <h2 id="assets-heading" className="section-title">
-            <TextReveal as="span" stagger={0.06}>
-              What you can own
-            </TextReveal>{' '}
             <span ref={gradientHeadRef} className="gradient-scroll-text">
-              today
+              What you can own today
             </span>
           </h2>
           <p className="section-body">Pick your asset. Decide how much. Done.</p>

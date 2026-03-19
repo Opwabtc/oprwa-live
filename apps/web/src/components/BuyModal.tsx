@@ -7,8 +7,42 @@ import { postBuy } from '@/lib/api';
 import { useWalletStore } from '@/store/walletStore';
 import { usePortfolioStore } from '@/store/portfolioStore';
 import { onModalOpen, onModalClose } from '@/lib/lenis';
-import { WalletConnectButton } from '@/components/WalletConnectButton';
 import type { Asset, Transaction } from '@/types';
+
+// Inline wallet options — avoids navbar dropdown layout bugs inside modal
+const MODAL_WALLETS = [
+  { id: 'opwallet', name: 'OPWallet', desc: 'Native OPNet Bitcoin wallet', initial: 'O', url: 'https://opwallet.io',
+    available: () => typeof window !== 'undefined' && Boolean((window as ExtWindow).opnet) },
+  { id: 'unisat', name: 'UniSat', desc: 'Bitcoin and BRC-20 wallet', initial: 'U', url: 'https://unisat.io',
+    available: () => typeof window !== 'undefined' && Boolean((window as ExtWindow).unisat) },
+  { id: 'okx', name: 'OKX Wallet', desc: 'Multi-chain crypto wallet', initial: 'K', url: 'https://www.okx.com/web3',
+    available: () => typeof window !== 'undefined' && Boolean((window as ExtWindow).okxwallet?.bitcoin) },
+];
+
+type ExtWindow = typeof window & { opnet?: { requestAccounts: () => Promise<string[]> }; unisat?: { requestAccounts: () => Promise<string[]> }; okxwallet?: { bitcoin?: { requestAccounts: () => Promise<string[]> } } };
+
+async function connectModalWallet(id: string): Promise<{ address: string; type: string }> {
+  const w = window as ExtWindow;
+  if (id === 'opwallet') {
+    if (!w.opnet) throw new Error('OPWallet not detected. Please install it.');
+    const [address] = await w.opnet.requestAccounts();
+    if (!address) throw new Error('OPWallet returned no accounts.');
+    return { address, type: 'opwallet' };
+  }
+  if (id === 'unisat') {
+    if (!w.unisat) throw new Error('UniSat not detected. Please install it.');
+    const [address] = await w.unisat.requestAccounts();
+    if (!address) throw new Error('UniSat returned no accounts.');
+    return { address, type: 'unisat' };
+  }
+  if (id === 'okx') {
+    if (!w.okxwallet?.bitcoin) throw new Error('OKX Wallet not detected. Please install it.');
+    const [address] = await w.okxwallet.bitcoin.requestAccounts();
+    if (!address) throw new Error('OKX Wallet returned no accounts.');
+    return { address, type: 'okx' };
+  }
+  throw new Error('Unknown wallet');
+}
 
 type ModalState = 'idle' | 'signing' | 'pending' | 'settled' | 'error';
 
@@ -16,6 +50,7 @@ interface BuyModalProps {
   open: boolean;
   onClose: () => void;
   asset: Asset;
+  initialAmount?: number;
 }
 
 const OVERLAY_VARIANTS = {
@@ -31,12 +66,15 @@ const MODAL_VARIANTS = {
 
 const MODAL_TRANSITION = { duration: 0.25, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] };
 
-export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Element | null {
-  const [amount, setAmount] = useState(1);
+export function BuyModal({ open, onClose, asset, initialAmount = 1 }: BuyModalProps): React.JSX.Element | null {
+  const [amount, setAmount] = useState(initialAmount);
+  const [displayVal, setDisplayVal] = useState(String(initialAmount)); // separate display value prevents input flicker
   const [state, setState] = useState<ModalState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [lastTxId, setLastTxId] = useState<string | null>(null);
-  const { address, refreshPortfolio } = useWalletStore();
+  const [wConnecting, setWConnecting] = useState<string | null>(null);
+  const [wError, setWError] = useState('');
+  const { address, refreshPortfolio, connect } = useWalletStore();
   const { addPendingTx, settleTx } = usePortfolioStore();
   const { quote, loading: quoteLoading } = usePricing(asset.id, amount);
 
@@ -44,9 +82,12 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
     if (open) {
       onModalOpen();
       setState('idle');
-      setAmount(1);
+      setAmount(initialAmount);
+      setDisplayVal(String(initialAmount));
       setErrorMsg('');
       setLastTxId(null);
+      setWConnecting(null);
+      setWError('');
     } else {
       onModalClose();
     }
@@ -126,7 +167,23 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
   const isRealTx = lastTxId !== null && /^[0-9a-f]{64}$/i.test(lastTxId);
 
   const adjustAmount = (delta: number): void => {
-    setAmount((prev) => Math.max(1, Math.min(asset.available_fractions, prev + delta)));
+    setAmount((prev) => {
+      const next = Math.max(1, Math.min(asset.available_fractions, prev + delta));
+      setDisplayVal(String(next));
+      return next;
+    });
+  };
+
+  const handleWalletConnect = (walletId: string): void => {
+    if (wConnecting) return;
+    setWConnecting(walletId);
+    setWError('');
+    connectModalWallet(walletId)
+      .then(({ address: addr, type }) => connect(addr, type).then(() => setWConnecting(null)))
+      .catch((err: unknown) => {
+        setWConnecting(null);
+        setWError(err instanceof Error ? err.message : 'Connection failed. Please try again.');
+      });
   };
 
   return (
@@ -256,11 +313,15 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
                     </motion.button>
                     <input
                       id="fraction-amount"
-                      type="number"
-                      min={1}
-                      max={asset.available_fractions}
-                      value={amount}
-                      onChange={(e) => setAmount(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                      type="text"
+                      inputMode="numeric"
+                      value={displayVal}
+                      onChange={(e) => setDisplayVal(e.target.value.replace(/[^0-9]/g, ''))}
+                      onBlur={() => {
+                        const n = Math.max(1, Math.min(asset.available_fractions, parseInt(displayVal, 10) || 1));
+                        setAmount(n);
+                        setDisplayVal(String(n));
+                      }}
                       className="buy-modal__input"
                       disabled={state !== 'idle'}
                       aria-label="Number of fractions to buy"
@@ -324,9 +385,39 @@ export function BuyModal({ open, onClose, asset }: BuyModalProps): React.JSX.Ele
                 </div>
 
                 {!address ? (
-                  <div className="buy-modal__connect-wallet">
-                    <p className="buy-modal__connect-label">Connect your wallet to buy</p>
-                    <WalletConnectButton />
+                  <div className="buy-modal__wallet-picker">
+                    <p className="buy-modal__wallet-title">Connect wallet to buy</p>
+                    {wError && <div className="buy-modal__wallet-error">{wError}</div>}
+                    <ul className="wallet-picker-modal__list" role="list">
+                      {MODAL_WALLETS.map((w) => {
+                        const avail = w.available();
+                        const isConn = wConnecting === w.id;
+                        return (
+                          <li key={w.id}>
+                            <button
+                              className={`wallet-picker-modal__option${!avail ? ' wallet-picker-modal__option--unavailable' : ''}`}
+                              onClick={() => { if (avail) handleWalletConnect(w.id); }}
+                              disabled={!avail || Boolean(wConnecting)}
+                              aria-label={avail ? `Connect ${w.name}` : `${w.name} — not installed`}
+                            >
+                              <div className="wallet-picker-modal__icon">{w.initial}</div>
+                              <div className="wallet-picker-modal__info">
+                                <span className="wallet-picker-modal__name">{w.name}</span>
+                                <span className="wallet-picker-modal__desc">
+                                  {isConn ? 'Connecting…' : avail ? w.desc : (
+                                    <>Not installed — <a href={w.url} target="_blank" rel="noopener noreferrer" className="wallet-picker-modal__install-link" onClick={(e) => e.stopPropagation()}>Install</a></>
+                                  )}
+                                </span>
+                              </div>
+                              <span className="wallet-picker-modal__arrow" aria-hidden="true">
+                                {isConn ? <span className="wallet-picker-modal__connecting-ring" /> : avail ? '›' : ''}
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    <p className="wallet-picker-modal__note">Testnet only · No real funds required</p>
                   </div>
                 ) : (
                   <button

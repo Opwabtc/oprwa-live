@@ -144,11 +144,13 @@ export function AssetDetail(): React.JSX.Element {
               </label>
               <input
                 id="buy-amount"
-                type="number"
-                min={1}
-                max={asset.available_fractions}
+                type="text"
+                inputMode="numeric"
                 value={fractions}
-                onChange={(e) => setFractions(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                onChange={(e) => {
+                  const n = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10) || 1;
+                  setFractions(Math.max(1, Math.min(asset.available_fractions, n)));
+                }}
                 className="buy-modal__input"
                 aria-label="Fractions to buy"
               />
@@ -207,7 +209,7 @@ export function AssetDetail(): React.JSX.Element {
       </div>
 
       {buyOpen && (
-        <BuyModal open={buyOpen} onClose={() => setBuyOpen(false)} asset={asset} />
+        <BuyModal open={buyOpen} onClose={() => setBuyOpen(false)} asset={asset} initialAmount={fractions} />
       )}
     </div>
   );
