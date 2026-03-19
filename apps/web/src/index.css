@@ -5180,15 +5180,12 @@ a {
    POP CAT CURSOR — meme cursor mode
    ============================================================ */
 
-/* When popcat-mode class is on <html>, swap all cursors */
+/* Popcat mode — cursor is set directly on html via JS (mousedown/mouseup)
+   for reliable same-frame updates in Chrome/Edge. The !important here
+   overrides any element-level cursor declarations. */
 .popcat-mode,
 .popcat-mode * {
-  cursor: url('/popcat-normal.png') 16 16, auto !important;
-}
-.popcat-mode *:active,
-.popcat-mode button:active,
-.popcat-mode a:active {
-  cursor: url('/popcat-click.png') 16 16, auto !important;
+  cursor: inherit !important;
 }
 
 /* Floating bubble toggle button */

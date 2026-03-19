@@ -7,6 +7,7 @@ import { postBuy } from '@/lib/api';
 import { useWalletStore } from '@/store/walletStore';
 import { usePortfolioStore } from '@/store/portfolioStore';
 import { onModalOpen, onModalClose } from '@/lib/lenis';
+import { sounds } from '@/hooks/useSounds';
 import type { Asset, Transaction } from '@/types';
 
 // Inline wallet options — avoids navbar dropdown layout bugs inside modal
@@ -109,11 +110,13 @@ export function BuyModal({ open, onClose, asset, initialAmount = 1 }: BuyModalPr
 
   const handleBuy = async (): Promise<void> => {
     if (!address) return;
+    sounds.submit();
     setState('signing');
 
     try {
       const res = await postBuy({ assetId: asset.id, amount, wallet: address });
       setLastTxId(res.tx_id);
+      sounds.open();
       setState('pending');
 
       const tx: Transaction = {
@@ -135,7 +138,12 @@ export function BuyModal({ open, onClose, asset, initialAmount = 1 }: BuyModalPr
       // A real txid is 64 lowercase hex chars. Mock ids start with "mock_".
       const isMockTx = !/^[0-9a-f]{64}$/i.test(res.tx_id);
       if (isMockTx) {
-        setTimeout(() => { settleTx(res.tx_id); setState('settled'); void refreshPortfolio(); }, 3000);
+        setTimeout(() => {
+          settleTx(res.tx_id);
+          sounds.success();
+          setState('settled');
+          void refreshPortfolio();
+        }, 3000);
       } else {
         void (async () => {
           const { OPNetRWAVaultAdapter, CONTRACT_ADDRESS } = await import('@oprwa/contracts');
@@ -145,16 +153,22 @@ export function BuyModal({ open, onClose, asset, initialAmount = 1 }: BuyModalPr
           const poll = setInterval(() => {
             if (Date.now() > deadline) {
               clearInterval(poll);
+              sounds.success();
               settleTx(res.tx_id); setState('settled'); void refreshPortfolio();
               return;
             }
             void adapter.balanceOf(address, asset.id).then((bal) => {
-              if (bal > initialBal) { clearInterval(poll); settleTx(res.tx_id); setState('settled'); void refreshPortfolio(); }
+              if (bal > initialBal) {
+                clearInterval(poll);
+                sounds.success();
+                settleTx(res.tx_id); setState('settled'); void refreshPortfolio();
+              }
             }).catch(() => {});
           }, 5000);
         })();
       }
     } catch (err) {
+      sounds.error();
       setState('error');
       setErrorMsg(err instanceof Error ? err.message : 'Transaction failed. Please check your wallet.');
     }
@@ -167,6 +181,7 @@ export function BuyModal({ open, onClose, asset, initialAmount = 1 }: BuyModalPr
   const isRealTx = lastTxId !== null && /^[0-9a-f]{64}$/i.test(lastTxId);
 
   const adjustAmount = (delta: number): void => {
+    sounds.adjust();
     setAmount((prev) => {
       const next = Math.max(1, Math.min(asset.available_fractions, prev + delta));
       setDisplayVal(String(next));
@@ -176,11 +191,16 @@ export function BuyModal({ open, onClose, asset, initialAmount = 1 }: BuyModalPr
 
   const handleWalletConnect = (walletId: string): void => {
     if (wConnecting) return;
+    sounds.click();
     setWConnecting(walletId);
     setWError('');
     connectModalWallet(walletId)
-      .then(({ address: addr, type }) => connect(addr, type).then(() => setWConnecting(null)))
+      .then(({ address: addr, type }) => {
+        sounds.walletConnect();
+        return connect(addr, type).then(() => setWConnecting(null));
+      })
       .catch((err: unknown) => {
+        sounds.error();
         setWConnecting(null);
         setWError(err instanceof Error ? err.message : 'Connection failed. Please try again.');
       });
