@@ -29,6 +29,14 @@ const RPC_URL: string =
     (import.meta as { env?: Record<string, string> }).env?.VITE_RPC_URL) ||
   'https://testnet.opnet.org';
 
+// Treasury P2TR address that receives BTC from purchase().
+// Must match the address set via setTreasury() on-chain.
+// Override via VITE_TREASURY_ADDRESS env var.
+const TREASURY_P2TR: string =
+  (typeof import.meta !== 'undefined' &&
+    (import.meta as { env?: Record<string, string> }).env?.VITE_TREASURY_ADDRESS) ||
+  'opt1pv5z0n6gn0n8szljp7dewl52548zyvt48pt406cl607wen22amalqfpft8p';
+
 // Simulated balances for mock mode: address → assetId → amount
 const balances = new Map<string, Map<string, bigint>>();
 
@@ -49,12 +57,16 @@ const MOCK_TOTAL_SUPPLIES: Record<number, bigint> = {
 let demandFactorScaled = 500;
 
 function computeMockFee(txValue: bigint): bigint {
+  // Mirrors RWAVault._computeFeeRateBps() exactly.
+  // demandFactorScaled in [0, 1000]; 500 = neutral → 250 bps (0.25%).
+  // NOTE: fee fallback uses 0.25% base, NOT 2.5% — do not change this constant.
   const scaled = demandFactorScaled;
   let bps: number;
   if (scaled >= 500) {
     bps = 250 + (scaled - 500) / 2;
   } else {
-    bps = 250 - (500 - scaled) / 2;
+    const deficit = (500 - scaled) / 2;
+    bps = deficit >= 250 ? 0 : 250 - deficit;
   }
   bps = Math.max(250, Math.min(750, bps));
   const pctFee = (txValue * BigInt(Math.round(bps))) / 100000n;
@@ -93,6 +105,7 @@ interface OPNetSimResult {
     refundTo: string;
     network: unknown;
     maximumAllowedSatToSpend: bigint;
+    extraOutputs?: Array<{ address: string; value: number }>;
   }): Promise<{ transactionId: string }>;
 }
 
@@ -100,6 +113,10 @@ interface OPNetSimResult {
  * Typed interface for the RWAVault contract proxy returned by getContract().
  */
 interface RWAVaultContract {
+  setTransactionDetails(details: {
+    inputs: unknown[];
+    outputs: Array<{ to: string; value: bigint; index: number; flags: number }>;
+  }): void;
   purchase(tokenId: bigint, amount: bigint): Promise<OPNetSimResult>;
   balanceOf(account: string, tokenId: bigint): Promise<{ properties: { balance: bigint } }>;
   totalSupplyOf(tokenId: bigint): Promise<{ properties: { supply: bigint }; revert?: string }>;
@@ -180,30 +197,46 @@ export class OPNetRWAVaultAdapter implements IContractAdapter {
     try {
       const contract = await buildOPNetContract(this.contractAddress, this.network, callerAddress ?? '');
 
-      // 1. Simulate FIRST — BTC transfers are irreversible
-      const sim = await contract.purchase(BigInt(tokenId), amount);
-
-      if (typeof sim.revert === 'string' && sim.revert !== '') {
-        return { txId: '', status: 'FAILED', error: sim.revert };
-      }
-
       const btcBitcoin = await import('@btc-vision/bitcoin');
       const NETWORK =
         this.network === 'testnet'
           ? btcBitcoin.networks.opnetTestnet
           : btcBitcoin.networks.bitcoin;
 
-      // 2. Send — wallet signs (signer: null = NEVER pass keypair from frontend)
-      // maximumAllowedSatToSpend = purchase cost + 100k sats buffer for gas/fees
+      // Compute total BTC required: asset cost + platform fee.
+      // Must match the on-chain calculation in purchase() exactly.
       const PRICE_PER_FRACTION = 1000n;
-      const purchaseCost = amount * PRICE_PER_FRACTION;
-      const maxSpend = purchaseCost + 100_000n;
+      const assetCost = amount * PRICE_PER_FRACTION;
+      const fee = computeMockFee(assetCost);       // deterministic, mirrors contract
+      const totalCost = assetCost + fee;
+
+      // 1. Provide simulated outputs to the SDK BEFORE simulate().
+      //    The contract reads outputs.length in simulation — passing them allows
+      //    the simulation to reflect the actual TX structure.
+      //    TransactionOutputFlags.hasTo = 1 (standard value).
+      contract.setTransactionDetails({
+        inputs: [],
+        outputs: [{ to: TREASURY_P2TR, value: totalCost, index: 1, flags: 1 }],
+      });
+
+      // 2. Simulate FIRST — BTC transfers are irreversible.
+      const sim = await contract.purchase(BigInt(tokenId), amount);
+
+      if (typeof sim.revert === 'string' && sim.revert !== '') {
+        return { txId: '', status: 'FAILED', error: sim.revert };
+      }
+
+      // 3. Send — wallet signs (signer: null = NEVER pass keypair from frontend).
+      //    extraOutputs creates the real BTC output to the treasury.
+      //    maximumAllowedSatToSpend = totalCost + 50k sats buffer for network fee.
+      const maxSpend = totalCost + 50_000n;
       const receipt = await sim.sendTransaction({
         signer: null,
         mldsaSigner: null,
         refundTo: callerAddress ?? '',
         network: NETWORK,
         maximumAllowedSatToSpend: maxSpend,
+        extraOutputs: [{ address: TREASURY_P2TR, value: Number(totalCost) }],
       });
 
       return {

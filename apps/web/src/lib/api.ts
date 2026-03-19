@@ -218,8 +218,9 @@ export async function fetchPrice(assetId: string, amount: number): Promise<Price
     const feeResult = await adapter.collectFee(BigInt(totalPrice));
     fee = Number(feeResult);
   } catch {
-    // Local deterministic fallback: 2.5% fee minimum 1000 sats
-    const pctFee = Math.round(totalPrice * 0.025);
+    // Local deterministic fallback: mirrors RWAVault base fee rate (0.25% = 250 bps).
+    // demandFactor neutral (500) → bps = 250 → fee = totalPrice × 250 / 100000.
+    const pctFee = Math.round((totalPrice * 250) / 100000);
     fee = pctFee > 1000 ? pctFee : 1000;
   }
 
@@ -321,7 +322,7 @@ export async function postBuy(req: BuyRequest): Promise<BuyResponse> {
     const feeResult = await adapter.collectFee(BigInt(totalPrice));
     fee = Number(feeResult);
   } catch {
-    const pctFee = Math.round(totalPrice * 0.025);
+    const pctFee = Math.round((totalPrice * 250) / 100000);
     fee = pctFee > 1000 ? pctFee : 1000;
   }
 

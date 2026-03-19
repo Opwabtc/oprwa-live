@@ -88,6 +88,19 @@ export const RWAVaultAbi = [
         type: BitcoinAbiTypes.Function,
     },
     {
+        name: 'setTreasury',
+        inputs: [{ name: 'treasury', type: ABIDataTypes.ADDRESS }],
+        outputs: [{ name: 'success', type: ABIDataTypes.BOOL }],
+        type: BitcoinAbiTypes.Function,
+    },
+    {
+        name: 'getTreasury',
+        constant: true,
+        inputs: [],
+        outputs: [{ name: 'treasury', type: ABIDataTypes.ADDRESS }],
+        type: BitcoinAbiTypes.Function,
+    },
+    {
         name: 'isWhitelisted',
         constant: true,
         inputs: [{ name: 'account', type: ABIDataTypes.ADDRESS }],

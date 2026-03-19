@@ -110,6 +110,26 @@ export type SetWhitelist = CallResult<
 >;
 
 /**
+ * @description Represents the result of the setTreasury function call.
+ */
+export type SetTreasury = CallResult<
+    {
+        success: boolean;
+    },
+    OPNetEvent<never>[]
+>;
+
+/**
+ * @description Represents the result of the getTreasury function call.
+ */
+export type GetTreasury = CallResult<
+    {
+        treasury: Address;
+    },
+    OPNetEvent<never>[]
+>;
+
+/**
  * @description Represents the result of the isWhitelisted function call.
  */
 export type IsWhitelisted = CallResult<
@@ -145,6 +165,8 @@ export interface IRWAVault extends IOP_NETContract {
     setDemandFactor(scaledValue: bigint): Promise<SetDemandFactor>;
     setWhitelistEnabled(enabled: boolean): Promise<SetWhitelistEnabled>;
     setWhitelist(account: Address, approved: boolean): Promise<SetWhitelist>;
+    setTreasury(treasury: Address): Promise<SetTreasury>;
+    getTreasury(): Promise<GetTreasury>;
     isWhitelisted(account: Address): Promise<IsWhitelisted>;
     getAssetInfo(tokenId: bigint): Promise<GetAssetInfo>;
 }

@@ -105,4 +105,16 @@ export const RWA_VAULT_ABI: BitcoinInterfaceAbi = [
     ],
     outputs: [{ name: 'success', type: ABIDataTypes.BOOL }],
   },
+  {
+    name: 'setTreasury',
+    type: BitcoinAbiTypes.Function,
+    inputs: [{ name: 'treasury', type: ABIDataTypes.ADDRESS }],
+    outputs: [{ name: 'success', type: ABIDataTypes.BOOL }],
+  },
+  {
+    name: 'getTreasury',
+    type: BitcoinAbiTypes.Function,
+    inputs: [],
+    outputs: [{ name: 'treasury', type: ABIDataTypes.ADDRESS }],
+  },
 ];

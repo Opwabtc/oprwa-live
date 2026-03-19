@@ -9,6 +9,7 @@
  *   ptr   0: admin (StoredAddress)
  *   ptr   1: demandFactor_scaled (StoredU256) — u256 in [0, 1000], 500 = 0.0 demand
  *   ptr   2: whitelistEnabled (StoredU256) — 0=false (testnet), 1=true (mainnet)
+ *   ptr   3: treasury (StoredAddress) — receives BTC payments
  *   ptr  10: balances[tokenId=0] (StoredMapU256, key=address as u256)
  *   ptr  11: balances[tokenId=1]
  *   ptr  12: balances[tokenId=2]
@@ -50,6 +51,7 @@ import {
 const PTR_ADMIN:             u16 = 0;
 const PTR_DEMAND_FACTOR:     u16 = 1;
 const PTR_WHITELIST_ENABLED: u16 = 2;
+const PTR_TREASURY:          u16 = 3;
 
 // Per-tokenId balance maps (ptr 10, 11, 12)
 const PTR_BALANCES_BASE:     u16 = 10;
@@ -62,6 +64,9 @@ const PTR_WHITELIST:         u16 = 30;
 
 // Maximum supported tokenIds
 const MAX_TOKEN_IDS:         u32 = 9;
+
+// Price per fraction in satoshis (must match frontend PRICE_PER_FRACTION = 1000)
+const SATS_PER_FRACTION:     u64 = 1000;
 
 // Maximum supply per tokenId — prevents unbounded minting via purchase()
 // 10_000_000 fractions per asset = 10M units at 1000 sats each = 100BTC max TVL per asset
@@ -79,6 +84,15 @@ const MIN_FEE_SATS:   u64 = 1000;  // minimum 1000 sats
 const FEE_DIVISOR:    u64 = 100000;
 
 // Events
+
+@final
+class TreasurySetEvent extends NetEvent {
+    constructor(treasury: Address) {
+        const data = new BytesWriter(32);
+        data.writeAddress(treasury);
+        super('TreasurySet', data);
+    }
+}
 
 @final
 class MintEvent extends NetEvent {
@@ -150,6 +164,7 @@ export class RWAVault extends OP_NET {
     private _admin:             StoredAddress  = new StoredAddress(PTR_ADMIN);
     private _demandFactor:      StoredU256     = new StoredU256(PTR_DEMAND_FACTOR, EMPTY_POINTER);
     private _whitelistEnabled:  StoredU256     = new StoredU256(PTR_WHITELIST_ENABLED, EMPTY_POINTER);
+    private _treasury:          StoredAddress  = new StoredAddress(PTR_TREASURY);
 
     // Balance maps per tokenId (ptrs 10–18)
     private _balances0: StoredMapU256 = new StoredMapU256(PTR_BALANCES_BASE);
@@ -323,7 +338,10 @@ export class RWAVault extends OP_NET {
     }
 
     // ── purchase(tokenId, amount) → bool ─────────────────────────────────────
-    // PUBLIC: any caller can mint to themselves (testnet, no payment required)
+    // PUBLIC: any EOA can purchase fractions — BTC payment verified via tx.outputs.
+    // Total required = (amount × SATS_PER_FRACTION) + collectFee(subtotal).
+    // Simulation context (outputs.length == 0) bypasses the payment check so the
+    // SDK can simulate the call before broadcasting.
 
     @method(
         { name: 'tokenId', type: ABIDataTypes.UINT256 },
@@ -336,19 +354,50 @@ export class RWAVault extends OP_NET {
 
         if (amount.isZero()) throw new Revert('RWAVault: amount must be > 0');
 
-        // EOA-only gate: prevent contract accounts from minting fractions.
-        // tx.sender == the immediate caller; tx.origin == the EOA.
-        // If they differ, a contract intermediary is calling — reject.
+        // EOA-only gate: reject contract intermediaries.
         if (!Blockchain.tx.sender.equals(Blockchain.tx.origin)) {
             throw new Revert('RWAVault: contract callers not allowed');
         }
 
+        // Treasury must be configured before purchases are allowed.
+        const treasury = this._treasury.value;
+        if (treasury == Address.zero()) throw new Revert('RWAVault: treasury not set');
+
+        // ── BTC Payment verification ──────────────────────────────────────────
+        // asset cost = amount × 1,000 sats
+        const assetCost = SafeMath.mul(amount, u256.fromU64(SATS_PER_FRACTION));
+
+        // platform fee = collectFee(assetCost) — same deterministic formula as the view
+        const feeBps    = this._computeFeeRateBps();
+        const pctFee    = SafeMath.div(SafeMath.mul(assetCost, u256.fromU64(feeBps)), u256.fromU64(FEE_DIVISOR));
+        const minFee    = u256.fromU64(MIN_FEE_SATS);
+        const fee       = u256.lt(pctFee, minFee) ? minFee : pctFee;
+        const totalRequired = SafeMath.add(assetCost, fee);
+
+        // Sum the value of all non-null outputs to verify the user sent enough BTC.
+        // The frontend SDK routes payment to treasury via extraOutputs — we verify
+        // the total value of outputs >= totalRequired to enforce payment.
+        // outputs.length == 0 only in simulation — intentional bypass for SDK simulate().
+        const outputs = Blockchain.tx.outputs;
+        let   totalPaid = u256.Zero;
+
+        for (let i = 0; i < outputs.length; i++) {
+            if (outputs[i].to !== null) {
+                totalPaid = SafeMath.add(totalPaid, u256.fromU64(outputs[i].value));
+            }
+        }
+
+        // Enforce payment only when outputs are present (real on-chain TX).
+        if (outputs.length > 0 && u256.lt(totalPaid, totalRequired)) {
+            throw new Revert('RWAVault: insufficient BTC payment');
+        }
+
+        // ── State updates (CEI order) ─────────────────────────────────────────
         const id      = this._validateTokenId(tokenId);
         const to      = Blockchain.tx.sender;
         const balMap  = this._getBalanceMap(id);
         const addrKey = u256.fromUint8ArrayBE(to);
 
-        // Supply cap — prevent unbounded minting
         const supplyStore = this._getSupplyStore(id);
         const maxSupply   = u256.fromU64(MAX_SUPPLY_PER_TOKEN);
         const newSupply   = SafeMath.add(supplyStore.value, amount);
@@ -585,6 +634,35 @@ export class RWAVault extends OP_NET {
 
         const result = new BytesWriter(1);
         result.writeBoolean(true);
+        return result;
+    }
+
+    // ── setTreasury(treasury) → bool ─────────────────────────────────────────
+    // Admin-only. Sets the P2TR address that receives BTC from purchase().
+
+    @method({ name: 'treasury', type: ABIDataTypes.ADDRESS })
+    @returns({ name: 'success', type: ABIDataTypes.BOOL })
+    public setTreasury(calldata: Calldata): BytesWriter {
+        this._onlyAdmin();
+
+        const treasury = calldata.readAddress();
+        if (treasury == Address.zero()) throw new Revert('RWAVault: zero address');
+
+        this._treasury.value = treasury;
+        Blockchain.emit(new TreasurySetEvent(treasury));
+
+        const result = new BytesWriter(1);
+        result.writeBoolean(true);
+        return result;
+    }
+
+    // ── getTreasury() → address ───────────────────────────────────────────────
+
+    @view
+    @returns({ name: 'treasury', type: ABIDataTypes.ADDRESS })
+    public getTreasury(_calldata: Calldata): BytesWriter {
+        const result = new BytesWriter(32);
+        result.writeAddress(this._treasury.value);
         return result;
     }
 
