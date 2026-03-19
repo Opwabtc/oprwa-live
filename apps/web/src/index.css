@@ -487,44 +487,93 @@ a {
   font-size: 1rem;
 }
 
-/* Variants — DS v5 */
+/* Variants — DS v5 — 3D extruded buttons */
 .btn--primary {
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(145deg, #ffad33 0%, #f97316 40%, #c2410c 100%);
   color: #fff;
   border: none;
-  box-shadow: 0 4px 18px rgba(249, 115, 22, 0.32);
+  border-bottom: 4px solid #92340a;
+  border-right: 2px solid #b84a10;
+  box-shadow:
+    0 6px 0 #7c2d09,
+    0 10px 24px rgba(249, 115, 22, 0.38),
+    inset 0 1px 0 rgba(255,255,255,0.22);
   position: relative;
   overflow: hidden;
+  transform: translateY(0) translateZ(0);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, border-bottom-width 0.1s ease;
+  will-change: transform, box-shadow;
 }
 
 .btn--primary::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.10), transparent);
+  background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent 50%);
   pointer-events: none;
 }
 
 .btn--primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(249, 115, 22, 0.42);
+  transform: translateY(-3px) translateZ(0);
+  box-shadow:
+    0 9px 0 #7c2d09,
+    0 16px 32px rgba(249, 115, 22, 0.48),
+    inset 0 1px 0 rgba(255,255,255,0.22);
 }
 
 .btn--primary:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 2px 12px rgba(249, 115, 22, 0.28);
+  transform: translateY(4px) translateZ(0);
+  border-bottom-width: 1px;
+  box-shadow:
+    0 2px 0 #7c2d09,
+    0 4px 12px rgba(249, 115, 22, 0.28),
+    inset 0 2px 4px rgba(0,0,0,0.18);
 }
 
 .btn--secondary {
-  background: var(--bg-elevated);
+  background: linear-gradient(145deg, var(--bg-elevated2) 0%, var(--bg-elevated) 100%);
   color: var(--text);
-  border: 1px solid var(--border);
+  border-top: 1px solid var(--border-hover);
+  border-left: 1px solid var(--border-hover);
+  border-right: 1px solid rgba(0,0,0,0.4);
+  border-bottom: 3px solid rgba(0,0,0,0.5);
+  box-shadow:
+    0 5px 0 rgba(0,0,0,0.35),
+    0 8px 20px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  transform: translateY(0) translateZ(0);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, border-bottom-width 0.1s ease;
+  will-change: transform, box-shadow;
 }
 
 .btn--secondary:hover:not(:disabled) {
-  border-color: var(--accent-border);
+  border-top-color: var(--accent-border);
+  border-left-color: var(--accent-border);
   color: var(--text);
-  background: var(--bg-card-hover);
+  transform: translateY(-3px) translateZ(0);
+  box-shadow:
+    0 8px 0 rgba(0,0,0,0.35),
+    0 14px 28px rgba(255,153,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.10);
+}
+
+.btn--secondary:active:not(:disabled) {
+  transform: translateY(3px) translateZ(0);
+  border-bottom-width: 1px;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.35),
+    0 2px 8px rgba(0,0,0,0.18),
+    inset 0 2px 4px rgba(0,0,0,0.14);
+}
+
+[data-theme='light'] .btn--secondary {
+  border-top-color: rgba(0,0,0,0.12);
+  border-left-color: rgba(0,0,0,0.12);
+  border-bottom-color: rgba(0,0,0,0.22);
+  box-shadow:
+    0 5px 0 rgba(0,0,0,0.18),
+    0 8px 20px rgba(0,0,0,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
 .btn--ghost {
@@ -4400,3 +4449,103 @@ a {
 [data-theme='light'] .loading-screen {
   background: var(--bg);
 }
+
+/* ============================================================
+   HERO — performance hints & blur will-change
+   ============================================================ */
+.hero__content {
+  will-change: filter, opacity, transform;
+}
+
+.hero__headline {
+  will-change: transform;
+}
+
+/* ============================================================
+   MARQUEE STRIP — between hero and assets
+   ============================================================ */
+.marquee-strip {
+  width: 100%;
+  overflow: hidden;
+  padding: 1rem 0;
+  background: transparent;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 2;
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+  will-change: transform;
+}
+
+.marquee-item {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 1.4rem;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.marquee-item:hover {
+  color: var(--accent);
+}
+
+.marquee-dot {
+  color: var(--accent);
+  padding: 0 0.4rem;
+  opacity: 0.5;
+}
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* ============================================================
+   PREMIUM SCROLL — enhanced asset card reveal
+   ============================================================ */
+.asset-grid .asset-card {
+  will-change: transform, opacity;
+}
+
+/* Section headings scroll clip reveal */
+.section-title {
+  overflow: hidden;
+}
+
+/* ============================================================
+   3D BTN — light theme overrides
+   ============================================================ */
+[data-theme='light'] .btn--primary {
+  box-shadow:
+    0 6px 0 #7c2d09,
+    0 10px 24px rgba(249, 115, 22, 0.28),
+    inset 0 1px 0 rgba(255,255,255,0.35);
+}
+
+[data-theme='light'] .btn--primary:hover:not(:disabled) {
+  box-shadow:
+    0 9px 0 #7c2d09,
+    0 16px 32px rgba(249, 115, 22, 0.38),
+    inset 0 1px 0 rgba(255,255,255,0.35);
+}
+
+/* ============================================================
+   HERO EYEBROW — remove pill if still rendered elsewhere
+   ============================================================ */
+.hero__eyebrow { display: none; }

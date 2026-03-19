@@ -6,7 +6,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useAssets } from '@/hooks/useAssets';
 import { AssetCard } from '@/components/AssetCard';
 import { TextReveal } from '@/components/TextReveal';
-import { TextShuffle } from '@/components/TextShuffle';
 import { StackedCards } from '@/components/StackedCards';
 import { SiteFooter } from '@/components/SiteFooter';
 
@@ -47,6 +46,7 @@ export function Landing(): React.JSX.Element {
   const videoRef = useRef<HTMLVideoElement>(null);
   const whyGridRef = useRef<HTMLDivElement>(null);
   const gradientHeadRef = useRef<HTMLSpanElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -63,6 +63,31 @@ export function Landing(): React.JSX.Element {
         yPercent: -8,
         ease: 'none',
         scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+      });
+
+      // Blur + fade hero content as user scrolls into assets
+      gsap.to('.hero__content', {
+        filter: 'blur(14px)',
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: '42% top', end: '86% top', scrub: 1.4 },
+      });
+
+      // Assets heading reveal
+      gsap.fromTo('#assets-heading',
+        { autoAlpha: 0, y: 32, scale: 0.96 },
+        {
+          autoAlpha: 1, y: 0, scale: 1, duration: 0.85, ease: 'power3.out',
+          scrollTrigger: { trigger: '#assets-heading', start: 'top 88%', toggleActions: 'play none none none' },
+        },
+      );
+
+      // Section body text parallax depth
+      gsap.utils.toArray<HTMLElement>('.section-body').forEach((el) => {
+        gsap.fromTo(el, { y: 18, autoAlpha: 0 }, {
+          y: 0, autoAlpha: 1, duration: 0.7, ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' },
+        });
       });
 
       const gradientEl = gradientHeadRef.current;
@@ -133,6 +158,46 @@ export function Landing(): React.JSX.Element {
     return () => observer.disconnect();
   }, []);
 
+  // Hero headline mouse parallax — moves opposite to cursor, max ±10px
+  useEffect(() => {
+    const heroEl = heroRef.current;
+    if (!heroEl) return;
+    const headlineEl = heroEl.querySelector<HTMLElement>('.hero__headline');
+    const subEl = heroEl.querySelector<HTMLElement>('.hero__sub');
+    if (!headlineEl) return;
+
+    const xTo = gsap.quickTo(headlineEl, 'x', { duration: 1.1, ease: 'power2.out' });
+    const yTo = gsap.quickTo(headlineEl, 'y', { duration: 1.1, ease: 'power2.out' });
+    const xToSub = subEl ? gsap.quickTo(subEl, 'x', { duration: 1.4, ease: 'power2.out' }) : null;
+    const yToSub = subEl ? gsap.quickTo(subEl, 'y', { duration: 1.4, ease: 'power2.out' }) : null;
+
+    const onMouseMove = (e: MouseEvent) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const rx = (e.clientX - cx) / cx;
+      const ry = (e.clientY - cy) / cy;
+      xTo(-rx * 10);
+      yTo(-ry * 6);
+      xToSub?.(-rx * 5);
+      yToSub?.(-ry * 3);
+    };
+
+    const onMouseLeave = () => {
+      xTo(0); yTo(0);
+      xToSub?.(0); yToSub?.(0);
+    };
+
+    heroEl.addEventListener('mousemove', onMouseMove);
+    heroEl.addEventListener('mouseleave', onMouseLeave);
+
+    return () => {
+      heroEl.removeEventListener('mousemove', onMouseMove);
+      heroEl.removeEventListener('mouseleave', onMouseLeave);
+      gsap.killTweensOf(headlineEl);
+      if (subEl) gsap.killTweensOf(subEl);
+    };
+  }, []);
+
   const handleCardTilt = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     const rect = el.getBoundingClientRect();
@@ -152,7 +217,7 @@ export function Landing(): React.JSX.Element {
   return (
     <div className="landing">
       {/* ── Hero ─────────────────────────────────────── */}
-      <section className="hero" aria-label="Hero section">
+      <section ref={heroRef} className="hero" aria-label="Hero section">
         <video
           ref={videoRef}
           className="hero__video"
@@ -167,9 +232,6 @@ export function Landing(): React.JSX.Element {
         <div className="hero__fluid" aria-hidden="true" />
 
         <div className="hero__content">
-          <div className="hero__eyebrow">
-            <TextShuffle text="Real assets · Live on testnet" delay={200} speed={35} />
-          </div>
           <h1 className="hero__headline">
             <TextReveal as="span" delay={0.3} stagger={0.06} className="hero__headline-line hero__headline-white">
               Own a piece
@@ -192,6 +254,17 @@ export function Landing(): React.JSX.Element {
           </div>
         </div>
       </section>
+
+      {/* ── Marquee strip ─────────────────────────────── */}
+      <div className="marquee-strip" aria-hidden="true">
+        <div className="marquee-track">
+          {Array.from({ length: 4 }, (_, gi) =>
+            ['Real Estate', '·', 'Gold', '·', 'T-Bills', '·', 'Bitcoin', '·', 'On-Chain', '·', 'Non-Custodial', '·', 'OPNet', '·'].map((item, i) => (
+              <span key={`${gi}-${i}`} className={`marquee-item${item === '·' ? ' marquee-dot' : ''}`}>{item}</span>
+            ))
+          )}
+        </div>
+      </div>
 
       {/* ── Assets / Markets ─────────────────────────── */}
       <section
